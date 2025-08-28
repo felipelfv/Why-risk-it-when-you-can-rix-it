@@ -3,6 +3,7 @@
 # >rix(date = "2025-08-25",
 #  > r_pkgs = c("rix",
 #  > "quarto"),
+#  > system_pkgs = "typst",
 #  > ide = "none",
 #  > project_path = ".",
 #  > overwrite = TRUE,
@@ -25,6 +26,7 @@ let
       glibcLocales
       nix
       R
+      typst
       quarto
       which
       pandoc;
