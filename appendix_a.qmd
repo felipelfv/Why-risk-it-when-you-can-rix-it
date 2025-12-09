@@ -1,6 +1,6 @@
 # Simulation Study Design
 
-Here we present a rather short description following recommendations from previous research, but ideally even more may be reported [e.g., see Morris et al., 2019; Siepe et al., 2024; White et al., 2024]. 
+Here we present a rather short description following recommendations from previous research, but ideally even more may be reported [@pawel_etall_2025; @siepe_etall_2024; @morris_etall_2019; @white_etall_2024]. This mimics a methods or similar section in articles.
 
 **Factorial Design.** The simulation employs a full factorial design with two factors: sample size ($n \in \{50, 100, 2000\}$) and degree of confounding non-linearity ($\gamma_2 \in \{0, 0.3, 0.8\}$, labeled as none, mild, and severe). The parameter $\gamma_2$ controls the strength of the quadratic confounder effect on the outcome (see Data Generation). This yields nine conditions, each replicated $K = 1000$ times.
 
