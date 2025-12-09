@@ -23,7 +23,7 @@ p_bias <- ggplot(performance_summary,
 p_rel_bias <- ggplot(performance_summary,
                      aes(x = n, y = rel_bias,
                          color = confound_label, group = confound_label)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
   geom_point(size = 3) +
   geom_line() +
   labs(x = "Sample size (n)",
