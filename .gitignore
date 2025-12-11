@@ -43,9 +43,6 @@ vignettes/*.pdf
 # R Profile
 .Rprofile
 
-# pkgdown site
-docs/
-
 # translation temp files
 po/*~
 
