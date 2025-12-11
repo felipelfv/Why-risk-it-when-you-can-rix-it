@@ -33,7 +33,7 @@ authornote: |
   Email: [email]
 format:
   apaquarto-pdf:
-    documentmode: man
+    document-mode: man
     keep-tex: true
     include-in-header:
       text: |
@@ -165,7 +165,7 @@ analysis—whether organized through simple, documented script sequences using
 `source()` or through more formal orchestration tools—can be executed reliably.
 
 We illustrate these ideas through a reproducible simulation study conducted in R
-~~via RStudio~~ \[**Do we need to show it via Rstudio? In fact there is nothing
+via RStudio \[**Do we need to show it via Rstudio? In fact there is nothing
 rstudio specific here. Maybe we show how you set up Rstudio/Positron/Vs code
 IDEs in Rix?\]**, culminating in an automated APA-formatted manuscript generated
 with apaquarto [@schneider_2024]. Although the example centers on R because of
@@ -733,7 +733,7 @@ manuscript. \[but you can\]. We just load the obtained performance measures and
 integrate the code chunks that produce the plots (see Figure 1)\[cross ref
 figures and tables\]. To render the manuscript: \[You can if we use rixpress\]
 
-``` bash
+```bash
 quarto render article.qmd 
 ```
 
@@ -744,14 +744,13 @@ proejct repo already.
 
 To download this extension for your own work you can install the extension by using the terminal:
 
-```{base}
+```bash
 quarto use template wjschne/apaquarto
 ```
 
-or in the console:
+or in the R console:
 
-```{bash}
-
+```r
 quarto::quarto_use_template("wjschne/apaquarto")
 
 ```
