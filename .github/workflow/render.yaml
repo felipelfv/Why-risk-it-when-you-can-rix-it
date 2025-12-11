@@ -1,0 +1,57 @@
+name: Render paper with Nix and Quarto
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@main
+      with:
+        logger: pretty
+        log-directives: nix_installer=trace
+        backtrace: full
+
+    - uses: cachix/cachix-action@v15
+      with:
+        name: b-rodrigues
+        authToken: '${{ secrets.CACHIX_AUTH }}'
+
+
+    - name: Set git config
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+
+    - name: Build development environment
+      run: |
+        nix-build
+
+    - name: Render
+      run: nix-shell --run "quarto render article.qmd"
+
+    - name: Rename
+      run: mv docs/article.html docs/index.html
+
+    - name: Push docs
+      run: |
+        git pull --rebase --autostash origin master
+        git add docs/index.html docs/article.pdf
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "Updated article"
+          git push origin master
+        fi
