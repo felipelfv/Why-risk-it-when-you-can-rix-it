@@ -1,20 +1,23 @@
 -- Formats level 4 and 5 headers for APA format.
 
--- Does the string end with a specific character?
----http://lua-users.org/wiki/StringRecipes
-local function ends_with(str, ending)
-  return string.sub(str.text, -1) == ending
+-- Safe: works with any Pandoc inline
+local function ends_with(elt, ending)
+  local txt = pandoc.utils.stringify(elt)
+  if not txt or txt == "" then
+    return false
+  end
+  return txt:sub(-#ending) == ending
 end
-
 
 function Header(hx)
   if hx.level > 3 then
-    -- Add a period unless a punctuation mark is already present
-    if not (ends_with(hx.content[#hx.content], ".") or ends_with(hx.content[#hx.content], "?") or ends_with(hx.content[#hx.content], "?")) then
+    -- Add a period unless already present
+    local last = hx.content[#hx.content]
+    if not (ends_with(last, ".") or ends_with(last, "?") or ends_with(last, "!")) then
       hx.content[#hx.content + 1] = pandoc.Str(".")
     end
+
     if FORMAT == "docx" then
-      -- Adds a "Style Separator" character that allows the headier to appear as if it were on the same line as the subsequent paragraph.
       local htext = pandoc.utils.stringify(hx.content)
       local prefix = "<w:p><w:pPr><w:pStyle w:val=\"Heading" ..
       hx.level .. "\"/><w:rPr><w:vanish/><w:specVanish/></w:rPr></w:pPr><w:r><w:t>"
