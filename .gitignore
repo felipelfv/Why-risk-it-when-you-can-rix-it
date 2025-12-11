@@ -56,3 +56,4 @@ rsconnect/
 result
 .envrc
 /.direnv/
+/.quarto/
