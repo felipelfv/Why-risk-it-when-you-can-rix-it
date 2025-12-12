@@ -33,7 +33,7 @@ authornote: |
   Email: [email]
 format:
   apaquarto-pdf:
-    documentmode: man
+    document-mode: man
     keep-tex: true
     include-in-header:
       text: |
@@ -55,107 +55,94 @@ library(dplyr)
 
 ```
 
-**Psychological science is in the midst of a credibility revolution, which has
+Psychological science is in the midst of a credibility revolution, which has
 prompted substantial progress in how research is conducted and evaluated
 [@vazire2018]. Yet, despite notable progress, a key cornerstone of science,
-reproducibility (i.e., the ability to precisely reproducible the results of a
-study or studies based on provided data, code, materials, and software/hardware)
-remains limited** [@hardwicke2020]**. A key barrier is that reproducibility is
-not a binary feature but instead exists along a continuum [@peng_2011]. At the
-lower end of this continuum, researchers may share only their manuscript.
-Further along the spectrum, they might provide partial code, full analysis
-scripts, or publicly accessible datasets. At the highest level, researchers
-document a fully specified computational environment that allows others to
-recreate identical results—from raw data to final manuscript output—with minimal
-friction. These issues are particularly acute for simulation studies, which rely
-on complex codebases, versioned dependencies, and intricate software
-configurations [@luijken_etall_2024; @siepe_etall_2024].**
-
-*I think we need to be specific on terminology as I often see reproducibility refer to replication and vice versa (JG)*
-
-*A figure highlighting this might be good here (JG)*
-
-In this article, we use *computational environment* to refer to the complete
-software context required for an analysis to run successfully. This includes the
-version of the programming language (e.g., R 4.3.3), the versions of all
-required packages, the system libraries that those packages rely on, and the
-operating system under which the analysis executes [@rodrigues_2023]. Crucially,
-these components interact: a package version may require a specific system
-library; a system library may behave differently across operating systems; and
-certain analyses rely on features available only in particular language
-versions. We therefore define *computational environment reproducibility* as the
-ability to reconstruct this entire software stack—language, packages, system
-libraries, and operating system—on any machine and at any future time, such that
-executing the same code yields the same numerical results. Environment
-reproducibility is foundational, because even perfectly documented code cannot
-be executed reliably if its surrounding software context is unspecified or
-cannot be recreated.
-
-Indeed, prior work emphasizes that reproducible research requires more than the
-availability of code and data; it also requires controlling software
-dependencies, relying on open-source tools, and ensuring access to the outputs
-that substantiate reported claims [@rodrigues_2023; @peikert_brandmaier_2021;
-@ziemann_etall_2023; @wiebels_moreau_2021; @epskamp_2019; @siepe_etall_2024].
-Yet empirical assessments show that current practice falls short of these
-ideals. For example, @siepe_etall_2024 report that nearly two-thirds of
-simulation studies in psychology provide no accompanying code, and among those
-that do, documentation of the computational environment is rarely included. This
-gap is consequential: simulation studies inform methodological recommendations,
-meaning that insufficient reproducibility undermines confidence in those
-recommendations [@luijken_etall_2024; @white_etall_2024].
+reproducibility (i.e., the ability to precisely reproduce the results of a study
+or studies based on provided data, code, materials, and software/hardware)
+remains limited [@hardwicke2020].
 
 Open-science initiatives have encouraged more transparent research practices.
 Journal incentives such as open-science badges [@kidwell_etall_2016], together
 with platforms like GitHub and the Open Science Framework, have made data
-[@levenstein_lyle_2018] and code sharing increasingly routine. However, as
-mentioned, data and code are never self-sufficient; they depend on a hierarchy
-of software components known collectively as dependencies. Dependencies include
-the version of the programming language, the set of packages used by the
-analysis, and the system libraries that those packages require in order to
-function correctly. If any dependency differs from the one used in the original
-analysis, the code may fail, behave differently across machines, or yield
-conflicting numerical results [@baker_etall_2024; @hodges_etall_2023;
-@glatard_etall_2015; @nosek_etall_2022].
+[@levenstein_lyle_2018] and code sharing increasingly routine. However, these
+efforts have largely focused on *what* is shared rather than *how* shared
+materials can be executed in practice. Data and code are never
+self-sufficient; they depend on a hierarchy of software components known
+collectively as dependencies, including the version of the programming language,
+the set of packages used by the analysis, and the system libraries that those
+packages require in order to function correctly. When these dependencies differ
+from those used in the original analysis, code may fail, behave differently
+across machines, or yield conflicting numerical results
+[@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
 
-Researchers currently navigate a fragmented landscape of tools, each addressing
-only part of this environment problem. Package-level managers such as {renv}
-[@ushey_2024], {groundhog} [@simonsohn_2020], and {rang} [@chan_2023] stabilize
-R package versions but do not manage the R interpreter itself or the
-system-level libraries those packages depend on. Documentation tools such as
-`sessionInfo()` record aspects of the environment but do not allow users to
-reconstruct it. Meanwhile, workflow orchestration tools, such as including
-{targets} [@landau_2021] and Make [@feldman_1979], support reproducibility in a
-different sense: they specify the structure of an analysis by formalizing the
-order in which steps should run and by tracking dependencies among intermediate
-results. These tools clarify how an analysis proceeds, but they assume that the
-software stack required to run each step is already stable.
+A key challenge in addressing this gap is that reproducibility is not a binary
+feature but instead exists along a continuum [@peng_2011]. At the lower end of
+this continuum, researchers may share only their manuscript. Further along the
+spectrum, they might provide partial code, full analysis scripts, or publicly
+accessible datasets. At the highest level, researchers document a fully
+specified computational environment that allows others to recreate identical
+results—from raw data to final manuscript output—with minimal friction. These
+issues are particularly acute for simulation studies, which rely on complex
+codebases, versioned dependencies, and intricate software configurations
+[@luijken_etall_2024; @siepe_etall_2024].
 
-Containerization tools such as Docker and the Rocker project [@boettiger_2015; @boettiger_eddelbuettel_2017] 
-offer a more comprehensive approach by bundling
-the full environment—operating system, system libraries, interpreter versions,
-and packages—into a single executable image. Containers thus solve an important
-part of the environment reproducibility problem. Yet their use requires
-familiarity with Linux system administration, including writing robust
-Dockerfiles, managing external repositories, and understanding image layering
-[@wiebels_moreau_2021]. Moreover, even containerization has limitations: as
-@malka2024 show, Dockerfiles often rely on mutable upstream repositories,
-meaning that rebuilding the same Dockerfile at a later time may not yield an
-identical environment. Containerization therefore improves reproducibility
-across machines but does not always ensure reproducibility across time.
+**A figure highlighting this might be good here (JG)**
+**To be clarified: what "this" refers to? (FV)**
+
+In this article, we use *computational environment* to refer to the complete
+software context required for an analysis to run successfully. This includes the
+version of the programming language (e.g., R 4.3.3), the versions of all required
+packages, the system libraries that those packages rely on, and the operating
+system under which the analysis executes [@rodrigues_2023]. Crucially, these
+components interact: a package version may require a specific system library; a
+system library may behave differently across operating systems; and certain
+analyses rely on features available only in particular language versions. We
+therefore define *computational environment reproducibility* as the ability to
+reconstruct this entire software stack—language, packages, system libraries, and
+operating system—on any machine and at any future time, such that executing the
+same code yields the same numerical results. Environment reproducibility is
+foundational, because even perfectly documented code cannot be executed reliably
+if its surrounding software context is unspecified or cannot be recreated.
+
+Consistent with this definition, prior work emphasizes that reproducible research
+requires more than the availability of code and data; it also requires
+controlling software dependencies, relying on open-source tools, literate programming, and ensuring access to the outputs that substantiate reported claims
+[@rodrigues_2023; @peikert_brandmaier_2021; @ziemann_etall_2023;
+@wiebels_moreau_2021; @epskamp_2019; @siepe_etall_2024]. Yet empirical assessments
+show that current practice falls short of these ideals. For example,
+@siepe_etall_2024 report that nearly two-thirds of simulation studies in
+psychology provide no accompanying code, and among those that do, documentation
+of the computational environment is rarely included. This gap is consequential:
+simulation studies inform methodological recommendations, meaning that
+insufficient reproducibility undermines confidence in those recommendations
+[@luijken_etall_2024; @white_etall_2024].
+
+These challenges persist not because relevant tools are unavailable, but because researchers must navigate a fragmented landscape of solutions, each addressing 
+only part of the computational environment. Package-level managers such as {renv} [@ushey_2024], {groundhog} [@simonsohn_2020], and {rang} [@chan_2023] stabilize 
+R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on. Conversely, interpreter-level tools such as 
+{rig} [@] focus on managing R versions but do not address package or system 
+dependencies. Documentation tools such as`sessionInfo()` record aspects of the environment but do not allow users to reconstruct it. Meanwhile, workflow orchestration tools, such as including {targets} [@landau_2021] and Make [@feldman_1979], support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run 
+and by tracking dependencies among intermediate results. These tools clarify 
+how an analysis proceeds, but they assume that the software stack required to 
+run each step is already stable. Containerization tools such as Docker and 
+the Rocker project [@boettiger_2015; @boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling the full environment—operating system, system libraries, interpreter versions, and packages—into a single
+executable image. Containers thus solve an important part of the environment reproducibility problem. Yet their use requires familiarity with Linux system administration, including writing robust Dockerfiles, managing external 
+repositories, and understanding image layering [@wiebels_moreau_2021]. 
+Moreover, even containerization has limitations: as @malka2024 show, Dockerfiles often rely on mutable upstream repositories, meaning that rebuilding the same Dockerfile at a later time may not yield an identical environment. 
+Containerization therefore improves reproducibility across machines but does not always ensure reproducibility across time.
 
 Moreover, these challenges are compounded by the increasing complexity of modern
 psychological research. Many contemporary analyses involve more than one
 programming language (e.g., R and Python) and often incorporate system-level
-tools such as Quarto for manuscript generation. Coordinating dependencies across
-these heterogeneous components stretches existing tools beyond their intended
-scope. Researchers thus face a difficult choice between solutions that are
-accessible but incomplete or approaches that are powerful but demand substantial
-technical expertise.
+tools such as Quarto for manuscript generation, which in turn rely on external
+components such as LaTeX distributions whose versions and installed packages 
+can vary substantially across systems. Coordinating dependencies across these heterogeneous components stretches existing tools beyond their intended scope. Researchers thus face a difficult choice between solutions that are 
+accessible but incomplete or approaches that are powerful but demand substantial technical expertise.
 
 In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
-depend. We introduce Nix [@dolstra_etall_2004], a functional package manager
-designed to make software installation deterministic, and {rix}
+depend. For that, we introduce Nix [@dolstra_etall_2004], a functional package manager designed to make software installation deterministic, and {rix}
 [@rodrigues_baumann_2025], an R interface that allows researchers to use Nix
 without needing deep knowledge of its underlying language or infrastructure. Our
 objective is not to introduce a specific workflow orchestration system or to
@@ -169,18 +156,18 @@ culminating in an automated APA-formatted manuscript generated with
 apaquarto [@schneider_2024]. Although the example centers on R because of
 its prominence in psychological methodology, the principles underlying
 environment reproducibility apply equally to other languages, including Python
-and Julia, and to development environments such as VS Code, Emacs, or Positron.
-Later in the article, we briefly comment on {rixpress}, which extends Nix-based
-reproducibility to workflows requiring more sophisticated coordination across
-languages. Unlike {targets}, which is limited to R-based workflows, {rixpress}
-is designed for polyglot pipelines. This distinction is conceptually relevant,
-but workflow orchestration is not the focus of the present tutorial, which
-assumes a basic, documented execution order for scripts. Throughout, our
-emphasis remains squarely on the reproducibility of computational environments
-as the essential basis for transparent, reliable, and durable scientific
-workflows.
+and Julia, and to different development environments such as RStudio, VS Code, 
+Emacs, or Positron. Later in the article, we briefly comment on {rixpress} [@rixpress], which extends Nix-based reproducibility to workflows requiring more 
+sophisticated coordination across languages. Unlike {targets}, which is limited 
+to R-based workflows, {rixpress} is designed for polyglot pipelines. 
+This distinction is conceptually relevant, but workflow orchestration is not the focus of the present tutorial, which assumes a basic, documented execution 
+order for scripts. Throughout, our emphasis remains squarely on the 
+reproducibility of computational environments as the essential basis for 
+transparent, reliable, and durable scientific workflows.
 
 # Nix and {rix}: A Comprehensive Solution
+
+**Need to improve this part given JG's suggestions (FV)**
 
 Modern reproducible workflows must ensure that analyses yield identical
 results regardless of where—and when—they are run. Standard package managers
@@ -217,9 +204,9 @@ particularly well suited for computational psychology workflows, especially
 those involving simulation code, R and Python interoperability, and long-term
 reproducibility of manuscripts.
 
-*maybe a bit more about nix*
+*Maybe a bit more about nix (JG)*
 
-*Maybe compare Nix to renv and Docker to highlight what nix gives us*
+*Maybe compare Nix to renv and Docker to highlight what nix gives us (JG)*
 
 ## Core Principles
 
@@ -295,9 +282,9 @@ generate visualizations. For convenience, we provide a master script
 workflow sequentially. Note that such sequential structures could benefit from
 explicit workflow orchestration tools and a clear documentation[^2].
 
-[^1]: Note that the rationale, programming-related choices (e.g., package choices), and results should not be used for substantial interpretation. However, we do highlight useful information that are based on recommendations for simulation studies [@siepe_etall_2024; @morris_etall_2019; @white_etall_2024] (see Computational Details in Appendix).
+[^2]: Note that the rationale, programming-related choices (e.g., package choices), and results should not be used for substantial interpretation. However, we do highlight useful information that are based on recommendations for simulation studies [@siepe_etall_2024; @morris_etall_2019; @white_etall_2024] (see Computational Details in Appendix).
 
-[^2]: For instance, in this context, we use parallel processing which requires specifying the amount of cores to be used. This type of information should be mentioned.
+[^3]: For instance, in this context, we use parallel processing which requires specifying the amount of cores to be used. This type of information should be mentioned.
 
 *Readers can find the files for these simulations here:*
 
