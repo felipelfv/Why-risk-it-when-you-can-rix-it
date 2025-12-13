@@ -1,7 +1,7 @@
 # Master Script
 
 # required packages
-library(marginaleffects); library(simhelpers)
+library(marginaleffects); library(simhelpers); library(rvinecopulib)
 library(doParallel); library(doRNG); library(ggplot2)
 
 cat("Starting simulation workflow...\n\n")

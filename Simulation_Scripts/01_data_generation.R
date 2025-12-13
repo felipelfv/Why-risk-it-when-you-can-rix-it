@@ -10,8 +10,14 @@ gamma1 <- -0.4
 
 # this will generate one dataset
 gen_data <- function(n, gamma2) {
-  X2 <- rnorm(n, mean = 0, sd = 1)
-  X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + rnorm(n, mean = 0, sd = 1)
+  
+  # generate independent uniform pairs via independence copula, then transform to standard normal
+  # complete overhead from line 16 to 18. This was done just to use a package written in C++
+  u <- rbicop(n, "indep", 0, numeric(0))
+  X2 <- qnorm(u[, 1])
+  error_X1 <- qnorm(u[, 2])
+  
+  X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + error_X1
   eta_true <- beta0 + beta1 * X1 + gamma1 * X2 + gamma2 * X2^2
   p <- plogis(eta_true)
   y <- rbinom(n, size = 1, prob = p)

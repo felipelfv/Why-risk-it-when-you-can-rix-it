@@ -52,7 +52,7 @@ for (k in seq_len(nrow(designs))) {
   # replications
   res_list <- foreach(
     i = seq_len(nsim),
-    .packages = "marginaleffects"
+    .packages = c("marginaleffects", "rvinecopulib")
   ) %dorng% {
     run_one_rep(n_k, gamma2_k)
   }
