@@ -149,13 +149,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#nix-and-rix-a-comprehensive-solution" id="toc-nix-and-rix-a-comprehensive-solution" class="nav-link active" data-scroll-target="#nix-and-rix-a-comprehensive-solution">Nix and {rix}: A Comprehensive Solution</a>
+  <li><a href="#a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" id="toc-a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="nav-link active" data-scroll-target="#a-practical-example-setting-up-a-reproducible-simulation-study-with-rix">A Practical Example: Setting Up a Reproducible Simulation Study with {rix}</a></li>
+  <li><a href="#nix-and-rix-a-comprehensive-solution" id="toc-nix-and-rix-a-comprehensive-solution" class="nav-link" data-scroll-target="#nix-and-rix-a-comprehensive-solution">Nix and {rix}: A Comprehensive Solution</a>
   <ul class="collapse">
   <li><a href="#core-principles" id="toc-core-principles" class="nav-link" data-scroll-target="#core-principles">Core Principles</a></li>
   <li><a href="#the-rix-package-r-interface-to-nix" id="toc-the-rix-package-r-interface-to-nix" class="nav-link" data-scroll-target="#the-rix-package-r-interface-to-nix">The {rix} Package: R Interface to Nix</a></li>
-  </ul></li>
-  <li><a href="#a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" id="toc-a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="nav-link" data-scroll-target="#a-practical-example-setting-up-a-reproducible-simulation-study-with-rix">A Practical Example: Setting Up a Reproducible Simulation Study with {rix}</a>
-  <ul class="collapse">
   <li><a href="#step-i-installing-nix-and-rix" id="toc-step-i-installing-nix-and-rix" class="nav-link" data-scroll-target="#step-i-installing-nix-and-rix">Step I: Installing Nix and {rix}</a>
   <ul class="collapse">
   <li><a href="#installing-nix" id="toc-installing-nix" class="nav-link" data-scroll-target="#installing-nix">Installing Nix</a></li>
@@ -221,7 +219,7 @@ window.Quarto = {
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 5412</p>
+<p><em>Word Count</em>: 5458</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -229,13 +227,20 @@ window.Quarto = {
 <p>Psychological science is in the midst of a credibility revolution, which has prompted substantial progress in how research is conducted and evaluated <span class="citation" data-cites="vazire2018">(<a href="#ref-vazire2018" role="doc-biblioref">Vazire, 2018</a>)</span>. Yet, despite notable progress, a key cornerstone of science, reproducibility (i.e., the ability to precisely reproduce the results of a study or studies based on provided data, code, materials, and software/hardware) remains limited <span class="citation" data-cites="hardwicke2020">(<a href="#ref-hardwicke2020" role="doc-biblioref">Hardwicke et al., 2020</a>)</span>.</p>
 <p>Open-science initiatives have encouraged more transparent research practices. Journal incentives such as open-science badges <span class="citation" data-cites="kidwell_etall_2016">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>)</span>, together with platforms like GitHub and the Open Science Framework, have made data <span class="citation" data-cites="levenstein_lyle_2018">(<a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>)</span> and code sharing increasingly routine. However, these efforts have largely focused on <em>what</em> is shared rather than <em>how</em> shared materials can be executed in practice. Data and code are never self-sufficient; they depend on a hierarchy of software components known collectively as dependencies, including the version of the programming language, the set of packages used by the analysis, and the system libraries that those packages require in order to function correctly. When these dependencies differ from those used in the original analysis, code may fail, behave differently across machines, or yield conflicting numerical results <span class="citation" data-cites="baker_etall_2024 hodges_etall_2023 glatard_etall_2015 nosek_etall_2022">(<a href="#ref-baker_etall_2024" role="doc-biblioref">Baker et al., 2024</a>; <a href="#ref-glatard_etall_2015" role="doc-biblioref">Glatard et al., 2015</a>; <a href="#ref-hodges_etall_2023" role="doc-biblioref">Hodges et al., 2023</a>; <a href="#ref-nosek_etall_2022" role="doc-biblioref">Nosek et al., 2022</a>)</span>.</p>
 <p>A key challenge in addressing this gap is that reproducibility is not a binary feature but instead exists along a continuum <span class="citation" data-cites="peng_2011">(<a href="#ref-peng_2011" role="doc-biblioref">Peng, 2011</a>)</span>. At the lower end of this continuum, researchers may share only their manuscript. Further along the spectrum, they might provide partial code, full analysis scripts, or publicly accessible datasets. At the highest level, researchers document a fully specified computational environment that allows others to recreate identical results—from raw data to final manuscript output—with minimal friction. These issues are particularly acute for simulation studies, which rely on complex codebases, versioned dependencies, and intricate software configurations <span class="citation" data-cites="luijken_etall_2024 siepe_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>.</p>
-<p><strong>A figure highlighting this might be good here (JG)</strong> <strong>To be clarified: what “this” refers to? (FV)</strong></p>
+<p><strong>A figure highlighting this might be good here (JG)</strong></p>
+<p><strong>To be clarified: what “this” refers to? (FV)</strong></p>
 <p>In this article, we use <em>computational environment</em> to refer to the complete software context required for an analysis to run successfully. This includes the version of the programming language (e.g., R 4.3.3), the versions of all required packages, the system libraries that those packages rely on, and the operating system under which the analysis executes <span class="citation" data-cites="rodrigues_2023">(<a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>)</span>. Crucially, these components interact: a package version may require a specific system library; a system library may behave differently across operating systems; and certain analyses rely on features available only in particular language versions. We therefore define <em>computational environment reproducibility</em> as the ability to reconstruct this entire software stack—language, packages, system libraries, and operating system—on any machine and at any future time, such that executing the same code yields the same numerical results. Environment reproducibility is foundational, because even perfectly documented code cannot be executed reliably if its surrounding software context is unspecified or cannot be recreated.</p>
 <p>Consistent with this definition, prior work emphasizes that reproducible research requires more than the availability of code and data; it also requires controlling software dependencies, relying on open-source tools, literate programming, and ensuring access to the outputs that substantiate reported claims <span class="citation" data-cites="rodrigues_2023 peikert_brandmaier_2021 ziemann_etall_2023 wiebels_moreau_2021 epskamp_2019 siepe_etall_2024">(<a href="#ref-epskamp_2019" role="doc-biblioref">Epskamp, 2019</a>; <a href="#ref-peikert_brandmaier_2021" role="doc-biblioref">Peikert &amp; Brandmaier, 2021</a>; <a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>; <a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>; <a href="#ref-ziemann_etall_2023" role="doc-biblioref">Ziemann et al., 2023</a>)</span>. Yet empirical assessments show that current practice falls short of these ideals. For example, <span class="citation" data-cites="siepe_etall_2024">Siepe et al. (<a href="#ref-siepe_etall_2024" role="doc-biblioref">2024</a>)</span> report that nearly two-thirds of simulation studies in psychology provide no accompanying code, and among those that do, documentation of the computational environment is rarely included. This gap is consequential: simulation studies inform methodological recommendations, meaning that insufficient reproducibility undermines confidence in those recommendations <span class="citation" data-cites="luijken_etall_2024 white_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-white_etall_2024" role="doc-biblioref">White et al., 2024</a>)</span>.</p>
 <p>These challenges persist not because relevant tools are unavailable, but because researchers must navigate a fragmented landscape of solutions, each addressing only part of the computational environment. Package-level managers such as {renv} <span class="citation" data-cites="ushey_2024">(<a href="#ref-ushey_2024" role="doc-biblioref">Ushey, 2024</a>)</span>, {groundhog} <span class="citation" data-cites="simonsohn_2020">(<a href="#ref-simonsohn_2020" role="doc-biblioref">Simonsohn, 2020</a>)</span>, and {rang} <span class="citation" data-cites="chan_2023">(<a href="#ref-chan_2023" role="doc-biblioref">Chan &amp; Schoch, 2023</a>)</span> stabilize R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on. Conversely, interpreter-level tools such as {rig} [@] focus on managing R versions but do not address package or system dependencies. Documentation tools such as<code>sessionInfo()</code> record aspects of the environment but do not allow users to reconstruct it. Meanwhile, workflow orchestration tools, such as including {targets} <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> and Make <span class="citation" data-cites="feldman_1979">(<a href="#ref-feldman_1979" role="doc-biblioref">Feldman, 1979</a>)</span>, support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run and by tracking dependencies among intermediate results. These tools clarify how an analysis proceeds, but they assume that the software stack required to run each step is already stable. Containerization tools such as Docker and the Rocker project <span class="citation" data-cites="boettiger_2015 boettiger_eddelbuettel_2017">(<a href="#ref-boettiger_2015" role="doc-biblioref">Boettiger, 2015</a>; <a href="#ref-boettiger_eddelbuettel_2017" role="doc-biblioref">Boettiger &amp; Eddelbuettel, 2017</a>)</span> offer a more comprehensive approach by bundling the full environment—operating system, system libraries, interpreter versions, and packages—into a single executable image. Containers thus solve an important part of the environment reproducibility problem. Yet their use requires familiarity with Linux system administration, including writing robust Dockerfiles, managing external repositories, and understanding image layering <span class="citation" data-cites="wiebels_moreau_2021">(<a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>)</span>. Moreover, even containerization has limitations: as <span class="citation" data-cites="malka2024">Malka et al. (<a href="#ref-malka2024" role="doc-biblioref">2024</a>)</span> show, Dockerfiles often rely on mutable upstream repositories, meaning that rebuilding the same Dockerfile at a later time may not yield an identical environment. Containerization therefore improves reproducibility across machines but does not always ensure reproducibility across time.</p>
 <p>Moreover, these challenges are compounded by the increasing complexity of modern psychological research. Many contemporary analyses involve more than one programming language (e.g., R and Python) and often incorporate system-level tools such as Quarto for manuscript generation, which in turn rely on external components such as LaTeX distributions whose versions and installed packages can vary substantially across systems. Coordinating dependencies across these heterogeneous components stretches existing tools beyond their intended scope. Researchers thus face a difficult choice between solutions that are accessible but incomplete or approaches that are powerful but demand substantial technical expertise.</p>
 <p>In this article, we focus specifically on computational environment reproducibility as the foundation upon which other reproducibility practices depend. For that, we introduce Nix <span class="citation" data-cites="dolstra_etall_2004">(<a href="#ref-dolstra_etall_2004" role="doc-biblioref">Dolstra et al., 2004</a>)</span>, a functional package manager designed to make software installation deterministic, and {rix} <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>, an R interface that allows researchers to use Nix without needing deep knowledge of its underlying language or infrastructure. Our objective is not to introduce a specific workflow orchestration system or to prescribe a particular analytic structure. Instead, we aim to show how Nix and {rix} can establish a stable, cross-platform environment within which any analysis—whether organized through simple, documented script sequences using <code>source()</code> or through more formal orchestration tools—can be executed reliably.</p>
 <p>We illustrate these ideas through a reproducible simulation study conducted in R, culminating in an automated APA-formatted manuscript generated with apaquarto <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. Although the example centers on R because of its prominence in psychological methodology, the principles underlying environment reproducibility apply equally to other languages, including Python and Julia, and to different development environments such as RStudio, VS Code, Emacs, or Positron. Later in the article, we briefly comment on {rixpress} <span class="citation" data-cites="rixpress">(<a href="#ref-rixpress" role="doc-biblioref">Rodrigues, 2025</a>)</span>, which extends Nix-based reproducibility to workflows requiring more sophisticated coordination across languages. Unlike {targets}, which is limited to R-based workflows, {rixpress} is designed for polyglot pipelines. This distinction is conceptually relevant, but workflow orchestration is not the focus of the present tutorial, which assumes a basic, documented execution order for scripts. Throughout, our emphasis remains squarely on the reproducibility of computational environments as the essential basis for transparent, reliable, and durable scientific workflows.</p>
+</section>
+<section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
+<h1>A Practical Example: Setting Up a Reproducible Simulation Study with {rix}</h1>
+<p>Before proceeding with the technical information and tutorial, we refer readers to Appendix, which outlines a common simulation study scenario[^1]. This will serve as a guiding example. Simulation studies typically structure code into multiple component files, each handling a distinct analytical phase. Our implementation follows this convention, organizing the workflow into five sequential files: data generation function (<code>01_data_generation.R</code>), statistical model specification (<code>02_models.R</code>), simulation execution (<code>03_run_simulation.R</code>), performance metric calculation (<code>04_performance_metrics.R</code>), and results visualization (<code>05_plots.R</code>). The simulation script (<code>03_run_simulation.R</code>) sources the data generation and model functions, executes the Monte Carlo replications, and saves results. The subsequent scripts read these saved results to compute performance metrics and generate visualizations. For convenience, we provide a master script (<code>06_run_all.R</code>) that loads all required packages and executes the complete workflow sequentially. Note that such sequential structures could benefit from explicit workflow orchestration tools and a clear documentation<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>This workflow depends on several R packages. The {marginaleffects} provides the <code>avg_slopes()</code> function for computing average causal effects. The {simhelpers} package supplies functions for calculating simulation performance metrics. Parallel processing is handled by {doParallel}, with {doRNG} ensuring reproducible random number generation across parallel workers. Visualization relies on {ggplot2}.</p>
+<p><em>Readers can find the files for these simulations here:</em></p>
 </section>
 <section id="nix-and-rix-a-comprehensive-solution" class="level1">
 <h1>Nix and {rix}: A Comprehensive Solution</h1>
@@ -257,11 +262,6 @@ window.Quarto = {
 <p>A key feature of {rix} is its integration with rstats-on-nix, a community-maintained fork offering daily CRAN snapshots and weekly tested environments on Linux and macOS. Researchers can request, for example, <code>rix(date = "2024-12-14")</code> to obtain a validated and reproducible environment without manually assessing compatibility. After the configuration is generated, <code>nix_build()</code> instantiates the environment, and binary caches typically allow this to complete within seconds <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 <p>Although Nix is capable of replacing tools like Docker for isolation or {renv} for package management, it does not require an all-or-nothing transition. Researchers can adopt it gradually and use it alongside familiar tooling. For instance, by building Docker images with Nix, converting existing {renv} lockfiles, or running {targets} pipelines within a Nix-defined environment. This allows Nix to strengthen reproducibility while preserving established workflows. For projects requiring more sophisticated pipeline management, {rixpress} extends Nix’s guarantees to workflow orchestration, enabling step-level isolation across languages, though such capabilities lie beyond the present focus on environment reproducibility. We will come back to this after the tutorial.</p>
 </section>
-</section>
-<section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
-<h1>A Practical Example: Setting Up a Reproducible Simulation Study with {rix}</h1>
-<p>Before proceeding with the technical implementation and tutorial, we refer readers to Appendix, which outlines a common simulation study scenario[^1]. This will serve as a guiding example. Simulation studies in psychology typically structure code into multiple component files, each handling a distinct analytical phase. Our implementation follows this convention, organizing the workflow into five sequential files: data generation function (<code>01_data_generation.R</code>), statistical model specification (<code>02_models.R</code>), simulation execution (<code>03_run_simulation.R</code>), performance metric calculation (<code>04_performance_metrics.R</code>), and result visualization (<code>05_plots.R</code>). The simulation script (<code>03_run_simulation.R</code>) sources the data generation and model functions, executes the Monte Carlo replications, and saves results. The subsequent scripts read these saved results to compute performance metrics and generate visualizations. For convenience, we provide a master script (<code>06_run_all.R</code>) that loads all required packages and executes the complete workflow sequentially. Note that such sequential structures could benefit from explicit workflow orchestration tools and a clear documentation<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<p><em>Readers can find the files for these simulations here:</em></p>
 <section id="step-i-installing-nix-and-rix" class="level2">
 <h2 data-anchor-id="step-i-installing-nix-and-rix">Step I: Installing Nix and {rix}</h2>
 <p>It is possible to use {rix} to generate Nix expressions even without having Nix installed on your system. In practice, this means that you can write a configuration (e.g., a <code>default.nix</code> file) without using Nix directly, but you cannot build or enter the resulting environment unless Nix is installed <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. Think of it like writing a recipe without needing a kitchen—{rix} helps you document exactly what ingredients are needed (e.g., which R version, which packages, which system dependencies), but you need Nix (the kitchen) to actually cook the meal.</p>
@@ -566,7 +566,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix="">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -602,70 +602,70 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">none</td>
 <td style="text-align: center;">0.997</td>
-<td style="text-align: center;">0.407</td>
-<td style="text-align: center;">0.912</td>
-<td style="text-align: center;">0.227</td>
+<td style="text-align: center;">0.396</td>
+<td style="text-align: center;">0.928</td>
+<td style="text-align: center;">0.228</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">1.005</td>
+<td style="text-align: center;">1.020</td>
 <td style="text-align: center;">0.282</td>
-<td style="text-align: center;">0.939</td>
-<td style="text-align: center;">0.160</td>
+<td style="text-align: center;">0.925</td>
+<td style="text-align: center;">0.159</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">0.999</td>
-<td style="text-align: center;">0.059</td>
-<td style="text-align: center;">0.948</td>
+<td style="text-align: center;">1.001</td>
+<td style="text-align: center;">0.064</td>
+<td style="text-align: center;">0.936</td>
 <td style="text-align: center;">0.036</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.117</td>
-<td style="text-align: center;">0.440</td>
-<td style="text-align: center;">0.875</td>
-<td style="text-align: center;">0.224</td>
+<td style="text-align: center;">1.118</td>
+<td style="text-align: center;">0.408</td>
+<td style="text-align: center;">0.900</td>
+<td style="text-align: center;">0.226</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.129</td>
-<td style="text-align: center;">0.299</td>
-<td style="text-align: center;">0.885</td>
-<td style="text-align: center;">0.156</td>
+<td style="text-align: center;">1.124</td>
+<td style="text-align: center;">0.301</td>
+<td style="text-align: center;">0.883</td>
+<td style="text-align: center;">0.157</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.125</td>
-<td style="text-align: center;">0.139</td>
-<td style="text-align: center;">0.454</td>
+<td style="text-align: center;">1.128</td>
+<td style="text-align: center;">0.141</td>
+<td style="text-align: center;">0.446</td>
 <td style="text-align: center;">0.035</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.243</td>
-<td style="text-align: center;">0.500</td>
-<td style="text-align: center;">0.863</td>
-<td style="text-align: center;">0.223</td>
+<td style="text-align: center;">1.233</td>
+<td style="text-align: center;">0.489</td>
+<td style="text-align: center;">0.855</td>
+<td style="text-align: center;">0.222</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.245</td>
+<td style="text-align: center;">1.239</td>
 <td style="text-align: center;">0.382</td>
-<td style="text-align: center;">0.831</td>
-<td style="text-align: center;">0.155</td>
+<td style="text-align: center;">0.835</td>
+<td style="text-align: center;">0.156</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.246</td>
+<td style="text-align: center;">1.245</td>
 <td style="text-align: center;">0.254</td>
 <td style="text-align: center;">0.044</td>
 <td style="text-align: center;">0.035</td>
@@ -679,7 +679,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix="">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
