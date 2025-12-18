@@ -97,4 +97,16 @@ p_width <- ggplot(performance_summary,
 
 (p_width)
 
+# For the 2x2 grid with all plots
+legend <- get_legend(
+  p_rel_bias + theme(legend.position = "right")
+)
+
+plot_grid(
+  plot_grid(p_rel_bias, p_rel_rmse, p_coverage, p_width, 
+            ncol = 2, nrow = 2),
+  legend,
+  rel_widths = c(3, 0.4)
+)
+
 cat("\nAll plots done:\n")

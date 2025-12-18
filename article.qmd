@@ -190,7 +190,7 @@ transparent, reliable, and durable scientific workflows.
 # A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
 Before proceeding with the technical implementation and tutorial, we refer 
-readers to the Appendix, which presents a simulation study scenario designed to 
+readers to the Appendix A, which presents a simulation study scenario designed to 
 ground the subsequent discussion in a concrete example[^1]. The scenario mimics a 
 typical methods manuscript, describing both the statistical design and the 
 computational details one might encounter in practice. While the example is 
@@ -213,14 +213,14 @@ generate visualizations. For convenience, we provide a master script
 workflow sequentially. Note that such sequential structures could benefit from
 explicit workflow orchestration tools and a clear documentation[^2]. Therefore, 
 this workflow depends on several R packages and more. 
-The data generation depends on the {rvinecopulib} package [@cite]. 
-The {marginaleffects} provides the `avg_slopes()` function for computing 
-average causal effects [@cite]. The {simhelpers} package supplies functions for 
-calculating simulation performance metrics [@cite] and {dplyr} for data 
-wrangling [@cite]. Parallel processing is handled by {doParallel} [@cite], 
-with {doRNG} [@cite] ensuring reproducible random number generation 
-across parallel workers. Visualization relies on {ggplot2} [@cite] and 
-{cowplot} [@cite]. 
+The data generation depends on the {rvinecopulib} package [@rvinecopulib]. 
+The {marginaleffects} provides the function for computing 
+average causal effects [@marginaleffects]. The {dplyr} package is used for data 
+wrangling [@dplyr] and {simhelpers} supplies the functions for calculating the
+simulation performance metrics [@simhelpers]. Parallel processing is handled by 
+{doParallel} [@doParallel], with {doRNG} [@doRNG] ensuring reproducible random 
+number generation across parallel workers. Visualization relies on {ggplot2} 
+[@ggplot2] and {cowplot} [@cowplot]. 
 
 Now, suppose a researcher would have access 
 to the .R files and attempts to run the simulation. What might prevent them 
@@ -315,8 +315,8 @@ Although Nix is capable of replacing tools like Docker for isolation or {renv}
 for package management, it does not require an all-or-nothing transition.
 Researchers can adopt it gradually and use it alongside familiar tooling. For
 instance, by building Docker images with Nix, converting existing {renv}
-lockfiles, or running {targets} pipelines within a Nix-defined environment. This
-allows Nix to strengthen reproducibility while preserving established workflows.
+lockfiles, or running {targets} pipelines within a Nix-defined environment [@rodrigues_baumann_2025]. This allows Nix to strengthen 
+reproducibility while preserving established workflows.
 For projects requiring more sophisticated pipeline management, {rixpress}
 extends Nix’s guarantees to workflow orchestration, enabling step-level
 isolation across languages, though such capabilities lie beyond the present
@@ -337,96 +337,136 @@ dependencies), but you need Nix (the kitchen) to actually cook the meal.
 ### Installing Nix
 
 Installation procedures differ across systems, and we highly suggest readers to
-consult the {rix} documentation for more information[^5].
+consult the {rix} documentation and links therein for more information[^5].
 
 [^5]: See: <https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html> and <https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html>
 
 #### Windows (via WSL2) 
 
 On Windows, Nix runs inside the Windows Subsystem for Linux 2 (WSL2). 
-To enable WSL2, run the following in PowerShell as an administrator: 
+To enable WSL2, run the following in PowerShell as an administrator (@lst-enable-wsl): 
 
-::: callout-note
-We should use lsting captions for all code.
-:::
-
-```         
+::: {#lst-enable-wsl}
+\small
+```powershell
 wsl --install
 ```
+Enabling WSL2 on Windows
+\normalsize
+:::
 
 After installing a Linux distribution (e.g., Ubuntu), it is recommended to 
-activate `systemd`, which improves compatibility with Nix. In your WSL2 shell, 
-edit `/etc/wsl.conf`:
+activate `systemd`, which improves compatibility with Nix. In your WSL2 Ubuntu 
+shell, edit `/etc/wsl.conf` (@lst-edit-wslconf):
 
+::: {#lst-edit-wslconf}
+\small
 ```bash
 sudo -i
 nano /etc/wsl.conf
 ```
+Editing the WSL configuration file
+\normalsize
+:::
 
-Add: 
+Then, this will open the `/etc/wsl.conf` in a nano (a command line text editor).
+Add (@lst-systemd-config):
 
-```         
+::: {#lst-systemd-config}
+\small
+```
 [boot]
 systemd=true
 ```
+Enabling systemd in WSL2
+\normalsize
+:::
 
-Save the file, then shut down WSL from PowerShell: 
+Next, save the file, then shut down WSL from PowerShell (@lst-shutdown-wsl): 
 
+::: {#lst-shutdown-wsl}
+\small
 ```powershell
 wsl --shutdown
 ```
+Shutting down WSL2
+\normalsize
+:::
 
 After shutting down WSL, launch your WSL2 Ubuntu environment again from the 
 Start menu.
 
-#### Installing on Linux and Windows[^6]. 
+#### Installing on Linux and Windows
 
-Once your Linux or WSL2 environment is ready, install Nix using the 
-Determinate Systems installer: 
+Once your Linux or WSL2 environment is ready[^6], install Nix using the 
+Determinate Systems installer (@lst-install-nix-linux): 
 
 [^6]: Windows users who choose not to enable `systemd` may need to append 
 `--init none`; see {rix} documentation highlighted above.
 
+::: {#lst-install-nix-linux}
+\small
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf \
   -L https://install.determinate.systems/nix | \
   sh -s -- install
 ```
+Installing Nix on Linux and Windows (WSL2)
+\normalsize
+:::
 
 After installation, set up the `rstats-on-nix` binary cache, which provides
-pre-built R packages and speeds up environment builds: 
+pre-built R packages and speeds up environment builds (@lst-cachix-linux): 
 
+::: {#lst-cachix-linux}
+\small
 ```bash
 nix-env -iA cachix -f https://cachix.org/api/v1/install
 cachix use rstats-on-nix
 ```
+Configuring the rstats-on-nix binary cache on Linux/Windows
+\normalsize
+:::
 
 Although {rix} includes a `setup_cachix()` helper, the {rix} documentation
 recommends configuring the cache with the `cachix` client, as this properly
 updates system-level files when needed.
 
-#### Installing on macOS. 
+#### Installing on macOS
 
-On macOS, install Nix using the same Determinate Systems installer:
+On macOS, install Nix using the same Determinate Systems installer 
+(@lst-install-nix-macos):
 
+::: {#lst-install-nix-macos}
+\small
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf \
   -L https://install.determinate.systems/nix | \
   sh -s -- install
 ```
+Installing Nix on macOS
+\normalsize
+:::
 
-Then enable the `rstats-on-nix` binary cache:
+Then enable the `rstats-on-nix` binary cache (@lst-cachix-macos):
 
+::: {#lst-cachix-macos}
+\small
 ```bash
 nix-env -iA cachix -f https://cachix.org/api/v1/install
 cachix use rstats-on-nix
 ```
+Configuring the rstats-on-nix binary cache on macOS
+\normalsize
+:::
 
 ### Installing {rix}
 
 The method for installing {rix} depends on whether you already have R installed
-on your system. If you have R installed, you can install {rix} as follows:
+on your system. If you have R installed, you can install {rix} as follows 
+(@lst-install-rix):
 
+\small
 ```{r}
 #| lst-label: lst-install-rix
 #| lst-cap: "Installing the {rix} package"
@@ -435,36 +475,46 @@ on your system. If you have R installed, you can install {rix} as follows:
 
 # CRAN version
 install.packages("rix")
-
 # Development version
 install.packages("rix", repos = c("https://ropensci.r-universe.dev"))
 ```
+\normalsize
 
 Once {rix} is installed, you can use it to generate `default.nix` files for your
 projects, which you then build with Nix. This latter part is explained in the
-next subsection (i.e., Specifying the Computational Environment).
+next subsection (i.e., Specifying the Computational Environment; in @lst-rix-env).
 
 However, note that if you have installed Nix but do not yet have R on your
 system, or if you prefer to work entirely within the Nix ecosystem from the
 start, you can obtain both R and {rix} directly through Nix without installing R
 through the "traditional" means. The simplest approach is to create a temporary
 Nix shell that includes both R and {rix} by running this command in your
-terminal: 
+terminal (@lst-nix-shell-dev): 
 
+::: {#lst-nix-shell-dev}
+\small
 ```bash
 nix-shell --expr "$(curl -sl 
   https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
 ```
+Creating a temporary Nix shell with R and {rix} (development version)
+\normalsize
+:::
 
-This creates an ephemeral environment where R and the development version of
-{rix} are immediately available. You can then start R within this shell, use
-{rix} to generate your project's `default.nix` file, and exit. Alternatively, if
-you prefer the stable CRAN version of {rix}, you can create a temporary shell
-with 
+After downloading the necessary packages, an R session will start inside your
+terminal. You can then use {rix} to generate your project's `default.nix` file 
+(again, see @lst-rix-env in the next subsection). Alternatively, if you prefer 
+the stable CRAN version of {rix}, you can create a 
+temporary shell with (@lst-nix-shell-cran): 
 
-``` bash
+::: {#lst-nix-shell-cran}
+\small
+```bash
 nix-shell -p R rPackages.rix
 ```
+Creating a temporary Nix shell with R and {rix} (CRAN version)
+\normalsize
+:::
 
 Note that the {rix} documentation recommends managing R versions exclusively
 through Nix rather than mixing system-installed R with Nix-managed environments
@@ -482,16 +532,17 @@ file—a declarative specification that precisely defines all software
 dependencies required for the project.
 
 For our simulation study, we implement the environment specification 
-shown in @lst-rix-env, which can be found on the GitHub repository as a 
-file named `generate_env.R`:
+shown, which can be found on the GitHub repository as a 
+file named `generate_env.R` (@lst-rix-env):
 
+\small
 ```{r}
 #| lst-label: lst-rix-env
 #| lst-cap: "Environment specification for the simulation study using rix()"
 #| eval: false
 #| echo: true
 
-#library(rix)
+library(rix)
 
 rix(
   date = "2025-08-25", # line 1
@@ -513,8 +564,11 @@ rix(
   overwrite = TRUE # line 7
 )
 ```
-
 \normalsize
+
+Note that we have more than the packages specified for the simulation scripts.
+In Appendix B, we mention more specifically the reasons for adding each package 
+in `r_pkgs()` and `tex_pkgs()`. 
 
 ### The Environment Generation Script
 
@@ -551,24 +605,32 @@ versions not corresponding to the chosen date, researchers can specify exact
 versions using the syntax `"packagename@version"` (e.g., `"ggplot2@2.2.1"`). For
 packages available only on GitHub or other Git repositories, the `git_pkgs`
 parameter accepts a list structure containing repository URLs and specific
-commit hashes. This ensures that exact development versions are obtained, which
-is particularly valuable when collaborating with package developers or requiring
-unreleased features [@rodrigues_baumann_2025] (see {rix} documentation for more:
+commit hashes [@rodrigues_baumann_2025]. This ensures that exact development 
+versions are obtained. For our simulation study, all packages were used with 
+their CRAN versions (see {rix} documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
-#### Including system-level dependencies (lines 3 and 4)
+#### Including system-level dependencies (line 3)
 
-Many R-based workflows require tools beyond R packages. 
-The `system_pkgs` parameter specifies system-level software such as Quarto 
-for document generation, Git for version control, or Pandoc for
-document conversion. The `tex_pkgs` parameter, similarly, lists LaTeX packages
-needed for PDF compilation. These can be added as needed for specific document
-formatting requirements. Critically, we include Quarto as a system package
-because this tutorial demonstrates full computational reproducibility—not merely
-of the simulation code, but of the complete manuscript itself. Our manuscript
-uses the `apaquarto` extension for APA formatting, stored in the project's
-`_extensions/` directory [@rodrigues_baumann_2025] (see {rix} documentation 
-for more:
+Many R-based workflows require tools beyond R packages. The `system_pkgs`
+parameter specifies system-level software such as Quarto for document
+generation, Git for version control, or Pandoc for document conversion.
+Critically, we include Quarto as a system package because this tutorial
+demonstrates full computational reproducibility—not merely of the simulation
+code, but of the complete manuscript itself. Our manuscript uses the `apaquarto`
+extension for APA formatting, stored in the project's `_extensions/` directory
+[@rodrigues_baumann_2025] (see {rix} documentation for more:
+<https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
+
+#### Specifying LaTeX packages (line 4)
+
+The `tex_pkgs` parameter specifies LaTeX packages needed for PDF compilation.
+When any packages are listed, Nix automatically includes a minimal TexLive
+distribution (`scheme-small`) as a base, to which the specified packages are
+added. Determining the required LaTeX packages typically involves some trial and
+error—Quarto's error messages during PDF rendering indicate which packages are
+missing, and these can then be added to `tex_pkgs` (see {rix} documentation for
+more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
 #### Multi-language environment support
@@ -608,10 +670,11 @@ generated specification in the console for immediate verification
 
 ### Generating the Environment Specification
 
-Executing this script, either by running from the terminal `Rscript
-generate_env.R`, sourcing it from within R using `source("generate_env.R")`,
-\*\*or running the `rix::rix()` function above\*\* generates the `default.nix`
-file in the project directory. This file serves as the formal, machine-readable
+Executing this script, either by running from the terminal 
+`Rscript generate_env.R`, sourcing it from within R using 
+`source("generate_env.R")`, or running the `rix::rix()` function above, 
+generates the `default.nix` file in the project directory. 
+This file serves as the formal, machine-readable
 specification of the computational environment. Importantly, `rix()`
 automatically invokes `rix_init()`, which creates a project-specific `.Rprofile`
 file that prevents package library conflicts and disables `install.packages()`
@@ -625,12 +688,17 @@ the complete manuscript. This section demonstrates both workflows.
 
 ### Building the Environment
 
-From the terminal, navigate to the project directory containing the `default.nix` 
-file and execute:
+From the terminal, navigate to the study directory containing the `default.nix` 
+file and execute (@lst-nix-build):
 
+::: {#lst-nix-build}
+\small
 ```bash
 nix-build
 ```
+Building the Nix environment
+\normalsize
+:::
 
 This command builds the environment according to the specification. The first
 execution will download and install all required packages, which may take a few
@@ -639,28 +707,33 @@ cached packages and complete in seconds. Upon successful completion, a symbolic
 link named `result` appears in the project directory, pointing to the
 constructed environment in the Nix store.
 
-To activate the environment, run:
+To activate the environment, run (@lst-nix-shell):
 
+::: {#lst-nix-shell}
+\small
 ```bash
 nix-shell
 ```
+Activating the Nix environment
+\normalsize
+:::
 
 This command drops the user into a shell where all specified packages and tools
 are available. The shell prompt typically changes to indicate that a Nix
 environment is active (e.g., `[nix-shell:~/project]$`). If RStudio was specified
 via `ide = "rstudio"`, it can be launched from within this shell by typing
 `rstudio`, ensuring it uses the project-specific R installation and package
-library. 
-
-**To make sure version of R \> 4.2 is used**
+library. However, this will only work for R version 4.4.3 at least, or for a 
+date on or after the 2025-02-28 (see <https://docs.ropensci.org/rix/articles/e-configuring-ide.html>).
 
 ### Reproducing the Simulation
 
 As described before, our example contains multiple scripts. For streamlined
 execution, we provide a master script (`06_run_all.R`) that runs the simulation, 
 calculates the performance criteria, and creates the plots. This .R file has the
-following content: 
+following content (@lst-run-all): 
 
+\small
 ```{r}
 #| lst-label: lst-run-all
 #| lst-cap: "Master script for running the complete simulation workflow"
@@ -670,17 +743,19 @@ following content:
 
 # required packages
 library(marginaleffects); library(simhelpers); library(rvinecopulib)
-library(doParallel); library(doRNG); library(ggplot2); library(cowplot)
+library(doParallel); library(doRNG); library(ggplot2); library(cowplot); 
+library(dplyr)
 
 # step 1: run simulation 
 # this will source the 01_data_generation.R function and parameters for the 
 # data generation. It also sources 02_models.R, which contains the model 
-# estimation function and another function for calculate the true ACE
+# estimation function and another function for calculate the true ACE based 
+# on a large sample size
 source("03_run_simulation.R")
 
 # step 2: calculate performance metrics
-# this file calculates the performance criteria based on the saved results from
-# the 03_run_simulation.R
+# this file calculates the performance criteria based on the saved results 
+# from the 03_run_simulation.R
 source("04_performance_metrics.R")
 
 # step 3: generate plots
@@ -688,20 +763,28 @@ source("04_performance_metrics.R")
 # see Figure 1
 source("05_plots.R")
 ```
+\normalsize
 
-Thus, to reproduce the simulation from within the Nix shell:
+Thus, to reproduce the simulation from within the Nix shell, meaning after 
+running nix-build and nix-shell (@lst-run-simulation):
 
-``` bash
+::: {#lst-run-simulation}
+\small
+```bash
 Rscript 06_run_all.R
 ```
+Running the complete simulation workflow
+\normalsize
+:::
 
 This executes the complete simulation sequentially: first running the Monte
 Carlo replications which save results to `sim_results.rds`, then computing
-performance metrics and saving the summary table to `performance_summary.rds`,
-and finally generating all figures. Alternatively, individual scripts can be
-executed separately. The key advantage of executing within `nix-shell` is that
-all dependencies—R version, packages, and system tools—match exactly those
-specified in `default.nix`.
+performance metrics and saving the calculated values to 
+`performance_summary.rds`, and finally generating all figures. 
+Alternatively, individual scripts can be executed separately. 
+The key advantage of executing within `nix-shell` 
+is that all dependencies—R version, packages, and system tools—match exactly 
+those specified in `default.nix`.
 
 ### Reproducing the Complete Manuscript[^8]
 
@@ -712,14 +795,19 @@ manuscript reproducibility. The manuscript source file (`article.qmd`) combines
 narrative text, executable code chunks, and references to simulation outputs. In
 our specific case, we do not integrate the simulation run itself in the
 manuscript (but you can). We just load the obtained performance measures and
-integrate the code chunks that produce the plots (see Figure 1). 
-To render the manuscript: 
+integrate the code chunks that produce the plots (see Figure 1). To render the 
+manuscript (@lst-quarto-render): 
 
 **You can if we use rixpress**
 
+::: {#lst-quarto-render}
+\small
 ```bash
 quarto render article.qmd 
 ```
+Rendering the manuscript with Quarto
+\normalsize
+:::
 
 This command executes all code chunks in the manuscript, incorporates results
 and figures, and generates a formatted PDF following APA style guidelines via
@@ -727,21 +815,29 @@ the apaquarto extension [@schneider_2024]. This extension is saved in the
 project repo already.
 
 To download this extension for your own work you can install the extension by 
-using the terminal:
+using the terminal (@lst-apaquarto-install):
 
+::: {#lst-apaquarto-install}
+\small
 ```bash
 quarto use template wjschne/apaquarto
 ```
+Installing the apaquarto extension
+\normalsize
+:::
 
-or in the console:
+or in the console (@lst-apaquarto-r):
 
+\small
 ```{r}
 #| lst-label: lst-apaquarto-r
 #| lst-cap: "Installing the apaquarto extension from R"
 #| eval: false
+#| echo: true
 
 quarto::quarto_use_template("wjschne/apaquarto")
 ```
+\normalsize
 
 The final document (.pdf) is saved directly in the project folder. Because
 Quarto is installed as a system-level package in our Nix specification, the
@@ -757,7 +853,6 @@ project folder in the user’s preferred IDE and running the code chunks directl
 #| message: false
 
 summary_table <- readRDS("Simulation_Scripts/performance_summary.rds")
-
 ```
 
 ```{r}
@@ -926,10 +1021,6 @@ high-performance computing clusters where Docker is the standard
 containerization technology (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html>\]).
 
-## Example (extremely brief) with Python (?)
-
-**I do not think this is necessary. We can include online supplement.**
-
 # Discussion
 
 
@@ -941,3 +1032,5 @@ containerization technology (see {rix} documentation:
 :::
 
 {{< include appendix_a.qmd >}}
+
+{{< include appendix_b.qmd >}}
