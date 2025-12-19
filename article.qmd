@@ -543,22 +543,22 @@ environment specification shown below (@lst-rix-env-sim-only):
 library(rix)
 
 rix(
-  date = "2025-08-25", # line 1
-  r_pkgs = c( # line 2
+  date = "2025-08-25", 
+  r_pkgs = c( 
     "rix", "marginaleffects", "simhelpers",
     "ggplot2", "doParallel", "doRNG", "cowplot", "dplyr",
     "rvinecopulib"
   ),
-  ide = "", # line 3
-  project_path = ".", # line 4
-  overwrite = TRUE # line 5
+  ide = "", 
+  project_path = ".", 
+  overwrite = TRUE 
 )
 ```
 \normalsize
 
 In the case where we use literate programming for generating the manuscript
-(Example 2), we implement the environment specification 
-shown below, which can be found on the GitHub repository as a 
+(Example 2), we implement the following environment specification, which can 
+be found on the GitHub repository as a 
 file named `generate_env.R` (@lst-rix-env-manuscript):
 
 \small
@@ -612,20 +612,20 @@ following {rix} documentation: <https://docs.ropensci.org/rix/articles/c-using-r
 #### Specifying the R version (line 1)
 
 Researchers must first determine which version of R to use. This can be
-accomplished in two ways: The `r_ver` parameter accepts an exact version string
+accomplished in two ways: The `r_ver` argument accepts an exact version string
 (e.g., "4.3.3") or special designations such as "latest-upstream" for the most
-recent stable release. Alternatively, the `date` parameter specifies a
+recent stable release. Alternatively, the `date` argument specifies a
 particular date (e.g., "2024-11-15"), which ensures that R and all packages
 correspond to the versions available on that date. The date-based approach is
 generally preferable for reproducibility, as it captures a complete snapshot of
-the R ecosystem at a single point in time. For this tutorial, we use the `date`
-parameter to ensure temporal consistency across all software components
+the R ecosystem at a single point in time. For this tutorial, as shown on top, 
+we use the `date` parameter to ensure temporal 
+consistency across all software components
 [@rodrigues_baumann_2025] (see {rix} documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
 #### Declaring R package dependencies (line 2)
-
-The `r_pkgs` parameter accepts a character vector listing all required R
+The `r_pkgs` argument accepts a character vector listing all required R
 packages by their CRAN names. These packages will be installed from the version
 repository corresponding to the specified date or R version. It is important to
 list all packages that the analysis will load directly; dependencies of these
@@ -633,10 +633,26 @@ packages are automatically resolved by Nix. For packages requiring specific
 versions not corresponding to the chosen date, researchers can specify exact
 versions using the syntax `"packagename@version"` (e.g., `"ggplot2@2.2.1"`). For
 packages available only on GitHub or other Git repositories, the `git_pkgs`
-parameter accepts a list structure containing repository URLs and specific
-commit hashes [@rodrigues_baumann_2025]. This ensures that exact development 
-versions are obtained. For our simulation study, all packages were used with 
-their CRAN versions (see {rix} documentation for more:
+argument accepts a list structure containing repository URLs and specific
+commit hashes. For example:
+
+\small
+```{r}
+#| lst-label: lst-git-pkgs-example
+#| lst-cap: "Example for the git_pkgs argument"
+#| eval: false
+#| echo: true
+git_pkgs = list(
+    package_name = "marginaleffects",
+    repo_url = "https://github.com/vincentarelbundock/marginaleffects",
+    commit = "304bff91dc31ae28b227a8485bfa4f7bdc86d625"
+)
+```
+\normalsize
+
+This ensures that exact development versions are obtained 
+[@rodrigues_baumann_2025]. For our simulation study, all packages were used with 
+their CRAN versions (see {rix} documentation for more details:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
 #### Including system-level dependencies (line 3)
@@ -657,27 +673,32 @@ The `tex_pkgs` parameter specifies LaTeX packages needed for PDF compilation.
 When any packages are listed, Nix automatically includes a minimal TexLive
 distribution (`scheme-small`) as a base, to which the specified packages are
 added. Determining the required LaTeX packages typically involves some trial and
-error—Quarto's error messages during PDF rendering indicate which packages are
-missing, and these can then be added to `tex_pkgs` (see {rix} documentation for
-more:
+error—Quarto's error messages during, for example, the PDF rendering 
+indicate which packages are missing, and these can then be 
+added to `tex_pkgs` (see {rix} documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
 #### Configuring the development environment (line 5)
 
 The `ide` parameter determines whether an integrated development environment
-should be included. Setting `ide = "rstudio"` installs a project-specific
-version of RStudio within the Nix environment. Note that on macOS, RStudio is
+should be included in the Nix environment. Setting `ide = "rstudio"` installs a
+project-specific version of RStudio within the Nix environment. This is
+required for RStudio because, unlike other editors, RStudio cannot interact with
+Nix shells unless it is itself installed via Nix. Note that on macOS, RStudio is
 only available through Nix for R versions 4.4.3 or later (or dates after
 2025-02-28); for earlier versions, alternative editors must be used. Other
-supported IDEs include Positron (`ide = "positron"`), Visual Studio Code (`ide =
-"code"`), and command-line tools such as Radian (`ide = "radian"`). Each IDE
-installed via Nix is project-specific and will not interfere with system-wide
-installations. Researchers preferring to use an already-installed editor can set
-`ide = "none"` and configure their editor to interact with Nix shells
-[@rodrigues_baumann_2025] (see {rix} documentation for more:
-<https://docs.ropensci.org/rix/articles/e-configuring-ide.html>).
+supported IDEs include Positron (`ide = "positron"`), Visual Studio Code 
+(`ide = "code"`), and command-line tools such as Radian (`ide = "radian"`). 
+These editors can either be installed within the Nix environment using the 
+`ide` parameter, or researchers can use an already-installed version by 
+setting `ide = "none"` (or `ide = "other"`) and configuring 
+`direnv` to automatically load the Nix environment when opening the project 
+folder. Each IDE installed via Nix is project-specific and will not interfere 
+with system-wide installations. See the
+{rix} documentation for detailed configuration instructions:
+<https://docs.ropensci.org/rix/articles/e-configuring-ide.html>.
 
-#### Setting file output parameters (line 7)
+#### Setting file output parameters (line 6 and 7)
 
 The `project_path` parameter indicates where the `default.nix` file should be
 written ("." denotes the current directory), while `overwrite` controls whether
@@ -764,16 +785,16 @@ addresses this automatically—when you call `rix()`, it also executes
 configures R to ignore external package libraries and also disables 
 `install.packages()` within the environment. The rationale is straightforward: 
 any new packages should be added to `default.nix` and the environment rebuilt, 
-preserving full reproducibility [@rodrigues_baumann_2025].
-
-However, for stricter isolation[^8] that also prevents access to other system 
+preserving full reproducibility [@rodrigues_baumann_2025]. However, for 
+stricter isolation[^8] that also prevents access to other system 
 programs not specified in `default.nix`, use the `--pure` flag 
 (@lst-nix-shell-pure):
 
 [^8]: For example, when preparing this manuscript without the `--pure` flag, 
-running `quarto check` 
-(i.e., `felipelfv@Felipes-MacBook-Pro Why-risk-it-when-you-can-rix-it % nix-shell --run "quarto check"`) from within the Nix shell revealed that Quarto was 
-still accessing the system's LaTeX installation (`/Library/TeX/texbin`) rather 
+`quarto render` worked successfully. However, when using the `--pure` flag, 
+the build failed. Running `quarto check` from within the Nix shell 
+(i.e., `nix-shell --run "quarto check"`) revealed that Quarto was still 
+accessing the system's LaTeX installation (`/Library/TeX/texbin`) rather 
 than being restricted to only what was specified in `default.nix`.
 
 ::: {#lst-nix-shell-pure}
@@ -788,9 +809,16 @@ Activating the Nix environment with strict isolation
 ### Reproducing the Simulation (Example 1)
 
 As described before, our Example 1 contains multiple scripts. For streamlined
-execution, we provide a master script (`06_run_all.R`) that runs the simulation, 
-calculates the performance criteria, and creates the plots. This .R file has the
-following content (@lst-run-all): 
+execution, we provide a master script (`06_run_all.R`) that runs the complete 
+simulation and calculates the results as well as visualizations. 
+The script begins by loading the required packages, then proceeds 
+through three steps: first, it sources `03_run_simulation.R`, which in turn 
+loads the data generation function (`01_data_generation.R`) and the model 
+estimation functions (`02_models.R`) to run the Monte Carlo simulation; second, 
+it sources `04_performance_metrics.R` to calculate the performance criteria 
+from the saved simulation results; and third, it sources `05_plots.R` to 
+generate the figures (see @fig-performance). The script has the following 
+content (@lst-run-all):
 
 \small
 ```{r}
@@ -800,26 +828,12 @@ following content (@lst-run-all):
 #| echo: true
 #| message: false
 
-# required packages
 library(marginaleffects); library(simhelpers); library(rvinecopulib)
 library(doParallel); library(doRNG); library(ggplot2); library(cowplot); 
 library(dplyr)
 
-# step 1: run simulation 
-# this will source the 01_data_generation.R function and parameters for the 
-# data generation. It also sources 02_models.R, which contains the model 
-# estimation function and another function for calculate the true ACE based 
-# on a large sample size
 source("03_run_simulation.R")
-
-# step 2: calculate performance metrics
-# this file calculates the performance criteria based on the saved results 
-# from the 03_run_simulation.R
 source("04_performance_metrics.R")
-
-# step 3: generate plots
-# this file retrieves the performance metrics and generates separate plots
-# see Figure 1
 source("05_plots.R")
 ```
 \normalsize
@@ -836,13 +850,10 @@ Running the complete simulation workflow
 \normalsize
 :::
 
-This executes the complete simulation sequentially: first running the Monte
-Carlo replications which save results to `sim_results.rds`, then computing
-performance metrics and saving the calculated values to 
-`performance_summary.rds`, and finally generating all figures. 
-Alternatively, individual scripts can be executed separately. 
-The key advantage of executing within `nix-shell` 
-is that all dependencies—R version, packages, and system tools—match exactly 
+Alternatively, individual scripts can be executed separately 
+(i.e., `Rscript 03_run_simulation.R)`). Therefore, the key advantage of 
+executing within `nix-shell` is that all 
+dependencies—R version, packages, and system tools—match exactly 
 those specified in `default.nix`.
 
 ### Reproducing the Complete Manuscript (Example 2)[^9]
@@ -852,10 +863,19 @@ those specified in `default.nix`.
 Beyond reproducing computational results, the Nix environment enables full
 manuscript reproducibility. The manuscript source file (`article.qmd`) combines
 narrative text, executable code chunks, and references to simulation outputs. In
-our specific case, we do not integrate the simulation run itself in the
-manuscript (but you can). We just load the obtained performance measures and
-integrate the code chunks that produce the plots (see Figure 1). To render the 
-manuscript (@lst-quarto-render): 
+our specific case, we integrate the simulation run itself in the
+manuscript as well as the reporting (i.e., performance metrics calculation and 
+visualization). In other words, the code in the separate .R files are included 
+as code chunks (see `article.qmd` in the GitHub repository). 
+
+This is not needed and most researchers would in fact probably not include the 
+simulation run itself in the manuscript as many simulations take days to be 
+completed. Thus, in this case, one could just proceed with the 
+`Rscript 03_run_simulation.R` inside the nix shell. Then, in the `article.qmd` 
+load the obtained results and integrate the code chunks that produce 
+the performance metrics and visualization (see Figure 1). 
+
+To render the manuscript (@lst-quarto-render): 
 
 ::: {#lst-quarto-render}
 \small
@@ -896,9 +916,9 @@ quarto::quarto_use_template("wjschne/apaquarto")
 ```
 \normalsize
 
-The final document (.pdf) is saved directly in the project folder. Because
-Quarto is installed as a system-level package in our Nix specification, the
-rendering occurs entirely within a fully reproducible environment, ensuring
+The final document (.pdf or .html) is saved directly in the project folder. 
+Because Quarto is installed as a system-level package in our Nix specification, 
+the rendering occurs entirely within a fully reproducible environment, ensuring
 consistent output across machines regardless of local software configurations.
 If desired, the manuscript can also be reproduced interactively by opening the
 project folder in the user’s preferred IDE and running the code chunks directly.
@@ -1076,7 +1096,7 @@ to use Nix as the base layer within a Docker container
 for projects requiring deployment to cloud computing platforms or
 high-performance computing clusters where Docker is the standard
 containerization technology (see {rix} documentation:
-<https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html>\]).
+<https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html>).
 
 # Discussion
 
