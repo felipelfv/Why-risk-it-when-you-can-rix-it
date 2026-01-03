@@ -66,22 +66,17 @@ Journal incentives such as open-science badges [@kidwell_etall_2016], together
 with platforms like GitHub and the Open Science Framework, have made data
 [@levenstein_lyle_2018] and code sharing increasingly routine. However, these
 efforts have largely focused on *what* is shared rather than *how* shared
-materials can be executed in practice. Data and code are never self-sufficient;
-they depend on a hierarchy of software components known collectively as
-dependencies, including the version of the programming language, the set of
-packages used by the analysis, and the system libraries that those packages
-require in order to function correctly. When these dependencies differ from
-those used in the original analysis, code may fail, behave differently across
-machines, or yield conflicting numerical results [@baker_etall_2024;
-@hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
+materials can be executed in practice. Data and code are never
+self-sufficient; they depend on a hierarchy of software components known
+collectively as dependencies, including the version of the programming language,
+the set of packages used by the analysis, and the system libraries that those
+packages require in order to function correctly. When these dependencies differ
+from those used in the original analysis, code may fail, behave differently
+across machines, or yield conflicting numerical results
+[@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
 
-A key challenge in addressing this gap is that reproducibility is not a binary
-feature but instead exists along a continuum [@peng_2011]. At the lower end of
-this continuum, researchers may share only their manuscript. Further along the
-spectrum, they might provide partial code, full analysis scripts, or publicly
-accessible datasets. At the highest level, researchers document a fully
-specified computational environment that allows others to recreate identical
-results—from raw data to final manuscript output—with minimal friction. These
+Reproducibility exists along a continuum [@peng_2011], ranging from sharing only
+a manuscript to providing a fully specified computational environment. These
 issues are particularly acute for simulation studies, which rely on complex
 codebases, versioned dependencies, and intricate software configurations
 [@luijken_etall_2024; @siepe_etall_2024].
@@ -91,28 +86,14 @@ codebases, versioned dependencies, and intricate software configurations
 **To be clarified: what "this" refers to? (FV)**
 
 In this article, we use *computational environment* to refer to the complete
-software context required for an analysis to run successfully. This includes the
-version of the programming language (e.g., R 4.3.3), the versions of all
-required packages, the system libraries that those packages rely on, and the
-operating system under which the analysis executes [@rodrigues_2023]. Crucially,
-these components interact: a package version may require a specific system
-library; a system library may behave differently across operating systems; and
-certain analyses rely on features available only in particular language
-versions. We therefore define *computational environment reproducibility* as the
-ability to reconstruct this entire software stack—language, packages, system
-libraries, and operating system—on any machine and at any future time, such that
-executing the same code yields the same numerical results. Environment
-reproducibility is foundational, because even perfectly documented code cannot
-be executed reliably if its surrounding software context is unspecified or
-cannot be recreated.
+software context required for an analysis to run successfully—the programming
+language version, package versions, system libraries, and operating system
+[@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. We define *computational
+environment reproducibility* as the ability to reconstruct this entire software
+stack on any machine and at any future time, such that executing the same code
+yields the same numerical results.
 
-Consistent with this definition, prior work emphasizes that reproducible
-research requires more than the availability of code and data; it also requires
-controlling software dependencies, relying on open-source tools, literate
-programming, and ensuring access to the outputs that substantiate reported
-claims [@rodrigues_2023; @peikert_brandmaier_2021; @ziemann_etall_2023;
-@wiebels_moreau_2021; @epskamp_2019; @siepe_etall_2024]. Yet empirical
-assessments show that current practice falls short of these ideals. For example,
+Empirical assessments show that current practice falls short of this ideal.
 @siepe_etall_2024 report that nearly two-thirds of simulation studies in
 psychology provide no accompanying code, and among those that do, documentation
 of the computational environment is rarely included. This gap is consequential:
@@ -120,45 +101,28 @@ simulation studies inform methodological recommendations, meaning that
 insufficient reproducibility undermines confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
 
-These challenges may persist not because relevant tools are unavailable, but
-because researchers must navigate a fragmented landscape of solutions, each
-addressing only part of the computational environment. Package-level managers
-such as {renv} [@ushey_2024], {groundhog} [@simonsohn_2020], and {rang}
-[@chan_2023] stabilize R package versions but do not manage the R interpreter
-itself or the system-level libraries those packages depend on. Conversely,
-interpreter-level tools such as {rig} [@cite] focus on managing R versions but
-do not address package or system dependencies. Documentation tools such
-as`sessionInfo()` record aspects of the environment but do not allow users to
-reconstruct it. Meanwhile, workflow orchestration tools, such as including
-{targets} [@landau_2021] and Make [@feldman_1979], support reproducibility in a
-different sense: they specify the structure of an analysis by formalizing the
-order in which steps should run and by tracking dependencies among intermediate
-results. These tools clarify how an analysis proceeds, but they assume that the
-software stack required to run each step is already stable. Containerization
-tools such as Docker and the Rocker project [@boettiger_2015;
-@boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling
-the full environment—operating system, system libraries, interpreter versions,
-and packages—into a single executable image. Containers thus solve an important
-part of the environment reproducibility problem. Yet their use requires
-familiarity with Linux system administration, including writing Dockerfiles,
-managing external repositories, and understanding image layering which may be
-perceived as "daunting" for some researchers [@wiebels_moreau_2021]. Moreover,
-even containerization has limitations: as @malka2024 show, Dockerfiles often
-rely on mutable upstream repositories, meaning that rebuilding the same
-Dockerfile at a later time may not yield an identical environment.
-Containerization therefore improves reproducibility across machines but does not
-always ensure reproducibility across time.
+These challenges persist because researchers must navigate a fragmented
+landscape of solutions, each addressing only part of the problem. Package-level
+managers such as {renv} [@ushey_2024] and {groundhog} [@simonsohn_2020]
+stabilize R package versions but do not manage the R interpreter itself or the
+system-level libraries those packages depend on. Workflow orchestration tools
+such as {targets} [@landau_2021] and Make [@feldman_1979] support reproducibility
+in a different sense: they specify the structure of an analysis by formalizing
+the order in which steps should run and by tracking dependencies among
+intermediate results. These tools clarify *how* an analysis proceeds, but they
+assume that the software stack required to run each step is already stable.
+Containerization tools such as Docker and the Rocker project
+[@boettiger_2015; @boettiger_eddelbuettel_2017] offer a more comprehensive
+approach by bundling the full environment—operating system, system libraries,
+interpreter versions, and packages—into a single executable image. Yet their
+use requires familiarity with Linux system administration, and even
+containerization may suffer from temporal drift when Dockerfiles rely on mutable
+upstream repositories [@malka2024]. For a detailed comparison of these tools
+and their limitations, see @rodrigues_baumann_2026_polyglot.
 
-Moreover, these challenges are compounded by the increasing complexity of modern
-psychological research. Many analyses involve more than one programming language
-(e.g., R and Python) and often incorporate system-level tools such as Quarto for
-manuscript generation, which in turn rely on external components such as LaTeX
-distributions whose versions and installed packages can vary substantially
-across systems. Coordinating dependencies across these heterogeneous components
-stretches existing tools beyond their intended scope. Researchers thus face a
-difficult choice between solutions that are accessible but incomplete or
-approaches that are powerful but demand substantial technical expertise,
-especially for the integration of those tools.
+Researchers thus face a difficult choice between solutions that are accessible
+but incomplete or approaches that are powerful but demand substantial technical
+expertise.
 
 In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
@@ -266,8 +230,6 @@ researchers currently must coordinate separate tools for package management,
 interpreter versions, and system dependencies, Nix handles all three within a
 unified declarative model.
 
-**Maybe compare Nix to renv and Docker to highlight what nix gives us (JG)**
-
 ## Core Principles
 
 Rather than installing software into global directories (e.g., `/usr/lib`), Nix
@@ -286,12 +248,11 @@ entire software stack—R itself, R packages, and all system libraries—at that
 point in time. This eliminates the system-dependency problems that tools like
 renv cannot address [@rodrigues_baumann_2025].
 
-This architecture also ensures stability over time. Large-scale empirical work
-rebuilding over 700,000 packages from historical nixpkgs snapshots shows
-rebuildability rates above 99% and bit-for-bit reproducibility between 69–91%,
-demonstrating strong protection against temporal drift. Combined with binary
-caches, which often allow environments to materialize in seconds, Nix becomes
-practical for interactive research workflows [@rodrigues_baumann_2025].
+This architecture also ensures stability over time. Empirical work has shown
+strong rebuildability and reproducibility rates for historical nixpkgs snapshots
+[@rodrigues_baumann_2026_polyglot]. Combined with binary caches, which often
+allow environments to materialize in seconds, Nix becomes practical for
+interactive research workflows [@rodrigues_baumann_2025].
 
 ## The {rix} Package: R Interface to Nix
 
@@ -323,206 +284,24 @@ orchestration, enabling step-level isolation across languages, though such
 capabilities lie beyond the present focus on environment reproducibility. We
 will come back to this after the tutorial.
 
-## Step I: Installing Nix and {rix}[^4]
+## Step I: Installing Nix and {rix}
 
-[^4]: It is possible to use {rix} to generate Nix expressions even without
-having Nix installed on your system. In practice, this means that you can write
-a configuration (e.g., a `default.nix` file) without using Nix directly, but you
-cannot build or enter the resulting environment unless Nix is installed
-[@rodrigues_baumann_2025]. Think of it like writing a recipe without needing a
-kitchen—{rix} helps you document exactly what ingredients are needed (e.g.,
-which R version, which packages, which system dependencies), but you need Nix
-(the kitchen) to actually cook the meal.
+Before proceeding, you will need to install both Nix and the {rix} R package.
+Installation procedures differ across operating systems (Windows via WSL2,
+Linux, and macOS), and detailed, up-to-date instructions are maintained in the
+official {rix} documentation:
 
-### Installing Nix
+- **Linux and Windows (WSL2)**: <https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html>
+- **macOS**: <https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html>
 
-Installation procedures differ across systems, and we highly suggest readers to
-consult the {rix} documentation and links therein for more information[^5].
+Once Nix is installed, {rix} can be installed from CRAN using
+`install.packages("rix")`, or directly through Nix without requiring a
+pre-existing R installation (see the documentation links above for details).
 
-[^5]: See: <https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html> and <https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html>
-
-#### Windows (via WSL2) 
-
-On Windows, Nix runs inside the Windows Subsystem for Linux 2 (WSL2). To enable
-WSL2, run the following in PowerShell as an administrator (@lst-enable-wsl):
-
-::: {#lst-enable-wsl}
-\small
-```powershell
-wsl --install
-```
-Enabling WSL2 on Windows
-\normalsize
-:::
-
-After installing a Linux distribution (e.g., Ubuntu), it is recommended to
-activate `systemd`, which improves compatibility with Nix. In your WSL2 Ubuntu
-shell, edit `/etc/wsl.conf` (@lst-edit-wslconf):
-
-::: {#lst-edit-wslconf}
-\small
-```bash
-sudo -i
-nano /etc/wsl.conf
-```
-Editing the WSL configuration file
-\normalsize
-:::
-
-Then, this will open the `/etc/wsl.conf` in a nano (a command line text editor).
-Add (@lst-systemd-config):
-
-::: {#lst-systemd-config}
-\small
-```
-[boot]
-systemd=true
-```
-Enabling systemd in WSL2
-\normalsize
-:::
-
-Next, save the file, then shut down WSL from PowerShell (@lst-shutdown-wsl):
-
-::: {#lst-shutdown-wsl}
-\small
-```powershell
-wsl --shutdown
-```
-Shutting down WSL2
-\normalsize
-:::
-
-After shutting down WSL, launch your WSL2 Ubuntu environment again from the
-Start menu.
-
-#### Installing on Linux and Windows
-
-Once your Linux or WSL2 environment is ready[^6], install Nix using the
-Determinate Systems installer (@lst-install-nix-linux):
-
-[^6]: Windows users who choose not to enable `systemd` may need to append
-`--init none`; see {rix} documentation highlighted above.
-
-::: {#lst-install-nix-linux}
-\small
-```bash
-curl --proto '=https' --tlsv1.2 -sSf \
-  -L https://install.determinate.systems/nix | \
-  sh -s -- install
-```
-Installing Nix on Linux and Windows (WSL2)
-\normalsize
-:::
-
-After installation, set up the `rstats-on-nix` binary cache, which provides
-pre-built R packages and speeds up environment builds (@lst-cachix-linux): 
-
-::: {#lst-cachix-linux}
-\small
-```bash
-nix-env -iA cachix -f https://cachix.org/api/v1/install
-cachix use rstats-on-nix
-```
-Configuring the rstats-on-nix binary cache on Linux/Windows
-\normalsize
-:::
-
-Although {rix} includes a `setup_cachix()` helper, the {rix} documentation
-recommends configuring the cache with the `cachix` client, as this properly
-updates system-level files when needed.
-
-#### Installing on macOS
-
-On macOS, install Nix using the same Determinate Systems installer
-(@lst-install-nix-macos):
-
-::: {#lst-install-nix-macos}
-\small
-```bash
-curl --proto '=https' --tlsv1.2 -sSf \
-  -L https://install.determinate.systems/nix | \
-  sh -s -- install
-```
-Installing Nix on macOS
-\normalsize
-:::
-
-Then enable the `rstats-on-nix` binary cache (@lst-cachix-macos):
-
-::: {#lst-cachix-macos}
-\small
-```bash
-nix-env -iA cachix -f https://cachix.org/api/v1/install
-cachix use rstats-on-nix
-```
-Configuring the rstats-on-nix binary cache on macOS
-\normalsize
-:::
-
-### Installing {rix}
-
-The method for installing {rix} depends on whether you already have R installed
-on your system. If you have R installed, you can install {rix} as follows, which
-is how we proceeded with this manuscript (@lst-install-rix):
-
-\small
-```{r}
-#| lst-label: lst-install-rix
-#| lst-cap: "Installing the {rix} package"
-#| echo: true
-#| eval: false
-
-# CRAN version
-install.packages("rix")
-# Development version
-install.packages("rix", repos = c("https://ropensci.r-universe.dev"))
-```
-\normalsize
-
-Once {rix} is installed, you can use it to generate `default.nix` files for your
-projects, which you then build with Nix. This latter part is explained in the
-next subsection (i.e., [Specifying the Computational
-Environment](#sec-specifying-environment)).
-
-However, note that if you have installed Nix but do not yet have R on your
-system, or if you prefer to work entirely within the Nix ecosystem from the
-start, you can obtain both R and {rix} directly through Nix without installing R
-through the "traditional" means. The simplest approach is to create a temporary
-Nix shell that includes both R and {rix} by running this command in your
-terminal (@lst-nix-shell-dev):
-
-::: {#lst-nix-shell-dev}
-\small
-```bash
-nix-shell --expr "$(curl -sl 
-  https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix)"
-```
-Creating a temporary Nix shell with R and {rix} (development version)
-\normalsize
-:::
-
-After downloading the necessary packages, an R session will start inside your
-terminal. You can then use {rix} to generate your project's `default.nix` file
-(again, see [Specifying the Computational
-Environment](#sec-specifying-environment)). Alternatively, if you prefer the
-stable CRAN version of {rix}, you can create a temporary shell with
-(@lst-nix-shell-cran):
-
-::: {#lst-nix-shell-cran}
-\small
-```bash
-nix-shell -p R rPackages.rix
-```
-Creating a temporary Nix shell with R and {rix} (CRAN version)
-\normalsize
-:::
-
-Note that the {rix} documentation recommends managing R versions exclusively
-through Nix rather than mixing system-installed R with Nix-managed environments
-for optimal reproducibility, though both approaches are supported (see the
-following {rix} documentation:
-<https://docs.ropensci.org/rix/articles/z-advanced-topic-walkthrough-project.html>).
+It is worth noting that {rix} can generate Nix expressions even without Nix
+installed on your system—you can write a `default.nix` file without Nix, but
+you cannot build or enter the resulting environment unless Nix is installed
+[@rodrigues_baumann_2025].
 
 ## Step II: Specifying the Computational Environment {#sec-specifying-environment}
 
