@@ -201,7 +201,7 @@ The `rix()` function[^4] constructs this specification through a series of param
 
 [^4]: For an overarching information on the function `rix()`, we suggest the following {rix} documentation: <https://docs.ropensci.org/rix/articles/c-using-rix-to-build-project-specific-environments.html>
 
-#### Specifying the R version (line 1) 
+#### Specifying the R version (line 1)
 
 #### \[Maybe use line numbers from the code chunk? Alternatively maybe just list the argument? I wonder if we highlight the relevant line of code? JG\]
 
