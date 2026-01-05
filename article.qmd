@@ -27,11 +27,7 @@ abstract: |
 
 keywords: [reproducibility, Nix, simulation studies, R, computational methods]
 word-count: true
-authornote: |
-  Author contributions: [Add contributions]
-
-  Correspondence concerning this article should be addressed to [Name], [Address].
-  Email: [email]
+authornote: ~
 format:
   apaquarto-pdf:
     document-mode: man
@@ -879,7 +875,7 @@ enable selective re-execution when inputs change. Two complementary approaches
 exist within the Nix ecosystem: using {targets} inside a Nix environment, or
 using {rixpress} to leverage Nix itself as the build automation tool.
 
-#### **Using {targets} Within Nix**
+#### Using {targets} Within Nix 
 
 As mentioned, the {targets} package [@landau_2021] provides workflow
 orchestration for R-based projects. This combination ensures both computational
@@ -895,7 +891,7 @@ within the R ecosystem and do not require different computational environments
 for different pipeline steps (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html>).
 
-#### **Using {rixpress} for Polyglot Pipelines**
+#### Using {rixpress} for Polyglot Pipelines
 
 The {rixpress} package [@rixpress], a sister package to {rix}, uses Nix itself
 as the build automation tool rather than operating within a Nix environment.
