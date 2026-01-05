@@ -166,13 +166,9 @@ window.Quarto = {
   <li><a href="#reproducing-the-simulation" id="toc-reproducing-the-simulation" class="nav-link" data-scroll-target="#reproducing-the-simulation">Reproducing the Simulation</a></li>
   </ul></li>
   <li><a href="#reproducing-the-complete-manuscript6" id="toc-reproducing-the-complete-manuscript6" class="nav-link" data-scroll-target="#reproducing-the-complete-manuscript6">Reproducing the Complete Manuscript</a></li>
-  </ul></li>
   <li><a href="#additional-considerations-for-advanced-workflows" id="toc-additional-considerations-for-advanced-workflows" class="nav-link" data-scroll-target="#additional-considerations-for-advanced-workflows">Additional Considerations for Advanced Workflows</a>
   <ul class="collapse">
-  <li><a href="#workflow-orchestration-targets-and-rixpress" id="toc-workflow-orchestration-targets-and-rixpress" class="nav-link" data-scroll-target="#workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</a>
-  <ul class="collapse">
-  <li><a href="#using-targets-within-nix" id="toc-using-targets-within-nix" class="nav-link" data-scroll-target="#using-targets-within-nix"><strong>Using {targets} Within Nix</strong></a></li>
-  <li><a href="#using-rixpress-for-polyglot-pipelines" id="toc-using-rixpress-for-polyglot-pipelines" class="nav-link" data-scroll-target="#using-rixpress-for-polyglot-pipelines"><strong>Using {rixpress} for Polyglot Pipelines</strong></a></li>
+  <li><a href="#workflow-orchestration-targets-and-rixpress" id="toc-workflow-orchestration-targets-and-rixpress" class="nav-link" data-scroll-target="#workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</a></li>
   </ul></li>
   <li><a href="#converting-existing-renv-projects" id="toc-converting-existing-renv-projects" class="nav-link" data-scroll-target="#converting-existing-renv-projects">Converting Existing {renv} Projects</a></li>
   <li><a href="#containerization-with-docker" id="toc-containerization-with-docker" class="nav-link" data-scroll-target="#containerization-with-docker">Containerization with Docker</a></li>
@@ -525,19 +521,19 @@ Listing&nbsp;12: Installing the apaquarto extension from R
 <p>The final document (docx, .pdf, or .html) is saved directly in the project folder. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE and running the code chunks directly.</p>
 <p><strong>[Maybe footnote? Although we use <em>apaquarto</em> in this example, many alternative manuscript templates are available, and Nix is agnostic to the specific template employed, provided the necessary extensions are installed. (JG)]</strong></p>
 </section>
-</section>
-<section id="additional-considerations-for-advanced-workflows" class="level1">
-<h1>Additional Considerations for Advanced Workflows</h1>
-<section id="workflow-orchestration-targets-and-rixpress" class="level2">
-<h2 data-anchor-id="workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</h2>
+<section id="additional-considerations-for-advanced-workflows" class="level2">
+<h2 data-anchor-id="additional-considerations-for-advanced-workflows">Additional Considerations for Advanced Workflows</h2>
+<section id="workflow-orchestration-targets-and-rixpress" class="level3">
+<h3 data-anchor-id="workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</h3>
 <p>Complex simulation studies often benefit from workflow management systems that track dependencies between computational steps, cache intermediate results, and enable selective re-execution when inputs change. Two complementary approaches exist within the Nix ecosystem: using {targets} inside a Nix environment, or using {rixpress} to leverage Nix itself as the build automation tool.</p>
-<section id="using-targets-within-nix" class="level3">
-<h3 data-anchor-id="using-targets-within-nix"><strong>Using {targets} Within Nix</strong></h3>
+<section id="using-targets-within-nix" class="level4">
+<h4 data-anchor-id="using-targets-within-nix">Using {targets} Within Nix.</h4>
 <p>As mentioned, the {targets} package <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> provides workflow orchestration for R-based projects. This combination ensures both computational reproducibility (via Nix controlling the environment) and computational efficiency (via targets’ intelligent caching). To integrate {targets} with Nix, simply include “targets” in the <code>r_pkgs</code> parameter of <code>rix()</code>, <strong>[code listing? (JG)]</strong>and execute the pipeline within <code>nix-shell</code> using <code>Rscript -e 'targets::tar_make()'</code>. The {targets} metadata directory (<code>_targets/</code>) should be excluded from version control while the <code>_targets.R</code> configuration file should be committed alongside <code>default.nix</code> <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. This approach is ideal for projects that remain within the R ecosystem and do not require different computational environments for different pipeline steps (see {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html" class="uri">https://docs.ropensci.org/rix/articles/z-advanced-topic-reproducible-analytical-pipelines-with-nix.html</a>).</p>
 </section>
-<section id="using-rixpress-for-polyglot-pipelines" class="level3">
-<h3 data-anchor-id="using-rixpress-for-polyglot-pipelines"><strong>Using {rixpress} for Polyglot Pipelines</strong></h3>
+<section id="using-rixpress-for-polyglot-pipelines" class="level4">
+<h4 data-anchor-id="using-rixpress-for-polyglot-pipelines">Using {rixpress} for Polyglot Pipelines.</h4>
 <p>The {rixpress} package <span class="citation" data-cites="rixpress">(<a href="#ref-rixpress" role="doc-biblioref">Rodrigues, 2025</a>)</span>, a sister package to {rix}, uses Nix itself as the build automation tool rather than operating within a Nix environment. Each pipeline step becomes a Nix derivation, providing hermetic builds with sandboxed execution and content-addressable caching. The key advantage of {rixpress} emerges in multi-language workflows: different steps can execute in different Nix-defined environments (e.g., one step using R 4.2.0 with specific packages, another using Python 3.12 with machine learning libraries, another using Julia for numerical optimization). The package interface, inspired by {targets}, uses functions like <code>rxp_r()</code>, <code>rxp_py()</code>, and <code>rxp_jl()</code> to define pipeline steps, with automatic serialization handling data transfer between languages. Objects are stored in the Nix store and can be inspected interactively using helper functions like <code>rxp_read()</code> and <code>rxp_load()</code> (see {rixpress} documentation: <a href="https://docs.ropensci.org/rixpress/articles/intro-concepts.html" class="uri">https://docs.ropensci.org/rixpress/articles/intro-concepts.html</a>).</p>
+</section>
 </section>
 </section>
 <section id="converting-existing-renv-projects" class="level2">
@@ -667,7 +663,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix="">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -780,7 +776,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix="">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
