@@ -44,7 +44,7 @@ jobs:
       run: nix-shell --run "quarto render Manuscript/article.qmd"
 
     - name: Rename
-      run: mv docs/article.html docs/index.html
+      run: mv Manuscript/article.html Manuscript/index.html
 
     - name: Push docs
       run: |
