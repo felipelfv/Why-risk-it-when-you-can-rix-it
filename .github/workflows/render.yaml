@@ -49,7 +49,7 @@ jobs:
     - name: Push docs
       run: |
         git pull --rebase --autostash origin main
-        git add docs/index.html docs/article.pdf
+        git add Manuscript/docs/index.html Manuscript/docs/article.pdf
         if git diff --cached --quiet; then
           echo "No changes to commit."
         else
