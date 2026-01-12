@@ -1018,7 +1018,7 @@ kable(results_display, align = "lccccc", row.names = FALSE)
 
 ### Reproducing the Simulation
 
-As described before, our Example 1 contains multiple scripts. For streamlined
+As described before, [...] For streamlined
 execution, we provide a master script (`06_run_all.R`) that runs the complete
 simulation and calculates the results as well as visualizations. The script
 begins by loading the required packages, then proceeds through three steps:
