@@ -45,8 +45,10 @@ bibliography: references.bib
 #| echo: false
 #| message: false
 
-library(ggplot2); library(knitr)
-library(cowplot); library(dplyr)
+# required packages
+library(marginaleffects); library(simhelpers); library(rvinecopulib)
+library(doParallel); library(doRNG); library(ggplot2); library(cowplot)
+library(knitr); library(dplyr)
 
 ```
 
@@ -58,46 +60,39 @@ or studies based on provided data, code, materials, and software/hardware)
 remains limited [@hardwicke2020]. As a result, ensuring reproducibility remains
 an open and pressing challenge for psychological science.
 
-Open-science initiatives have encouraged more transparent research practices.
-Journal incentives such as open-science badges [@kidwell_etall_2016], together
-with platforms like GitHub and the Open Science Framework, have made data and
-code sharing increasingly routine [@levenstein_lyle_2018]. However, these
-efforts have largely focused on *what* is shared rather than *how* shared
-materials can be executed in practice. Data and code are never self-sufficient;
-they depend on a hierarchy of software components known collectively as
-dependencies, including the version of the programming language, the set of
-packages used by the analysis, and the system libraries that those packages
-require in order to function correctly. When these dependencies differ from
-those used in the original analysis, code may fail, behave differently across
-machines, or yield conflicting numerical results [@baker_etall_2024;
-@hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
+Addressing this gap is complicated by the fact that reproducibility is 
+not a binary feature but instead exists along a continuum [@peng_2011]. 
+At the lower end, researchers may share only their manuscript. Further along 
+the spectrum, they might provide partial code, full analysis scripts, or 
+publicly accessible datasets. At the highest level, researchers document a 
+fully specified computational environment that allows others to recreate 
+identical results—from raw data to final manuscript output—with minimal 
+friction. Open-science initiatives have made considerable progress along 
+this continuum. Journal incentives such as 
+open-science badges [@kidwell_etall_2016], together with platforms like GitHub 
+and the Open Science Framework, have made data and code sharing increasingly 
+routine [@levenstein_lyle_2018]. However, these efforts largely occupy the 
+lower and middle portions of the spectrum, focusing on *what* is shared rather 
+than *how* shared materials can be executed in practice. Data and code are never 
+self-sufficient; they depend on a hierarchy of software components known 
+collectively as dependencies, including the version of the programming language, 
+the set of packages used by the analysis, and the system libraries that those 
+packages require in order to function correctly. When these dependencies differ 
+from those used in the original analysis, code may fail, behave differently 
+across machines, or yield conflicting numerical results 
+[@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
 
-**This paragraph did not flow from the preceding paragaph. How does the below
-work? (JG)**
-
-A key challenge in addressing this gap is that reproducibility is not a binary
-feature but instead exists along a continuum [@peng_2011]. At the lower end of
-this continuum, researchers may share only their manuscript. Further along the
-spectrum, they might provide partial code, full analysis scripts, or publicly
-accessible datasets. At the highest level, researchers document a fully
-specified computational environment that allows others to recreate identical
-results—from raw data to final manuscript output—with minimal friction. These
-issues are particularly acute for simulation studies, which rely on complex
-codebases, versioned dependencies, and intricate software configurations
-[@luijken_etall_2024; @siepe_etall_2024].
-
-**not he biggest fan of 1-2 sentence paragraphs.I tried to add some sentences.
-(JG)**
-
-In this article, we use *computational environment* to refer to the complete
+These issues are particularly acute for simulation studies, which rely on 
+complex codebases, versioned dependencies, and intricate software configurations
+[@luijken_etall_2024; @siepe_etall_2024]. To make this concrete, we use 
+*computational environment* to refer to the complete
 software context required for an analysis to run successfully—the programming
 language version, package versions, system libraries, and operating system
 [@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. We define *computational
 environment reproducibility* as the ability to reconstruct this entire software
 stack on any machine and at any future time, such that executing the same code
-yields the same numerical results.
-
-Empirical assessments show that current practice falls short of this ideal.
+yields the same numerical results. Empirical assessments show that current 
+practice falls short of this ideal.
 @siepe_etall_2024 report that nearly two-thirds of simulation studies in
 psychology provide no accompanying code, and among those that do, documentation
 of the computational environment is rarely included. This gap is consequential:
@@ -105,13 +100,14 @@ simulation studies inform methodological recommendations, meaning that
 insufficient reproducibility undermines confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
 
-These challenges persist because researchers must navigate a fragmented
-landscape of solutions, each addressing only part of the problem. Package-level
-managers such as {renv} [@ushey_2024] and {groundhog} [@simonsohn_2020]
-stabilize R package versions but do not manage the R interpreter itself or the
-system-level libraries those packages depend on. Workflow orchestration tools
-such as {targets} [@landau_2021] and Make [@feldman_1979] support
-reproducibility in a different sense: they specify the structure of an analysis
+Arguably, these challenges persist because researchers must 
+navigate a fragmented landscape of solutions, each addressing only part of 
+the problem. Package-level managers such as {renv} [@ushey_2024] and 
+{groundhog} [@simonsohn_2020] stabilize R package versions but do not manage 
+the R interpreter itself or the system-level libraries those packages depend on. 
+Workflow orchestration tools such as {targets} [@landau_2021] and 
+Make [@feldman_1979] support reproducibility in a different sense: 
+they specify the structure of an analysis
 by formalizing the order in which steps should run and by tracking dependencies
 among intermediate results. These tools clarify *how* an analysis proceeds, but
 they assume that the software stack required to run each step is already stable.
@@ -127,7 +123,7 @@ see @rodrigues_baumann_2026_polyglot. Researchers thus face a difficult choice
 between solutions that are accessible but incomplete or approaches that are
 powerful but demand substantial technical expertise.
 
-In this article, we focus specifically on computational environment
+In this article, therefore, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
 depend. For that, we introduce Nix [@dolstra_etall_2004], a functional package
 manager designed to make software installation deterministic, and {rix}
@@ -136,26 +132,22 @@ without needing deep knowledge of its underlying language or infrastructure. Our
 objective is not to introduce a specific workflow orchestration system or to
 prescribe a particular analytic structure. Instead, we aim to show how Nix and
 {rix} can establish a stable, cross-platform environment within which any
-analysis—whether organized through simple, documented script sequences using
-`source()` or through more formal orchestration tools—can be executed reliably.
+analysis—whether organized in simple, documented script sequences 
+(e.g., .R files that `source()` others), through more formal orchestration 
+tools (e.g., targets) or embedded as code chunks in `.Rmd` or `.qmd` —can be 
+executed reliably.
 
-**\[I do not like the example 1 and example 2 terminology–it is all apart of the
-same workflow JG\]**
-
-We illustrate these ideas through a reproducible simulation study conducted in R
-and RStudio, culminating in an automated APA-formatted manuscript generated with
+We illustrate these ideas through a reproducible simulation study conducted in 
+R, culminating in an automated APA-formatted manuscript generated with
 `apaquarto` [@schneider_2024]. Although the example centers on R because of its
 prominence in psychological methodology, the principles underlying environment
 reproducibility apply equally to other languages, including Python and Julia,
-and to different development environments such as VS Code, Emacs, or Positron.
-Later in the article, we briefly comment on rixpress [@rixpress], which extends
-Nix-based reproducibility to workflows spanning multiple languages. However, the
-present tutorial assumes a simple, documented execution order for scripts, and
-does not focus on workflow orchestration. Throughout, our emphasis remains
-squarely on the reproducibility of computational environments as the essential
+and to different development environments such as RStudio, VS Code, Emacs, or 
+Positron. Later in the article, we briefly comment on rixpress [@rixpress], 
+which extends Nix-based reproducibility to workflows spanning multiple 
+languages. Throughout, our emphasis remains squarely on the reproducibility of 
+computational environments as the essential
 basis for transparent, reliable, and durable scientific workflows.
-
-**\[Targets comes out of nowhere here. I removed it. (JG)\]**
 
 # A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
@@ -172,27 +164,20 @@ discussion in something more tangible.
     not be used for substantial interpretation. For instance, the usage of
     {rvinecopulib} and the parallel set-up may be considered an overhead.
 
-Simulation studies typically structure code into multiple component files, each
-handling a distinct analytical phase. Our implementation follows this
-convention, organizing the workflow into five sequential files[^2]: data
-generation function (`01_data_generation.R`), statistical model specification
-(`02_models.R`), simulation execution (`03_run_simulation.R`), performance
-metric calculation (`04_performance_metrics.R`), and results visualization
-(`05_plots.R`). The simulation script (`03_run_simulation.R`) sources the data
-generation and model functions, executes the Monte Carlo replications, and saves
-results. The subsequent scripts read these saved results to compute performance
-metrics and generate visualizations. For convenience, we provide a master script
-(`06_run_all.R`) that loads all required packages and executes the complete
-workflow sequentially. Note that such sequential structures could benefit from
-explicit workflow orchestration tools and a clear documentation[^3].
-**Therefore, The workflow depends on several R packages. Data generation relies
-on the {rvinecopulib} package [@rvinecopulib]. Average treatment effects are
-estimated using the {marginaleffects} package [@marginaleffects]. Data wrangling
-is performed with {dplyr} [@dplyr]. The {simhelpers} package supplies functions
-for calculating simulation performance metrics [@simhelpers]. Parallel
-processing is handled by {doParallel} [@doParallel], with {doRNG} [@doRNG]
-ensuring reproducible random number generation across parallel workers.
-Visualization relies on {ggplot2} [@ggplot2] and {cowplot} [@cowplot].**
+Simulation studies typically structure code into multiple component files, 
+each handling a distinct analytical phase. We provide our implementation in 
+this conventional format, organized into five 
+sequential files[^2]: data generation (`01_data_generation.R`), statistical 
+model specification (`02_models.R`), simulation execution 
+(`03_run_simulation.R`), performance metric calculation 
+(`04_performance_metrics.R`), and results visualization (`05_plots.R`). However, 
+because our focus is on the reproducibility of the complete manuscript, we embed 
+all simulation code directly within this manuscript as executable code chunks 
+in the `.qmd` file. When this document is rendered, the simulation runs in 
+its entirety (i.e., from data generation through final 
+visualizations). This is not needed and, in fact, most simulation studies are 
+too long to be included in the manuscript compilation. We will come back to 
+this later in the tutorial. 
 
 [^2]: Readers can find the files for these simulations here:
     <https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>
@@ -201,10 +186,10 @@ Visualization relies on {ggplot2} [@ggplot2] and {cowplot} [@cowplot].**
     specifying the amount of cores to be used. This type of information should
     be mentioned.
 
-\[**I feel like the package listings can be a footnote. (JG)**\]
-
-Let's pretend a researcher whats to reproduce our simulation with the provided
-.R files. What might prevent them from obtaining identical results? The most
+Notably, the workflow depends on several R packages (see Appendix A)[^3]. 
+Thus, let's pretend a researcher whats to reproduce our simulation and results 
+reported in the article. 
+What might prevent them from obtaining identical results? The most
 immediate concern may involve package versions. A researcher installing packages
 today may encounter errors if functions have been renamed or deprecated, or may
 obtain results that differ subtly due to changes in computational defaults.
@@ -218,10 +203,10 @@ subtly, R's random number generator has changed across major versions, meaning
 that identical code with identical seeds can produce different random sequences
 depending on the R version. For simulation studies where reproducibility of
 specific random draws matters, this version sensitivity is consequential.
-Moreover, if one also employs literate programming for the manuscript,
-additional dependencies arise: R Markdown or Quarto documents require pandoc,
-and PDF output requires a LaTeX distribution—each with its own versioning and
-platform-specific installation.
+Moreover, if one also employs literate programming for the manuscript as in our 
+case, additional dependencies arise: R Markdown or Quarto documents require 
+pandoc, and PDF output requires a LaTeX distribution—each with its 
+own versioning and platform-specific installation.
 
 # Nix and {rix}: A Comprehensive Solution
 
@@ -324,36 +309,8 @@ will use the `rix()` function from the {rix} package to produce a `default.nix`
 file—a declarative specification that precisely defines all software
 dependencies required for the project.
 
-For solely the simulation study (Example 1), we would implement the environment
-specification shown below (@lst-rix-env-sim-only):
-
-\small
-
-```{r}
-#| lst-label: lst-rix-env-sim-only
-#| lst-cap: "Environment specification for the simulation study using `rix()`"
-#| eval: false
-#| echo: true
-
-library(rix)
-
-rix(
-  date = "2025-08-25", 
-  r_pkgs = c( 
-    "rix", "marginaleffects", "simhelpers",
-    "ggplot2", "doParallel", "doRNG", "cowplot", "dplyr",
-    "rvinecopulib"
-  ),
-  ide = "", 
-  project_path = ".", 
-  overwrite = TRUE 
-)
-```
-
-\normalsize
-
-In the case where we use literate programming for generating the manuscript
-(Example 2), we implement the following environment specification, which can be
+In the case where we use literate programming for generating the manuscript, we 
+implement the following environment specification, which can be
 found on the GitHub repository as a file named `generate_env.R`
 (@lst-rix-env-manuscript):
 
@@ -444,6 +401,7 @@ hashes. For example:
 #| lst-cap: "Example for the git_pkgs argument"
 #| eval: false
 #| echo: true
+
 git_pkgs = list(
     package_name = "marginaleffects",
     repo_url = "https://github.com/vincentarelbundock/marginaleffects",
@@ -528,7 +486,7 @@ Julia [@rodrigues_baumann_2025] (see {rix} documentation for more:
 #| echo: true
 
 py_conf = list(py_version = "3.12", 
-               py_pkgs = c("polars","pandas")))
+               py_pkgs = c("polars","pandas"))
 
 ```
 
@@ -626,57 +584,6 @@ nix-shell --pure
 Activating the Nix environment with strict isolation \normalsize
 :::
 
-### Reproducing the Simulation
-
-As described before, our Example 1 contains multiple scripts. For streamlined
-execution, we provide a master script (`06_run_all.R`) that runs the complete
-simulation and calculates the results as well as visualizations. The script
-begins by loading the required packages, then proceeds through three steps:
-first, it sources `03_run_simulation.R`, which in turn loads the data generation
-function (`01_data_generation.R`) and the model estimation functions
-(`02_models.R`) to run the Monte Carlo simulation; second, it sources
-`04_performance_metrics.R` to calculate the performance criteria from the saved
-simulation results; and third, it sources `05_plots.R` to generate the figures
-(see @fig-performance). The script has the following content (@lst-run-all):
-
-\small
-
-```{r}
-#| lst-label: lst-run-all
-#| lst-cap: "Master script for running the complete simulation workflow"
-#| eval: false
-#| echo: true
-#| message: false
-
-library(marginaleffects); library(simhelpers); library(rvinecopulib)
-library(doParallel); library(doRNG); library(ggplot2); library(cowplot); 
-library(dplyr)
-
-source("03_run_simulation.R")
-source("04_performance_metrics.R")
-source("05_plots.R")
-```
-
-\normalsize
-
-Thus, to reproduce the simulation from within the Nix shell, meaning after
-running nix-build and nix-shell (@lst-run-simulation):
-
-::: {#lst-run-simulation}
-\small
-
-``` bash
-Rscript 06_run_all.R
-```
-
-Running the complete simulation workflow \normalsize
-:::
-
-Alternatively, individual scripts can be executed separately (i.e.,
-`Rscript 03_run_simulation.R)`). Therefore, the key advantage of executing
-within `nix-shell` is that all dependencies—R version, packages, and system
-tools—match exactly those specified in `default.nix`.
-
 ## Reproducing the Complete Manuscript[^6]
 
 [^6]: See the {rix} documentation for more:
@@ -756,12 +663,198 @@ specific template employed, provided the necessary extensions are installed.
 (JG)\]**
 
 ```{r}
-#| lst-label: lst-load-results
-#| lst-cap: "Loading the simulation results"
+#| lst-label: lst-data-generation
+#| lst-cap: "Data Generation Function"
 #| echo: false
 #| message: false
 
-summary_table <- readRDS("Simulation_Scripts/performance_summary.rds")
+# fixed DGP parameters
+alpha0 <- 0
+alpha1 <- 0.5   
+alpha2 <- 0.2   
+beta0  <- -0.5
+beta1  <- 0.7   
+gamma1 <- -0.4  
+
+# this will generate one dataset
+gen_data <- function(n, gamma2) {
+  
+  # complete overhead. This was done just to use a package written in C++:
+  # generate independent uniform pairs via independence copula, then transform to standard normal
+  u <- rbicop(n, "indep", 0, numeric(0))
+  X2 <- qnorm(u[, 1])
+  error_X1 <- qnorm(u[, 2])
+  
+  X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + error_X1
+  eta_true <- beta0 + beta1 * X1 + gamma1 * X2 + gamma2 * X2^2
+  p <- plogis(eta_true)
+  y <- rbinom(n, size = 1, prob = p)
+  
+  data.frame(y = y, x1 = X1, x2 = X2)
+}
+```
+
+```{r}
+#| lst-label: lst-model-estimation
+#| lst-cap: "Model Estimation Functions"
+#| echo: false
+#| message: false
+
+# for running one simulation replicate with MISSPECIFIED model
+run_one_rep <- function(n, gamma2) {
+  dat <- gen_data(n, gamma2)
+  
+  fit_misspec <- glm(y ~ x1 + x2, 
+                     data = dat, 
+                     family = binomial())
+  
+  ace_est <- avg_slopes(fit_misspec, variables = "x1")
+  
+  data.frame(
+    est = ace_est$estimate[1],
+    se  = ace_est$std.error[1],
+    lo  = ace_est$conf.low[1],
+    hi  = ace_est$conf.high[1]
+  )
+}
+
+# for computing the true ACE using the correctly specified model
+compute_true_ace <- function(gamma2_val, seed = 12345) {
+  set.seed(seed)
+  bigdat <- gen_data(2e5, gamma2_val)
+  
+  fit_correct <- glm(y ~ x1 + x2 + I(x2^2), 
+                     data = bigdat, 
+                     family = binomial())
+  
+  avg_slopes(fit_correct, variables = "x1")$estimate[1]
+}
+```
+
+```{r}
+#| lst-label: lst-main-simulation-loop
+#| lst-cap: "Main Simulation"
+#| echo: false
+#| message: false
+#| output: false
+
+# simulation parameters
+nsim  <- 100
+ncore <- 1
+master_seed <- 12345
+
+# design matrix
+n_values <- c(50, 100, 2000)
+gamma2_values <- c(0, 0.3, 0.8)
+gamma2_labels <- c("none", "mild", "severe")
+
+designs <- expand.grid(
+  n = n_values,
+  gamma2 = gamma2_values,
+  stringsAsFactors = FALSE
+)
+
+designs$confound_label <- factor(
+  designs$gamma2,
+  levels = gamma2_values,
+  labels = gamma2_labels
+)
+
+# step 1: compute true values based on a large sample
+# note that in our scenario this is possible to be done analytically
+cat("Computing true ACE values\n")
+true_ACE_values <- sapply(gamma2_values, compute_true_ace)
+names(true_ACE_values) <- as.character(gamma2_values)
+print(true_ACE_values)
+
+# step 2: parallel processing
+cl <- makeCluster(ncore)
+registerDoParallel(cl)
+
+# step 3: run simulation for all conditions
+all_results <- vector("list", nrow(designs))
+
+for (k in seq_len(nrow(designs))) {
+  n_k      <- designs$n[k]
+  gamma2_k <- designs$gamma2[k]
+  label_k  <- as.character(designs$confound_label[k])
+  
+  cat("\nCondition:", label_k, "(gamma2 =", gamma2_k, "), n =", n_k, "\n")
+  
+  true_ACE_k <- true_ACE_values[as.character(gamma2_k)]
+  
+  # replications
+  res_list <- foreach(
+    i = seq_len(nsim),
+    .packages = c("marginaleffects", "rvinecopulib")
+  ) %dorng% {
+    run_one_rep(n_k, gamma2_k)
+  }
+  
+  res <- do.call(rbind, res_list)
+  res$true_param <- true_ACE_k
+  res$n <- n_k
+  res$gamma2 <- gamma2_k
+  res$confound_label <- label_k
+  
+  all_results[[k]] <- res
+}
+
+stopCluster(cl)
+
+# for storing results
+sim_results <- do.call(rbind, all_results)
+```
+
+```{r}
+#| lst-label: lst-performance-metrics
+#| lst-cap: "Performance Metrics"
+#| echo: false
+#| message: false
+
+# unique conditions
+conditions <- unique(sim_results[, c("n", "gamma2", "confound_label")])
+
+# calculate metrics for each condition
+summary_list <- vector("list", nrow(conditions))
+
+for (k in seq_len(nrow(conditions))) {
+  res <- subset(sim_results, 
+                n == conditions$n[k] & 
+                  gamma2 == conditions$gamma2[k])
+  
+  perf_abs <- calc_absolute(
+    data = res,
+    estimates = est,
+    true_param = true_param,
+    criteria = c("bias", "variance", "mse", "rmse")
+  )
+  
+  perf_rel <- calc_relative(
+    data = res,
+    estimates = est,
+    true_param = true_param,
+    criteria = c("relative bias", "relative rmse")
+  )
+  
+  perf_cov <- calc_coverage(
+    data = res,
+    lower_bound = lo,
+    upper_bound = hi,
+    true_param = true_param,
+    criteria = c("coverage", "width")
+  )
+  
+  summary_list[[k]] <- cbind(
+    conditions[k, ],
+    true_ace = unique(res$true_param),
+    perf_abs,
+    perf_rel,
+    perf_cov
+  )
+}
+
+performance_summary <- do.call(rbind, summary_list)
 ```
 
 ```{r}
@@ -774,8 +867,22 @@ summary_table <- readRDS("Simulation_Scripts/performance_summary.rds")
 #| echo: false
 #| warning: false
 
-# aanel A: Relative Bias
-p_rel_bias <- ggplot(summary_table,
+# Absolute bias plot
+p_bias <- ggplot(performance_summary,
+                 aes(x = n, y = bias,
+                     color = confound_label, group = confound_label)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(x = "Sample size (n)",
+       y = "Bias in ACE estimation",
+       color = "Confounding\nnon-linearity",
+       title = "Absolute Bias from Omitting X2²") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+# Relative bias plot
+p_rel_bias <- ggplot(performance_summary,
                      aes(x = n, y = rel_bias,
                          color = confound_label, group = confound_label)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
@@ -784,12 +891,25 @@ p_rel_bias <- ggplot(summary_table,
   labs(x = "Sample size (n)",
        y = "Relative Bias",
        color = "Confounding\nnon-linearity",
-       title = "A. Relative Bias") +
+       title = "Relative Bias from Omitting X2²") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "right")
 
-# panel B: Relative RMSE
-p_rel_rmse <- ggplot(summary_table,
+# Absolute RMSE plot
+p_rmse <- ggplot(performance_summary,
+                 aes(x = n, y = rmse,
+                     color = confound_label, group = confound_label)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(x = "Sample size (n)",
+       y = "RMSE of ACE estimator",
+       color = "Confounding\nnon-linearity",
+       title = "Absolute RMSE of ACE Estimation") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+# Relative RMSE plot
+p_rel_rmse <- ggplot(performance_summary,
                      aes(x = n, y = rel_rmse,
                          color = confound_label, group = confound_label)) +
   geom_point(size = 3) +
@@ -797,12 +917,12 @@ p_rel_rmse <- ggplot(summary_table,
   labs(x = "Sample size (n)",
        y = "Relative RMSE",
        color = "Confounding\nnon-linearity",
-       title = "B. Relative RMSE") +
+       title = "Relative Accuracy of ACE Estimation") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "right")
 
-# panel C: Coverage
-p_coverage <- ggplot(summary_table,
+# Coverage plot
+p_coverage <- ggplot(performance_summary,
                      aes(x = n, y = coverage,
                          color = confound_label, group = confound_label)) +
   geom_hline(yintercept = 0.95, linetype = "dashed", color = "gray50") +
@@ -811,29 +931,29 @@ p_coverage <- ggplot(summary_table,
   labs(x = "Sample size (n)",
        y = "Coverage of 95% CI",
        color = "Confounding\nnon-linearity",
-       title = "C. Coverage Probability") +
+       title = "CI Coverage Under Residual Confounding") +
   coord_cartesian(ylim = c(0, 1)) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "right")
 
-# panel D: CI Width
-p_width <- ggplot(summary_table,
+# CI Width plot
+p_width <- ggplot(performance_summary,
                   aes(x = n, y = width,
                       color = confound_label, group = confound_label)) +
   geom_point(size = 3) +
   geom_line() +
   labs(x = "Sample size (n)",
-       y = "Average CI Width",
+       y = "Average CI width",
        color = "Confounding\nnon-linearity",
-       title = "D. Confidence Interval Width") +
+       title = "Precision of Confidence Intervals") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "right")
 
+# the 2x2 grid with all plots
 legend <- get_legend(
   p_rel_bias + theme(legend.position = "right")
 )
 
-# 2x2 grid 
 plot_grid(
   plot_grid(p_rel_bias, p_rel_rmse, p_coverage, p_width, 
             ncol = 2, nrow = 2),
@@ -849,7 +969,7 @@ plot_grid(
 #| tbl-cap: "Performance metrics for ACE estimator across simulation conditions"
 #| echo: false
 
-results_display <- summary_table %>%
+results_display <- performance_summary %>%
   select(n, confound_label, rel_bias, rel_rmse, coverage, width) %>%
   mutate(
     `Sample Size` = n,
@@ -864,6 +984,57 @@ results_display <- summary_table %>%
 
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
+
+### Reproducing the Simulation
+
+As described before, our Example 1 contains multiple scripts. For streamlined
+execution, we provide a master script (`06_run_all.R`) that runs the complete
+simulation and calculates the results as well as visualizations. The script
+begins by loading the required packages, then proceeds through three steps:
+first, it sources `03_run_simulation.R`, which in turn loads the data generation
+function (`01_data_generation.R`) and the model estimation functions
+(`02_models.R`) to run the Monte Carlo simulation; second, it sources
+`04_performance_metrics.R` to calculate the performance criteria from the saved
+simulation results; and third, it sources `05_plots.R` to generate the figures
+(see @fig-performance). The script has the following content (@lst-run-all):
+
+\small
+
+```{r}
+#| lst-label: lst-run-all
+#| lst-cap: "Master script for running the complete simulation workflow"
+#| eval: false
+#| echo: true
+#| message: false
+
+library(marginaleffects); library(simhelpers); library(rvinecopulib)
+library(doParallel); library(doRNG); library(ggplot2); library(cowplot); 
+library(dplyr)
+
+source("03_run_simulation.R")
+source("04_performance_metrics.R")
+source("05_plots.R")
+```
+
+\normalsize
+
+Thus, to reproduce the simulation from within the Nix shell, meaning after
+running nix-build and nix-shell (@lst-run-simulation):
+
+::: {#lst-run-simulation}
+\small
+
+``` bash
+Rscript 06_run_all.R
+```
+
+Running the complete simulation workflow \normalsize
+:::
+
+Alternatively, individual scripts can be executed separately (i.e.,
+`Rscript 03_run_simulation.R)`). Therefore, the key advantage of executing
+within `nix-shell` is that all dependencies—R version, packages, and system
+tools—match exactly those specified in `default.nix`.
 
 ## Additional Considerations for Advanced Workflows
 
