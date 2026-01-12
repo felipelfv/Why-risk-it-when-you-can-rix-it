@@ -34,7 +34,12 @@ format:
     keep-tex: true
     include-in-header:
       text: |
+        \usepackage{setspace}
+        \usepackage{etoolbox}
         \raggedbottom
+        % Single-space code blocks
+        \AtBeginEnvironment{Shaded}{\singlespacing}
+        \AtBeginEnvironment{verbatim}{\singlespacing}
   apaquarto-html: default
 
 bibliography: references.bib
@@ -325,23 +330,23 @@ found on the GitHub repository as a file named `generate_env.R`
 library(rix)
 
 rix(
-  date = "2025-08-25", # line 1
-  r_pkgs = c( # line 2
+  date = "2025-08-25", 
+  r_pkgs = c(
     "rix", "quarto", "knitr", "marginaleffects", "simhelpers",
     "ggplot2", "doParallel", "doRNG", "cowplot", "dplyr", "svglite",
     "rvinecopulib"
   ),
-  system_pkgs = c("quarto"), # line 3
-  tex_pkgs = c( # line 4
+  system_pkgs = c("quarto"), 
+  tex_pkgs = c( 
     "amsmath", "ninecolors", "apa7", "scalerel", "threeparttable",
     "threeparttablex", "endfloat", "environ", "multirow", "tcolorbox",
     "pdfcol", "tikzfill", "fontawesome5", "framed", "newtx",
     "fontaxes", "xstring", "wrapfig", "tabularray", "siunitx",
     "fvextra", "geometry", "setspace", "fancyvrb", "anyfontsize"
   ),
-  ide = "rstudio", # line 5
-  project_path = ".", # line 6
-  overwrite = TRUE # line 7
+  ide = "rstudio", 
+  project_path = ".", 
+  overwrite = TRUE 
 )
 ```
 
@@ -365,9 +370,7 @@ characteristics.
     following {rix} documentation:
     <https://docs.ropensci.org/rix/articles/c-using-rix-to-build-project-specific-environments.html>
 
-#### Specifying the R version (line 1)
-
-#### \[Maybe use line numbers from the code chunk? Alternatively maybe just list the argument? I wonder if we highlight the relevant line of code? JG\]
+#### Specifying the R version 
 
 Researchers must first determine which version of R to use. This can be
 accomplished in two ways: The `r_ver` argument accepts an exact version string
@@ -381,7 +384,7 @@ the `date` parameter to ensure temporal consistency across all software
 components [@rodrigues_baumann_2025] (see {rix} documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
-#### Declaring R package dependencies (line 2)
+#### Declaring R package dependencies 
 
 The `r_pkgs` argument accepts a character vector listing all required R packages
 by their CRAN names. These packages will be installed from the version
@@ -416,7 +419,7 @@ This ensures that exact development versions are obtained
 their CRAN versions (see {rix} documentation for more details:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
-#### Including system-level dependencies (line 3)
+#### Including system-level dependencies 
 
 Many R-based workflows require tools beyond R packages. The `system_pkgs`
 parameter specifies system-level software such as Quarto for document
@@ -428,7 +431,7 @@ extension for APA formatting, stored in the project's `_extensions/` directory
 [@rodrigues_baumann_2025] (see {rix} documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
-#### Specifying LaTeX packages (line 4)
+#### Specifying LaTeX packages 
 
 The `tex_pkgs` parameter specifies LaTeX packages needed for PDF compilation.
 When any packages are listed, Nix automatically includes a minimal TexLive
@@ -439,7 +442,7 @@ which packages are missing, and these can then be added to `tex_pkgs` (see {rix}
 documentation for more:
 <https://docs.ropensci.org/rix/articles/d2-installing-system-tools-and-texlive-packages-in-a-nix-environment.html>).
 
-#### Configuring the development environment (line 5)
+#### Configuring the development environment 
 
 The `ide` parameter determines whether an integrated development environment
 should be included in the Nix environment. Setting `ide = "rstudio"` installs a
@@ -458,7 +461,7 @@ Nix is project-specific and will not interfere with system-wide installations.
 See the {rix} documentation for detailed configuration instructions:
 <https://docs.ropensci.org/rix/articles/e-configuring-ide.html>.
 
-#### Setting file output parameters (line 6 and 7)
+#### Setting file output parameters 
 
 The `project_path` parameter indicates where the `default.nix` file should be
 written ("." denotes the current directory), while `overwrite` controls whether
@@ -495,7 +498,7 @@ python packages?JG**\]
 
 ### Generating the Environment Specification
 
-To execute the script for Example 1 \[1 not 2**?(JG)**\], either run from the
+To execute the .R script, either run from the
 terminal `Rscript generate_env.R`, source it from within R using
 `source("generate_env.R")`, or run the `rix::rix()` function above. This will
 generate the `default.nix` file in the project directory. This file serves as
@@ -508,8 +511,7 @@ exemptions to this, which we comment briefly in the next section.
 ## Step III: Building and Using the Reproducible Environment
 
 Once the `default.nix` file has been generated, the next step is to build the
-environment and use it to reproduce either the simulation analyses or the
-complete manuscript. This section demonstrates both workflows.
+environment and use it to reproduce the complete manuscript. 
 
 ### Building the Environment
 
@@ -520,20 +522,39 @@ file and execute (@lst-nix-build):
 \small
 
 ``` bash
-nix-build
+felipelfv@Felipes-MacBook-Pro Why-risk-it-when-you-can-rix-it % nix-build
 ```
-
 Building the Nix environment \normalsize
+:::
+
+The expected output should look similar to (@lst-nix-build-output):
+
+::: {#lst-nix-build-output}
+\small
+
+``` bash
+unpacking 'https://github.com/rstats-on-nix/nixpkgs/archive/2025-08-25.tar.gz'
+  into the Git cache...
+warning: ignoring untrusted substituter...
+warning: ignoring the client-specified setting...
+/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell
+```
+Expected output from `nix-build`  \normalsize
 :::
 
 This command builds the environment according to the specification. The first
 execution will download and install all required packages, which may take a few
 minutes depending on network speed and system resources. Subsequent builds use
-cached packages and complete in seconds. Upon successful completion, a symbolic
-link named `result` appears in the project directory, pointing to the
-constructed environment in the Nix store.
+cached packages and complete in seconds. Upon successful completion, a path
+to the constructed environment in the Nix store is printed (here,
+`/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell`), and a symbolic
+link named `result` appears in the project directory pointing to this location.
 
-**\[Footnote: make sure you configure cache?JG\]**
+Note that the warnings indicate that you are not configured as a trusted user, 
+so Nix cannot use the rstats-on-nix binary cache and will instead compile 
+packages from source, which is slower. To enable binary caching, 
+install the cachix client and configure the rstats-on-nix cache. See 
+<https://docs.ropensci.org/rix/articles/z-binary_cache.html> for instructions.
 
 To activate the environment, run (@lst-nix-shell):
 
@@ -541,68 +562,48 @@ To activate the environment, run (@lst-nix-shell):
 \small
 
 ``` bash
-nix-shell
+felipelfv@Felipes-MacBook-Pro Why-risk-it-when-you-can-rix-it % nix-shell
 ```
 
 Activating the Nix environment \normalsize
 :::
 
-This command drops the user into a shell where all specified packages and tools
-are available. The shell prompt typically changes to indicate that a Nix
-environment is active (e.g., `[nix-shell:~/project]$`).
+The expected output (if you have configured yourself as a trusted user, 
+otherwise the same warnings will appear) should look similar to 
+(@lst-nix-shell-output):
 
-**\[you can drop into a specific ide (here RStudio) by typing in `rstudio` this
-will open up the project in RStudio. Does this work? JG\]**
-
-As mentioned, it is worth noting that Nix shells do not fully isolate you from
-your existing system by default. For R users, this has a practical implication:
-packages installed in your regular R library (outside of Nix) could potentially
-be loaded when running R from within the Nix environment. The {rix} package
-addresses this automatically—when you call `rix()`, it also executes
-`rix_init()`, which creates a project-specific `.Rprofile`. This file configures
-R to ignore external package libraries and also disables `install.packages()`
-within the environment. The rationale is straightforward: any new packages
-should be added to `default.nix` and the environment rebuilt, preserving full
-reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^5]
-that also prevents access to other system programs not specified in
-`default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
-
-[^5]: For example, when preparing this manuscript without the `--pure` flag,
-    `quarto render` worked successfully. However, when using the `--pure` flag,
-    the build failed. Running `quarto check` from within the Nix shell (i.e.,
-    `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
-    the system's LaTeX installation (`/Library/TeX/texbin`) rather than being
-    restricted to only what was specified in `default.nix`.
-
-::: {#lst-nix-shell-pure}
-\small
-
+::: {#lst-nix-shell-output}
 ``` bash
-nix-shell --pure
+unpacking 'https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/...' 
+  into the Git cache...
+[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$
 ```
-
-Activating the Nix environment with strict isolation \normalsize
+Expected output from `nix-shell`
 :::
 
-## Reproducing the Complete Manuscript[^6]
+This command drops the user into a shell where all specified packages and tools
+are available. The shell prompt changes to indicate that a Nix environment is 
+active (here, `[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$`). 
+To verify that R is being provided by Nix rather than a system installation, 
+run `which R`. This should return a path within `/nix/store/`. Moreover, from 
+within the Nix shell, users can launch their IDE by typing its name 
+(e.g., `rstudio` or `positron`), which opens the IDE with the Nix environment 
+active.
 
-[^6]: See the {rix} documentation for more:
+## Reproducing the Complete Manuscript[^7]
+
+[^7]: See the {rix} documentation for more:
     <https://docs.ropensci.org/rix/articles/z-advanced-topic-building-an-environment-for-literate-programming.html>
 
-Beyond reproducing computational results, the Nix environment enables full
-manuscript reproducibility. The manuscript source file (`article.qmd`) combines
-narrative text, executable code chunks, and references to simulation outputs. In
+The manuscript source file (`article.qmd`) combines narrative text, executable 
+code chunks, and references to simulation outputs. In
 our specific case, we integrate the simulation run itself in the manuscript as
 well as the reporting (i.e., performance metrics calculation and visualization).
 In other words, the code in the separate .R files are included as code chunks
-(see `article.qmd` in the GitHub repository).
-
-This is not needed and most researchers would in fact probably not include the
+(see `article.qmd` in the GitHub repository). This is not needed and most 
+researchers would, in fact, probably not include the
 simulation run itself in the manuscript as many simulations take days to be
-completed. Thus, in this case, one could just proceed with the
-`Rscript 03_run_simulation.R` inside the nix shell. Then, in the `article.qmd`
-load the obtained results and integrate the code chunks that produce the
-performance metrics and visualization (see Figure 1).
+completed. 
 
 To render the manuscript (@lst-quarto-render):
 
@@ -610,7 +611,8 @@ To render the manuscript (@lst-quarto-render):
 \small
 
 ``` bash
-quarto render article.qmd
+[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$ 
+  quarto render Manuscript/article.qmd
 ```
 
 Rendering the manuscript with Quarto \normalsize
@@ -649,18 +651,47 @@ quarto::quarto_use_template("wjschne/apaquarto")
 
 \normalsize
 
-The final document (docx, .pdf, or .html) is saved directly in the project
-folder. Because Quarto is installed as a system-level package in our Nix
+The final document (.docx, .pdf, or .html) is saved directly in the project
+folder^[6]. Because Quarto is installed as a system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
 software configurations. If desired, the manuscript can also be reproduced
 interactively by opening the project folder in the user’s preferred IDE and
 running the code chunks directly.
 
-**\[Maybe footnote? Although we use *apaquarto* in this example, many
-alternative manuscript templates are available, and Nix is agnostic to the
-specific template employed, provided the necessary extensions are installed.
-(JG)\]**
+[^6]: Although we use *apaquarto* in this example, many
+    alternative manuscript templates are available, and Nix is agnostic to the
+    specific template employed, provided the necessary extensions are installed.
+
+As mentioned, it is worth noting that Nix shells do not fully isolate you from
+your existing system by default. For R users, this has a practical implication:
+packages installed in your regular R library (outside of Nix) could potentially
+be loaded when running R from within the Nix environment. The {rix} package
+addresses this automatically—when you call `rix()`, it also executes
+`rix_init()`, which creates a project-specific `.Rprofile`. This file configures
+R to ignore external package libraries and also disables `install.packages()`
+within the environment. The rationale is straightforward: any new packages
+should be added to `default.nix` and the environment rebuilt, preserving full
+reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^7]
+that also prevents access to other system programs not specified in
+`default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
+
+[^7]: For example, when preparing this manuscript without the `--pure` flag,
+    `quarto render` worked successfully. However, when using the `--pure` flag,
+    the build failed. Running `quarto check` from within the Nix shell (i.e.,
+    `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
+    the system's LaTeX installation (`/Library/TeX/texbin`) rather than being
+    restricted to only what was specified in `default.nix`.
+
+::: {#lst-nix-shell-pure}
+\small
+
+``` bash
+nix-shell --pure
+```
+
+Activating the Nix environment with strict isolation \normalsize
+:::
 
 ```{r}
 #| lst-label: lst-data-generation
