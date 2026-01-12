@@ -11,8 +11,8 @@ gamma1 <- -0.4
 # this will generate one dataset
 gen_data <- function(n, gamma2) {
   
+  # complete overhead from line 16 to 18. This was done just to use a package written in C++:
   # generate independent uniform pairs via independence copula, then transform to standard normal
-  # complete overhead from line 16 to 18. This was done just to use a package written in C++
   u <- rbicop(n, "indep", 0, numeric(0))
   X2 <- qnorm(u[, 1])
   error_X1 <- qnorm(u[, 2])

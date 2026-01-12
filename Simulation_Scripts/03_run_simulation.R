@@ -5,8 +5,8 @@ source("Simulation_Scripts/01_data_generation.R")
 source("Simulation_Scripts/02_models.R")
 
 # simulation parameters
-nsim  <- 1000
-ncore <- 4
+nsim  <- 100
+ncore <- 1
 master_seed <- 12345
 
 # design matrix
@@ -28,10 +28,9 @@ designs$confound_label <- factor(
 
 # step 1: compute true values based on a large sample
 # note that in our scenario this is possible to be done analytically
-cat("Computing true ACE values...\n")
+cat("Computing true ACE values\n")
 true_ACE_values <- sapply(gamma2_values, compute_true_ace)
-names(true_ACE_values) <- as.character(gamma2_values)
-print(true_ACE_values)
+names(true_ACE_values) <- as.character(gamma2_values); (true_ACE_values)
 
 # step 2: parallel processing
 cl <- makeCluster(ncore)
@@ -72,4 +71,4 @@ stopCluster(cl)
 sim_results <- do.call(rbind, all_results)
 saveRDS(sim_results, file = "Simulation_Scripts/sim_results.rds")
 
-cat("\n\nSimulation complete. Results saved to sim_results.rds\n")
+cat("\nSimulation complete. Results saved to sim_results.rds\n")

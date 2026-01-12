@@ -49,4 +49,4 @@ performance_summary <- do.call(rbind, summary_list)
 
 # save results to be used for reporting
 saveRDS(performance_summary, file = "Simulation_Scripts/performance_summary.rds")
-cat("\nPerformance metrics saved.\n")
+cat("\nPerformance metrics saved\n")
