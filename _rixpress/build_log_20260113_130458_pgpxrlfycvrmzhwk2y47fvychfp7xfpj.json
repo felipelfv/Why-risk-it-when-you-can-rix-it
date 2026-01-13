@@ -1,0 +1,26 @@
+[
+  {
+    "derivation": "all-derivations",
+    "build_success": true,
+    "path": "/nix/store/pgpxrlfycvrmzhwk2y47fvychfp7xfpj-all-derivations",
+    "output": ["performance_summary", "plots", "sim_results"]
+  },
+  {
+    "derivation": "performance_summary",
+    "build_success": true,
+    "path": "/nix/store/brwc7xcm76gyvg6d5aqfmjrwnqrvyix7-performance_summary",
+    "output": "performance_summary"
+  },
+  {
+    "derivation": "plots",
+    "build_success": true,
+    "path": "/nix/store/bgk5i9wkfdx5frhs7gw1ynbraz9iibhv-plots",
+    "output": "plots"
+  },
+  {
+    "derivation": "sim_results",
+    "build_success": true,
+    "path": "/nix/store/wck90srf6lga8hrnhg2h4kqffiykg7rh-sim_results",
+    "output": "sim_results"
+  }
+]

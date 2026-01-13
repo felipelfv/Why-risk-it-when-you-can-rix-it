@@ -1,5 +1,7 @@
 # Data Generation Function
 
+library(rvinecopulib)
+
 # fixed DGP parameters
 alpha0 <- 0
 alpha1 <- 0.5   

@@ -1,0 +1,20 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+\caption{\label{fig-performance}Performance of ACE estimator across
+sample sizes and confounding severity. Panel A shows relative bias,
+Panel B shows relative RMSE, Panel C shows coverage probability of 95\%
+confidence intervals (dashed line at nominal 0.95 level), and Panel D
+shows average confidence interval width. Results demonstrate that model
+misspecification induces systematic bias that persists across sample
+sizes, while increasing sample size improves precision but not accuracy
+under misspecification.}
+
+\centering{
+
+\includegraphics{article_files/figure-pdf/fig-performance-1.pdf}
+
+}
+
+\end{figure*}

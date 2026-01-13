@@ -1,0 +1,25 @@
+{
+  "derivations": [
+    {
+      "deriv_name": ["sim_results"],
+      "depends": [],
+      "decoder": ["readRDS"],
+      "type": ["rxp_r"],
+      "noop_build": [false]
+    },
+    {
+      "deriv_name": ["performance_summary"],
+      "depends": ["sim_results"],
+      "decoder": ["readRDS"],
+      "type": ["rxp_r"],
+      "noop_build": [false]
+    },
+    {
+      "deriv_name": ["plots"],
+      "depends": ["performance_summary"],
+      "decoder": ["readRDS"],
+      "type": ["rxp_r"],
+      "noop_build": [false]
+    }
+  ]
+}
