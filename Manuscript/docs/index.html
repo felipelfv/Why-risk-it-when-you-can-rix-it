@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -86,13 +86,14 @@ div.csl-indent {
 <script src="article_files/libs/clipboard/clipboard.min.js"></script>
 <script src="article_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="article_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="article_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="article_files/libs/quarto-html/popper.min.js"></script>
 <script src="article_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="article_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="article_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="article_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="article_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="article_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="article_files/libs/bootstrap/bootstrap-39f38974e20fb8b0b5af1228e1aabf52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="article_files/libs/bootstrap/bootstrap-79f10921a22c9001ae004b97f5ab471a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -122,7 +123,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -266,7 +267,7 @@ window.Quarto = {
 Listing&nbsp;1: Installing {rix} from CRAN
 </figcaption>
 <div aria-describedby="lst-install-rix-cran-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"rix"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"rix"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -277,8 +278,8 @@ Listing&nbsp;1: Installing {rix} from CRAN
 Listing&nbsp;2: Installing {rix} directly via Nix (no R required)
 </figcaption>
 <div aria-describedby="lst-install-rix-nix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it %</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">nix-shell</span> <span class="at">--expr</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-sl</span> https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix<span class="va">)</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it %</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">nix-shell</span> <span class="at">--expr</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-sl</span> https://raw.githubusercontent.com/ropensci/rix/main/inst/extdata/default.nix<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -295,7 +296,7 @@ Listing&nbsp;2: Installing {rix} directly via Nix (no R required)
 Listing&nbsp;3: Environment specification for the manuscript using rix()
 </figcaption>
 <div aria-describedby="lst-rix-env-manuscript-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rix)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rix)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rix</span>(</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="st">"2025-08-25"</span>, </span>
@@ -315,7 +316,7 @@ Listing&nbsp;3: Environment specification for the manuscript using rix()
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">"rstudio"</span>, </span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">project_path =</span> <span class="st">"."</span>, </span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span> </span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -338,11 +339,11 @@ Listing&nbsp;3: Environment specification for the manuscript using rix()
 Listing&nbsp;4: Example for the git_pkgs argument
 </figcaption>
 <div aria-describedby="lst-git-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>git_pkgs <span class="ot">=</span> <span class="fu">list</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>git_pkgs <span class="ot">=</span> <span class="fu">list</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">package_name =</span> <span class="st">"marginaleffects"</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">repo_url =</span> <span class="st">"https://github.com/vincentarelbundock/marginaleffects"</span>,</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">commit =</span> <span class="st">"304bff91dc31ae28b227a8485bfa4f7bdc86d625"</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -375,8 +376,8 @@ Listing&nbsp;4: Example for the git_pkgs argument
 Listing&nbsp;5: Including Python packages
 </figcaption>
 <div aria-describedby="lst-python-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">"3.12"</span>, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">"polars"</span>,<span class="st">"pandas"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">"3.12"</span>, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">"polars"</span>,<span class="st">"pandas"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -401,7 +402,7 @@ Listing&nbsp;5: Including Python packages
 Listing&nbsp;6: Building the Nix environment
 </figcaption>
 <div aria-describedby="lst-nix-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-build</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-build</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -412,11 +413,11 @@ Listing&nbsp;6: Building the Nix environment
 Listing&nbsp;7: Expected output from <code>nix-build</code>
 </figcaption>
 <div aria-describedby="lst-nix-build-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://github.com/rstats-on-nix/nixpkgs/archive/2025-08-25.tar.gz'</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://github.com/rstats-on-nix/nixpkgs/archive/2025-08-25.tar.gz'</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">into</span> the Git cache...</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring untrusted substituter...</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring the client-specified setting...</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -429,7 +430,7 @@ Listing&nbsp;7: Expected output from <code>nix-build</code>
 Listing&nbsp;8: Activating the Nix environment
 </figcaption>
 <div aria-describedby="lst-nix-shell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-shell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-shell</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -440,9 +441,9 @@ Listing&nbsp;8: Activating the Nix environment
 Listing&nbsp;9: Expected output from <code>nix-shell</code>
 </figcaption>
 <div aria-describedby="lst-nix-shell-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/...'</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/...'</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">into</span> the Git cache...</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -459,8 +460,8 @@ Listing&nbsp;9: Expected output from <code>nix-shell</code>
 Listing&nbsp;10: Rendering the manuscript with Quarto
 </figcaption>
 <div aria-describedby="lst-quarto-render-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -472,7 +473,7 @@ Listing&nbsp;10: Rendering the manuscript with Quarto
 Listing&nbsp;11: Installing the apaquarto extension
 </figcaption>
 <div aria-describedby="lst-apaquarto-install-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> use template wjschne/apaquarto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> use template wjschne/apaquarto</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -484,7 +485,7 @@ Listing&nbsp;11: Installing the apaquarto extension
 Listing&nbsp;12: Installing the apaquarto extension from R
 </figcaption>
 <div aria-describedby="lst-apaquarto-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>quarto<span class="sc">::</span><span class="fu">quarto_use_template</span>(<span class="st">"wjschne/apaquarto"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>quarto<span class="sc">::</span><span class="fu">quarto_use_template</span>(<span class="st">"wjschne/apaquarto"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -497,7 +498,7 @@ Listing&nbsp;12: Installing the apaquarto extension from R
 Listing&nbsp;13: Activating the Nix environment with strict isolation
 </figcaption>
 <div aria-describedby="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -511,13 +512,13 @@ Listing&nbsp;13: Activating the Nix environment with strict isolation
 Listing&nbsp;14: Master script for running the complete simulation workflow
 </figcaption>
 <div aria-describedby="lst-run-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects); <span class="fu">library</span>(simhelpers); <span class="fu">library</span>(rvinecopulib)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects); <span class="fu">library</span>(simhelpers); <span class="fu">library</span>(rvinecopulib)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doParallel); <span class="fu">library</span>(doRNG); <span class="fu">library</span>(ggplot2); <span class="fu">library</span>(cowplot); </span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"03_run_simulation.R"</span>)</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"04_performance_metrics.R"</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"05_plots.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"05_plots.R"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -529,7 +530,7 @@ Listing&nbsp;14: Master script for running the complete simulation workflow
 Listing&nbsp;15: Running the complete simulation workflow
 </figcaption>
 <div aria-describedby="lst-run-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> 06_run_all.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> 06_run_all.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -650,14 +651,14 @@ Simonsohn, U. (2020). <em>Groundhog: Version-control for CRAN, github, and gitla
 Ushey, K. (2024). <em>Renv: Project environments</em>.
 </div>
 <div id="ref-vazire2018" class="csl-entry" role="listitem">
-Vazire, S. (2018). Implications of the Credibility Revolution for Productivity, Creativity, and Progress. <em>Perspectives on Psychological Science</em>, <em>13</em>(4), 411–417. <a href="https://doi.org/10.1177/1745691617751884">https://doi.org/10.1177/1745691617751884</a>
+Vazire, S. (2018). Implications of the credibility revolution for productivity, creativity, and progress. <em>Perspectives on Psychological Science</em>, <em>13</em>(4), 411–417. <a href="https://doi.org/10.1177/1745691617751884">https://doi.org/10.1177/1745691617751884</a>
 </div>
 <div id="ref-white_etall_2024" class="csl-entry" role="listitem">
 White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to check a simulation study. <em>International Journal of Epidemiology</em>, <em>53</em>(1), dyad134. <a href="https://doi.org/10.1093/ije/dyad134">https://doi.org/10.1093/ije/dyad134</a>
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix="">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -770,7 +771,7 @@ White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to che
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix="">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -864,7 +865,7 @@ White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to che
 </tbody>
 </table>
 <p><strong>Performance Criteria.</strong> Table 1 presents the performance criteria used to evaluate the ACE estimator across simulation conditions.</p>
-<p><strong>Computational Details.</strong> The simulation was conducted on a MacBook Pro (…), running macOS Sequoia 15.6.1. All analyses were performed in R (version 4.5.1). Parallel processing was implemented through the {doParallel} package (version 1.0.17), with {doRNG} (version 1.8.6.2) to ensure independent and reproducible random number streams. For data generation we used the {rvinecopulib} package (version 0.7.3.1.0). The estimator was implemented using the {marginaleffects} package (version 0.28.0). Data wrangling was performed with {dplyr} (version 1.1.4). Method performance was assessed through multiple metrics following the formulas from the {simhelpers} package (version 0.3.1). Figures were produced with {ggplot2} (version 3.5.2) and {cowplot} (version 1.2.0).</p>
+<p><strong>Computational Details.</strong> The simulation was conducted on a MacBook Pro (…), running macOS Sequoia 15.6.1. All analyses were performed in R (version 4.5.2). Parallel processing was implemented through the {doParallel} package (version 1.0.17), with {doRNG} (version 1.8.6.2) to ensure independent and reproducible random number streams. For data generation we used the {rvinecopulib} package (version 0.7.3.1.0). The estimator was implemented using the {marginaleffects} package (version 0.31.0). Data wrangling was performed with {dplyr} (version 1.1.4). Method performance was assessed through multiple metrics following the formulas from the {simhelpers} package (version 0.3.1). Figures were produced with {ggplot2} (version 4.0.1) and {cowplot} (version 1.2.0).</p>
 </section>
 <section class="level1">
 <h1>Appendix B</h1>
@@ -931,13 +932,14 @@ White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to che
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
