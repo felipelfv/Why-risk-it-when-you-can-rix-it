@@ -36,6 +36,10 @@ jobs:
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
 
+    - name: Remove RStudio from Nix environment (not needed on CI)
+      run: |
+        sed -i 's/rstudioWrapper/rWrapper/g' default.nix
+
     - name: Build development environment
       run: |
         nix-build

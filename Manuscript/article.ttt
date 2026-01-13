@@ -1,0 +1,57 @@
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\caption{Performance criteria for evaluating the ACE estimator.
+\(\hat{\theta}_k\) denotes the ACE estimate from replication \(k\) (for
+\(k = 1, \ldots, K\)), where \(K = 1000\) is the number of replications,
+and \(\theta\) denotes the true ACE for a given condition. For coverage
+and width criteria, \(A_k\) and \(B_k\) denote the lower and upper
+endpoints of the 95\% confidence interval from replication \(k\),
+\(W_k = B_k - A_k\) is the interval width, \(c_{\beta}\) is the
+estimated coverage probability, and \(I(\cdot)\) is an indicator
+function equaling 1 if the condition is true and 0 otherwise. The Monte
+Carlo standard error (MCSE) quantifies the simulation uncertainty in
+each performance measure estimate}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+MCSE
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Criterion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+MCSE
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Bias & \(\frac{1}{K}\sum_{k=1}^K \hat{\theta}_k - \theta\) &
+\(\sqrt{\frac{1}{K(K-1)}\sum_{k=1}^K(\hat{\theta}_k - \bar{\hat{\theta}})^2}\) \\
+Variance &
+\(\frac{1}{K-1}\sum_{k=1}^K(\hat{\theta}_k - \bar{\hat{\theta}})^2\) &
+\(\sqrt{\frac{K-1}{K}}\cdot\frac{1}{K-1}\sum_{k=1}^K(\hat{\theta}_k - \bar{\hat{\theta}})^2\) \\
+RMSE & \(\sqrt{\frac{1}{K}\sum_{k=1}^K (\hat{\theta}_k - \theta)^2}\) &
+\(\sqrt{\frac{K-1}{K}\sum_{j=1}^K\left(\sqrt{(\hat{\theta}_j - \theta)^2} - \overline{RMSE}\right)^2}\) \\
+Relative Bias & \(\frac{1}{\theta K}\sum_{k=1}^K \hat{\theta}_k\) &
+\(\frac{1}{\theta}\sqrt{\frac{1}{K(K-1)}\sum_{k=1}^K(\hat{\theta}_k - \bar{\hat{\theta}})^2}\) \\
+Relative RMSE &
+\(\frac{1}{\theta}\sqrt{\frac{1}{K}\sum_{k=1}^K (\hat{\theta}_k - \theta)^2}\)
+&
+\(\frac{1}{\theta}\sqrt{\frac{K-1}{K}\sum_{j=1}^K\left(\sqrt{(\hat{\theta}_j - \theta)^2} - \overline{RMSE}\right)^2}\) \\
+Coverage & \(\frac{1}{K}\sum_{k=1}^K I(A_k \leq \theta \leq B_k)\) &
+\(\sqrt{\frac{c_{\beta}(1 - c_{\beta})}{K}}\) \\
+Width & \(\frac{1}{K}\sum_{k=1}^K (B_k - A_k)\) &
+\(\sqrt{\frac{1}{K(K-1)}\sum_{k=1}^K(W_k - \bar{W})^2}\) \\
+\end{longtable}

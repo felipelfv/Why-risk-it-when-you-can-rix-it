@@ -1,5 +1,7 @@
 # Model Estimation Functions
 
+library(marginaleffects)
+
 # for running one simulation replicate with misspecified model
 run_one_rep <- function(n, gamma2) {
   dat <- gen_data(n, gamma2)

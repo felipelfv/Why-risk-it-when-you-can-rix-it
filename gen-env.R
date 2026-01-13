@@ -1,7 +1,7 @@
 library(rix)
 
 rix(
-  date = "2025-08-25",
+  date = "2026-01-12",
   r_pkgs = c(
     "rix",
     "quarto",
@@ -14,7 +14,8 @@ rix(
     "cowplot",
     "dplyr",
     "svglite",
-    "rvinecopulib"
+    "rvinecopulib",
+    "rixpress"
   ),
   system_pkgs = c("quarto"),
   #system_pkgs = c("quarto", "git", "pandoc", "librsvg", "typst"),
