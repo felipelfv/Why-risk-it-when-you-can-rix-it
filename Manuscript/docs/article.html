@@ -164,7 +164,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#reproducing-the-complete-manuscript5" id="toc-reproducing-the-complete-manuscript5" class="nav-link" data-scroll-target="#reproducing-the-complete-manuscript5">Reproducing the Complete Manuscript</a>
   <ul class="collapse">
-  <li><a href="#reproducing-the-simulation" id="toc-reproducing-the-simulation" class="nav-link" data-scroll-target="#reproducing-the-simulation">Reproducing the Simulation</a></li>
+  <li><a href="#reproducing-the-simulation-and-results" id="toc-reproducing-the-simulation-and-results" class="nav-link" data-scroll-target="#reproducing-the-simulation-and-results">Reproducing the Simulation and Results</a></li>
   </ul></li>
   <li><a href="#additional-considerations-for-advanced-workflows" id="toc-additional-considerations-for-advanced-workflows" class="nav-link" data-scroll-target="#additional-considerations-for-advanced-workflows">Additional Considerations for Advanced Workflows</a>
   <ul class="collapse">
@@ -216,7 +216,7 @@ window.Quarto = {
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 5533</p>
+<p><em>Word Count</em>: 5576</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -232,8 +232,7 @@ window.Quarto = {
 </section>
 <section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
 <h1>A Practical Example: Setting up a Reproducible Simulation Study with {rix}</h1>
-<p>Before proceeding with the technical information and tutorial, we refer readers to the Appendix A, which presents a simulation study scenario designed to ground the subsequent discussion in a concrete example<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The scenario mimics a typical methods manuscript, describing both the statistical design and the computational details one might encounter in practice. While readers can follow the tutorial without engaging with the specifics of the simulation, we include it to anchor the discussion in something more tangible.</p>
-<p>The code implementing this simulation follows a conventional format: multiple component files, each handling a distinct analytical phase. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: data generation (<code>Simulation_Scripts/01_data_generation.R</code>), statistical model specification (<code>Simulation_Scripts/02_models.R</code>), simulation execution (<code>Simulation_Scripts/03_run_simulation.R</code>), performance metric calculation (<code>Simulation_Scripts/04_performance_metrics.R</code>), and results visualization (<code>Simulation_Scripts/05_plots.R</code>).</p>
+<p>Before proceeding with the technical information and tutorial, we refer readers to the Appendix A, which presents a simulation study scenario designed to ground the subsequent discussion in a concrete example<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. The scenario mimics a typical methods manuscript, describing both the statistical design and the computational details one might encounter in practice. While readers can follow the tutorial without engaging with the specifics of the simulation, we include it to anchor the discussion in something more tangible. The code implementing this simulation follows a conventional format: multiple component files, each handling a distinct analytical phase. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: data generation (<code>Simulation_Scripts/01_data_generation.R</code>), statistical model specification (<code>Simulation_Scripts/02_models.R</code>), simulation execution (<code>Simulation_Scripts/03_run_simulation.R</code>), performance metric calculation (<code>Simulation_Scripts/04_performance_metrics.R</code>), and results visualization (<code>Simulation_Scripts/05_plots.R</code>).</p>
 <p>Notably, the simulation study depends on several R packages (see Appendix A). Thus, let’s pretend a researcher whats to reproduce our simulation and results reported in the article. What might prevent them from obtaining identical results? The most immediate concern may involve package versions. A researcher installing packages today may encounter errors if functions have been renamed or deprecated, or may obtain results that differ subtly due to changes in computational defaults. Beyond package versions, some R packages depend on system-level libraries that must be installed separately from R itself. Our simulation illustrates this directly: the {rvinecopulib} package provides an interface to a C++ library and links against Boost, Eigen, and RcppThread <span class="citation" data-cites="rvinecopulib">(<a href="#ref-rvinecopulib" role="doc-biblioref">Nagler &amp; Vatter, 2025</a>)</span>. Moreover, the R language itself introduces version dependencies. Code written for a recent version of R may use syntax or functions unavailable in earlier versions (e.g., native pipe operator <code>|&gt;</code>, introduced in R 4.1). More subtly, R’s random number generator has changed across major versions, meaning that identical code with identical seeds can produce different random sequences depending on the R version <span class="citation" data-cites="ottoboni_stark_2018">(<a href="#ref-ottoboni_stark_2018" role="doc-biblioref">Ottoboni &amp; Stark, 2018</a>)</span>. For simulation studies where reproducibility of specific random draws matters, this version sensitivity is consequential. Moreover, if one also employs literate programming for the manuscript as in our case, additional dependencies arise: R Markdown or Quarto documents require pandoc, and PDF output requires a LaTeX distribution—each with its own versioning and platform-specific installation.</p>
 </section>
 <section id="nix-and-rix-a-comprehensive-solution" class="level1">
@@ -386,7 +385,19 @@ Listing&nbsp;5: Including Python packages
 </section>
 <section id="generating-the-environment-specification" class="level3">
 <h3 data-anchor-id="generating-the-environment-specification">Generating the Environment Specification</h3>
-<p>After defining the environment with <code>rix()</code>, we need to execute the .R script. either run from the terminal <code>Rscript generate_env.R</code>, source it from within R using <code>source("generate_env.R")</code>, or run the <code>rix::rix()</code> function above. This will generate the <code>default.nix</code> file in the project directory. This file serves as the formal, machine-readable specification of the computational environment. Importantly, <code>rix()</code> automatically invokes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code> file that prevents package library conflicts and disables <code>install.packages()</code> to maintain environment integrity. There may be exemptions to this, which we comment briefly in the next section.</p>
+<p>After defining the environment with <code>rix()</code>, the environment specification must be generated by executing the corresponding <code>.R</code> script. From the terminal, navigate to the study directory and execute (<a href="#lst-generate-env" class="quarto-xref">Listing&nbsp;6</a>):</p>
+<div id="lst-generate-env" class="listing quarto-float quarto-figure quarto-figure-left">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-generate-env-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;6: Generate the environment specification
+</figcaption>
+<div aria-describedby="lst-generate-env-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> generate_env.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+<p>Alternatively, the same script can be executed from within R: <code>source("generate_env.R")</code> or <code>rix::rix()</code>. This step produces the <code>default.nix</code> file in the project directory, which serves as the formal, machine-readable specification of the computational environment. Importantly, <code>rix()</code> automatically invokes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code> file that prevents package library conflicts and disables <code>install.packages()</code> to maintain environment integrity. There may be exemptions to this, which we comment briefly in the next section.</p>
 </section>
 </section>
 <section id="step-iii-building-and-using-the-reproducible-environment" class="level2">
@@ -394,50 +405,50 @@ Listing&nbsp;5: Including Python packages
 <p>Once the <code>default.nix</code> file has been generated, the next step is to build the environment and use it to reproduce the complete manuscript.</p>
 <section id="building-the-environment" class="level3">
 <h3 data-anchor-id="building-the-environment">Building the Environment</h3>
-<p>From the terminal, navigate to the study directory containing the <code>default.nix</code> file and execute (<a href="#lst-nix-build" class="quarto-xref">Listing&nbsp;6</a>):</p>
+<p>From the terminal, navigate to the study directory containing the <code>default.nix</code> file and execute (<a href="#lst-nix-build" class="quarto-xref">Listing&nbsp;7</a>):</p>
 <div id="lst-nix-build" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;6: Building the Nix environment
+Listing&nbsp;7: Building the Nix environment
 </figcaption>
 <div aria-describedby="lst-nix-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-build</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-build</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
-<p>The expected output should look similar to (<a href="#lst-nix-build-output" class="quarto-xref">Listing&nbsp;7</a>):</p>
+<p>The expected output should look similar to (<a href="#lst-nix-build-output" class="quarto-xref">Listing&nbsp;8</a>):</p>
 <div id="lst-nix-build-output" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-build-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;7: Expected output from <code>nix-build</code>
+Listing&nbsp;8: Expected output from <code>nix-build</code>
 </figcaption>
 <div aria-describedby="lst-nix-build-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://github.com/rstats-on-nix/nixpkgs/archive/2025-08-25.tar.gz'</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">into</span> the Git cache...</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring untrusted substituter...</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring the client-specified setting...</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://github.com/rstats-on-nix/nixpkgs/archive/2025-08-25.tar.gz'</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">into</span> the Git cache...</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring untrusted substituter...</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> ignoring the client-specified setting...</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
 <p>This command builds the environment according to the specification. The first execution will download and install all required packages, which may take a few minutes depending on network speed and system resources. Subsequent builds use cached packages and complete in seconds. Upon successful completion, a path to the constructed environment in the Nix store is printed (here, <code>/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</code>), and a symbolic link named <code>result</code> appears in the project directory pointing to this location.</p>
 <p>Note that the warnings indicate that you are not configured as a trusted user, so Nix cannot use the rstats-on-nix binary cache and will instead compile packages from source, which is slower. To enable binary caching, install the cachix client and configure the rstats-on-nix cache. See <a href="https://docs.ropensci.org/rix/articles/z-binary_cache.html" class="uri">https://docs.ropensci.org/rix/articles/z-binary_cache.html</a> for instructions.</p>
-<p>To activate the environment, run (<a href="#lst-nix-shell" class="quarto-xref">Listing&nbsp;8</a>):</p>
+<p>To activate the environment, run (<a href="#lst-nix-shell" class="quarto-xref">Listing&nbsp;9</a>):</p>
 <div id="lst-nix-shell" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;8: Activating the Nix environment
+Listing&nbsp;9: Activating the Nix environment
 </figcaption>
 <div aria-describedby="lst-nix-shell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-shell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">felipelfv@Felipes-MacBook-Pro</span> Why-risk-it-when-you-can-rix-it % nix-shell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
-<p>The expected output (if you have configured yourself as a trusted user, otherwise the same warnings will appear) should look similar to (<a href="#lst-nix-shell-output" class="quarto-xref">Listing&nbsp;9</a>):</p>
+<p>The expected output (if you have configured yourself as a trusted user, otherwise the same warnings will appear) should look similar to (<a href="#lst-nix-shell-output" class="quarto-xref">Listing&nbsp;10</a>):</p>
 <div id="lst-nix-shell-output" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;9: Expected output from <code>nix-shell</code>
+Listing&nbsp;10: Expected output from <code>nix-shell</code>
 </figcaption>
 <div aria-describedby="lst-nix-shell-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode" id="lst-nix-shell-output"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="lst-nix-shell-output-1"><a href="#lst-nix-shell-output-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unpacking</span> <span class="st">'https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/...'</span> </span>
@@ -452,36 +463,36 @@ Listing&nbsp;9: Expected output from <code>nix-shell</code>
 <section id="reproducing-the-complete-manuscript5" class="level2">
 <h2 data-anchor-id="reproducing-the-complete-manuscript5">Reproducing the Complete Manuscript<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></h2>
 <p>The manuscript source file (<code>article.qmd</code>) combines narrative text, executable code chunks, and references to simulation outputs. In our specific case, we integrate the simulation run itself in the manuscript as well as the reporting (i.e., performance metrics calculation and visualization). In other words, the code in the aforementioned separate .R files inside the folder Simulation_Scripts are included as code chunks (see <code>article.qmd</code> in the GitHub repository). This is not needed and most researchers would, in fact, probably not include the simulation run itself in the manuscript as many simulations take days to be completed.</p>
-<p>To render the manuscript (<a href="#lst-quarto-render" class="quarto-xref">Listing&nbsp;10</a>):</p>
+<p>To render the manuscript (<a href="#lst-quarto-render" class="quarto-xref">Listing&nbsp;11</a>):</p>
 <div id="lst-quarto-render" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-quarto-render-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;10: Rendering the manuscript with Quarto
+Listing&nbsp;11: Rendering the manuscript with Quarto
 </figcaption>
 <div aria-describedby="lst-quarto-render-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
 <p>This command executes all code chunks in the manuscript, incorporates results and figures, and generates a formatted PDF following APA style guidelines via the apaquarto extension <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. This extension is saved in the project repo already.</p>
-<p>To download this extension for your own work you can install the extension by using the terminal (<a href="#lst-apaquarto-install" class="quarto-xref">Listing&nbsp;11</a>):</p>
+<p>To download this extension for your own work you can install the extension by using the terminal (<a href="#lst-apaquarto-install" class="quarto-xref">Listing&nbsp;12</a>):</p>
 <div id="lst-apaquarto-install" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-apaquarto-install-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;11: Installing the apaquarto extension
+Listing&nbsp;12: Installing the apaquarto extension
 </figcaption>
 <div aria-describedby="lst-apaquarto-install-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> use template wjschne/apaquarto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> use template wjschne/apaquarto</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
-<p>or in the console (<a href="#lst-apaquarto-r" class="quarto-xref">Listing&nbsp;12</a>):</p>
+<p>or in the console (<a href="#lst-apaquarto-r" class="quarto-xref">Listing&nbsp;13</a>):</p>
 <div class="cell">
 <div id="lst-apaquarto-r" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-apaquarto-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;12: Installing the apaquarto extension from R
+Listing&nbsp;13: Installing the apaquarto extension from R
 </figcaption>
 <div aria-describedby="lst-apaquarto-r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="sourceCode cell-code" id="lst-apaquarto-r"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-apaquarto-r-1"><a href="#lst-apaquarto-r-1" aria-hidden="true" tabindex="-1"></a>quarto<span class="sc">::</span><span class="fu">quarto_use_template</span>(<span class="st">"wjschne/apaquarto"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -490,29 +501,29 @@ Listing&nbsp;12: Installing the apaquarto extension from R
 </div>
 </div>
 <p>The final document (.docx, .pdf, or .html) is saved directly in the project folder<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE and running the code chunks directly.</p>
-<p>As mentioned, it is worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing&nbsp;13</a>):</p>
+<p>As mentioned, it is worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing&nbsp;14</a>):</p>
 <div id="lst-nix-shell-pure" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;13: Activating the Nix environment with strict isolation
+Listing&nbsp;14: Activating the Nix environment with strict isolation
 </figcaption>
 <div aria-describedby="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
-<section id="reproducing-the-simulation" class="level3">
-<h3 data-anchor-id="reproducing-the-simulation">Reproducing the Simulation</h3>
+<section id="reproducing-the-simulation-and-results" class="level3">
+<h3 data-anchor-id="reproducing-the-simulation-and-results">Reproducing the Simulation and Results</h3>
 <p>As previously mentioned, and although we recommend it, researchers may not want or know how to use dynamic document generation. In this case, one could still follow the same steps shown thus far focusing only on the .R files while still benefiting from a reproducible computational environment.</p>
-<p>To illustrate it, after following step I-III, without needing to define packages for the document rendering in step I, the simulation study may be reproduced (<a href="#lst-run-simulation" class="quarto-xref">Listing&nbsp;14</a>) as follows:</p>
+<p>To illustrate it, after following Steps I-III, without needing to define packages for the document rendering in Step I, the simulation study may be reproduced (<a href="#lst-run-simulation" class="quarto-xref">Listing&nbsp;15</a>) as follows:</p>
 <div id="lst-run-simulation" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-run-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing&nbsp;14: Running the complete simulation workflow
+Listing&nbsp;15: Running the complete simulation workflow
 </figcaption>
 <div aria-describedby="lst-run-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> 03_run_simulation.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> 03_run_simulation.R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </figure>
 </div>
@@ -531,6 +542,7 @@ Listing&nbsp;14: Running the complete simulation workflow
 <section id="using-rixpress-for-polyglot-pipelines" class="level4">
 <h4 data-anchor-id="using-rixpress-for-polyglot-pipelines">Using {rixpress} for Polyglot Pipelines.</h4>
 <p>The {rixpress} package <span class="citation" data-cites="rixpress">(<a href="#ref-rixpress" role="doc-biblioref">Rodrigues, 2025</a>)</span>, a sister package to {rix}, uses Nix itself as the build automation tool rather than operating within a Nix environment. Each pipeline step becomes a Nix derivation, providing hermetic builds with sandboxed execution and content-addressable caching. The key advantage of {rixpress} emerges in multi-language workflows: different steps can execute in different Nix-defined environments (e.g., one step using R 4.2.0 with specific packages, another using Python 3.12 with machine learning libraries, another using Julia for numerical optimization). The package interface, inspired by {targets}, uses functions like <code>rxp_r()</code>, <code>rxp_py()</code>, and <code>rxp_jl()</code> to define pipeline steps, with automatic serialization handling data transfer between languages. Objects are stored in the Nix store and can be inspected interactively using helper functions like <code>rxp_read()</code> and <code>rxp_load()</code> (see {rixpress} documentation: <a href="https://docs.ropensci.org/rixpress/articles/intro-concepts.html" class="uri">https://docs.ropensci.org/rixpress/articles/intro-concepts.html</a>).</p>
+<p>For the interested reader, in the GitHub repository we included a folder in which the entire simulation and manuscript are produced using {rixpress}.</p>
 </section>
 </section>
 </section>
@@ -540,7 +552,7 @@ Listing&nbsp;14: Running the complete simulation workflow
 </section>
 <section id="containerization-with-docker" class="level2">
 <h2 data-anchor-id="containerization-with-docker">Containerization with Docker</h2>
-<p>Institutions with existing Docker-based infrastructure may wish to combine Nix with containers. While this might seem redundant—both technologies provide isolation—the combination offers complementary benefits: Nix ensures bit-reproducible builds across systems, while Docker provides a familiar deployment mechanism for non-Nix-aware computing environments. The approach is to use Nix as the base layer within a Docker container <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. This strategy is particularly relevant, for example, for projects requiring deployment to cloud computing platforms or high-performance computing clusters where Docker is the standard containerization technology (see {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html" class="uri">https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html</a>).</p>
+<p>Projects with existing Docker-based infrastructure may wish to combine Nix with containers. While this might seem redundant—both technologies provide isolation—the combination offers complementary benefits: Nix ensures bit-reproducible builds across systems, while Docker provides a familiar deployment mechanism for non-Nix-aware computing environments. The approach is to use Nix as the base layer within a Docker container <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. This strategy may be particularly relevant, for example, for projects requiring deployment to cloud computing platforms or high-performance computing clusters where Docker is the standard containerization technology (see {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html" class="uri">https://docs.ropensci.org/rix/articles/z-advanced-topic-using-nix-inside-docker.html</a>).</p>
 </section>
 </section>
 <section id="discussion" class="level1">
@@ -652,7 +664,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix="">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -765,7 +777,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix="">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
