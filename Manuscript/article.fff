@@ -13,7 +13,7 @@ under misspecification.}
 
 \centering{
 
-\includegraphics{article_files/figure-pdf/fig-performance-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{article_files/figure-pdf/fig-performance-1.pdf}}
 
 }
 
