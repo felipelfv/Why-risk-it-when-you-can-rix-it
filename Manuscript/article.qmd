@@ -170,12 +170,9 @@ durable scientific workflows.
 Imagine you have just been awarded an extraordinarily prestigious (and
 generously funded) grant to conduct a large-scale simulation study. The study is
 designed to evaluate the performance of several statistical models under varying
-data-generating conditions (see Appendix A for full technical details). After
-completing the analysis and publishing the results, another researcher wishes to
-reproduce your findings—running the same code and obtaining the same numerical
-results.
+data-generating conditions (see Appendix A for full technical details). 
 
-This tutorial is organized around that scenario. We use a stylized simulation
+This tutorial is organized around this scenario. We use a stylized simulation
 study to ground the discussion in a concrete and familiar example, mirroring the
 structure of a typical methods manuscript. The scenario describes both the
 statistical design and the computational workflow one might reasonably encounter
