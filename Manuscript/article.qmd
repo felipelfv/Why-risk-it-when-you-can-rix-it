@@ -51,9 +51,15 @@ bibliography: references.bib
 #| message: false
 
 # required packages
-library(marginaleffects); library(simhelpers); library(rvinecopulib)
-library(doParallel); library(doRNG); library(ggplot2); library(cowplot)
-library(knitr); library(dplyr)
+library(marginaleffects)
+library(simhelpers)
+library(rvinecopulib)
+library(doParallel)
+library(doRNG)
+library(ggplot2)
+library(cowplot)
+library(knitr)
+library(dplyr)
 
 ```
 
@@ -331,13 +337,15 @@ latest version(@lst-install-rix-cran) [^1]
 #| eval: false
 #| echo: true
 
-
 install.packages("rix") # CRAN
 
 # developmental
-install.packages("rix", repos = c(
-  "https://ropensci.r-universe.dev"
-))
+install.packages(
+  "rix",
+  repos = c(
+    "https://ropensci.r-universe.dev"
+  )
+)
 ```
 
 ## Step II: Specifying the Computational Environment {#sec-specifying-environment}
@@ -364,23 +372,52 @@ GitHub repository as a file named `generate_env.R` (@lst-rix-env-manuscript):
 library(rix)
 
 rix(
-  date = "2025-08-25", 
+  date = "2025-08-25",
   r_pkgs = c(
-    "rix", "quarto", "knitr", "marginaleffects", "simhelpers",
-    "ggplot2", "doParallel", "doRNG", "cowplot", "dplyr", "svglite",
+    "rix",
+    "quarto",
+    "knitr",
+    "marginaleffects",
+    "simhelpers",
+    "ggplot2",
+    "doParallel",
+    "doRNG",
+    "cowplot",
+    "dplyr",
+    "svglite",
     "rvinecopulib"
   ),
-  system_pkgs = c("quarto"), 
-  tex_pkgs = c( 
-    "amsmath", "ninecolors", "apa7", "scalerel", "threeparttable",
-    "threeparttablex", "endfloat", "environ", "multirow", "tcolorbox",
-    "pdfcol", "tikzfill", "fontawesome5", "framed", "newtx",
-    "fontaxes", "xstring", "wrapfig", "tabularray", "siunitx",
-    "fvextra", "geometry", "setspace", "fancyvrb", "anyfontsize"
+  system_pkgs = c("quarto"),
+  tex_pkgs = c(
+    "amsmath",
+    "ninecolors",
+    "apa7",
+    "scalerel",
+    "threeparttable",
+    "threeparttablex",
+    "endfloat",
+    "environ",
+    "multirow",
+    "tcolorbox",
+    "pdfcol",
+    "tikzfill",
+    "fontawesome5",
+    "framed",
+    "newtx",
+    "fontaxes",
+    "xstring",
+    "wrapfig",
+    "tabularray",
+    "siunitx",
+    "fvextra",
+    "geometry",
+    "setspace",
+    "fancyvrb",
+    "anyfontsize"
   ),
-  ide = "rstudio", 
-  project_path = ".", 
-  overwrite = TRUE 
+  ide = "rstudio",
+  project_path = ".",
+  overwrite = TRUE
 )
 ```
 
@@ -440,9 +477,9 @@ hashes. For example:
 #| echo: true
 
 git_pkgs = list(
-    package_name = "marginaleffects",
-    repo_url = "https://github.com/vincentarelbundock/marginaleffects",
-    commit = "304bff91dc31ae28b227a8485bfa4f7bdc86d625"
+  package_name = "marginaleffects",
+  repo_url = "https://github.com/vincentarelbundock/marginaleffects",
+  commit = "304bff91dc31ae28b227a8485bfa4f7bdc86d625"
 )
 ```
 
@@ -526,8 +563,7 @@ Julia [@rodrigues_baumann_2025] (see {rix} documentation for more:
 #| eval: false
 #| echo: true
 
-py_conf = list(py_version = "3.12", 
-               py_pkgs = c("polars","pandas"))
+py_conf = list(py_version = "3.12", py_pkgs = c("polars", "pandas"))
 
 ```
 
@@ -729,6 +765,8 @@ nix-shell --pure
 ```
 
 Activating the Nix environment with strict isolation \normalsize
+:::
+
 ```{r}
 #| lst-label: lst-data-generation
 #| lst-cap: "Data Generation Function"
@@ -737,26 +775,25 @@ Activating the Nix environment with strict isolation \normalsize
 
 # fixed DGP parameters
 alpha0 <- 0
-alpha1 <- 0.5   
-alpha2 <- 0.2   
-beta0  <- -0.5
-beta1  <- 0.7   
-gamma1 <- -0.4  
+alpha1 <- 0.5
+alpha2 <- 0.2
+beta0 <- -0.5
+beta1 <- 0.7
+gamma1 <- -0.4
 
 # this will generate one dataset
 gen_data <- function(n, gamma2) {
-  
   # complete overhead. This was done just to use a package written in C++:
   # generate independent uniform pairs via independence copula, then transform to standard normal
   u <- rbicop(n, "indep", 0, numeric(0))
   X2 <- qnorm(u[, 1])
   error_X1 <- qnorm(u[, 2])
-  
+
   X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + error_X1
   eta_true <- beta0 + beta1 * X1 + gamma1 * X2 + gamma2 * X2^2
   p <- plogis(eta_true)
   y <- rbinom(n, size = 1, prob = p)
-  
+
   data.frame(y = y, x1 = X1, x2 = X2)
 }
 ```
@@ -770,18 +807,16 @@ gen_data <- function(n, gamma2) {
 # for running one simulation replicate with MISSPECIFIED model
 run_one_rep <- function(n, gamma2) {
   dat <- gen_data(n, gamma2)
-  
-  fit_misspec <- glm(y ~ x1 + x2, 
-                     data = dat, 
-                     family = binomial())
-  
+
+  fit_misspec <- glm(y ~ x1 + x2, data = dat, family = binomial())
+
   ace_est <- avg_slopes(fit_misspec, variables = "x1")
-  
+
   data.frame(
     est = ace_est$estimate[1],
-    se  = ace_est$std.error[1],
-    lo  = ace_est$conf.low[1],
-    hi  = ace_est$conf.high[1]
+    se = ace_est$std.error[1],
+    lo = ace_est$conf.low[1],
+    hi = ace_est$conf.high[1]
   )
 }
 
@@ -789,11 +824,9 @@ run_one_rep <- function(n, gamma2) {
 compute_true_ace <- function(gamma2_val, seed = 12345) {
   set.seed(seed)
   bigdat <- gen_data(2e5, gamma2_val)
-  
-  fit_correct <- glm(y ~ x1 + x2 + I(x2^2), 
-                     data = bigdat, 
-                     family = binomial())
-  
+
+  fit_correct <- glm(y ~ x1 + x2 + I(x2^2), data = bigdat, family = binomial())
+
   avg_slopes(fit_correct, variables = "x1")$estimate[1]
 }
 ```
@@ -806,7 +839,7 @@ compute_true_ace <- function(gamma2_val, seed = 12345) {
 #| output: false
 
 # simulation parameters
-nsim  <- 100
+nsim <- 100
 ncore <- 1
 master_seed <- 12345
 
@@ -842,28 +875,29 @@ registerDoParallel(cl)
 all_results <- vector("list", nrow(designs))
 
 for (k in seq_len(nrow(designs))) {
-  n_k      <- designs$n[k]
+  n_k <- designs$n[k]
   gamma2_k <- designs$gamma2[k]
-  label_k  <- as.character(designs$confound_label[k])
-  
+  label_k <- as.character(designs$confound_label[k])
+
   cat("\nCondition:", label_k, "(gamma2 =", gamma2_k, "), n =", n_k, "\n")
-  
+
   true_ACE_k <- true_ACE_values[as.character(gamma2_k)]
-  
+
   # replications
   res_list <- foreach(
     i = seq_len(nsim),
     .packages = c("marginaleffects", "rvinecopulib")
-  ) %dorng% {
-    run_one_rep(n_k, gamma2_k)
-  }
-  
+  ) %dorng%
+    {
+      run_one_rep(n_k, gamma2_k)
+    }
+
   res <- do.call(rbind, res_list)
   res$true_param <- true_ACE_k
   res$n <- n_k
   res$gamma2 <- gamma2_k
   res$confound_label <- label_k
-  
+
   all_results[[k]] <- res
 }
 
@@ -886,24 +920,26 @@ conditions <- unique(sim_results[, c("n", "gamma2", "confound_label")])
 summary_list <- vector("list", nrow(conditions))
 
 for (k in seq_len(nrow(conditions))) {
-  res <- subset(sim_results, 
-                n == conditions$n[k] & 
-                  gamma2 == conditions$gamma2[k])
-  
+  res <- subset(
+    sim_results,
+    n == conditions$n[k] &
+      gamma2 == conditions$gamma2[k]
+  )
+
   perf_abs <- calc_absolute(
     data = res,
     estimates = est,
     true_param = true_param,
     criteria = c("bias", "variance", "mse", "rmse")
   )
-  
+
   perf_rel <- calc_relative(
     data = res,
     estimates = est,
     true_param = true_param,
     criteria = c("relative bias", "relative rmse")
   )
-  
+
   perf_cov <- calc_coverage(
     data = res,
     lower_bound = lo,
@@ -911,7 +947,7 @@ for (k in seq_len(nrow(conditions))) {
     true_param = true_param,
     criteria = c("coverage", "width")
   )
-  
+
   summary_list[[k]] <- cbind(
     conditions[k, ],
     true_ace = unique(res$true_param),
@@ -935,84 +971,102 @@ performance_summary <- do.call(rbind, summary_list)
 #| warning: false
 
 # Absolute bias plot
-p_bias <- ggplot(performance_summary,
-                 aes(x = n, y = bias,
-                     color = confound_label, group = confound_label)) +
+p_bias <- ggplot(
+  performance_summary,
+  aes(x = n, y = bias, color = confound_label, group = confound_label)
+) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "Bias in ACE estimation",
-       color = "Confounding\nnon-linearity",
-       title = "Absolute Bias from Omitting X2²") +
+  labs(
+    x = "Sample size (n)",
+    y = "Bias in ACE estimation",
+    color = "Confounding\nnon-linearity",
+    title = "Absolute Bias from Omitting X2²"
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
 
 # Relative bias plot
-p_rel_bias <- ggplot(performance_summary,
-                     aes(x = n, y = rel_bias,
-                         color = confound_label, group = confound_label)) +
+p_rel_bias <- ggplot(
+  performance_summary,
+  aes(x = n, y = rel_bias, color = confound_label, group = confound_label)
+) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "Relative Bias",
-       color = "Confounding\nnon-linearity",
-       title = "Relative Bias from Omitting X2²") +
+  labs(
+    x = "Sample size (n)",
+    y = "Relative Bias",
+    color = "Confounding\nnon-linearity",
+    title = "Relative Bias from Omitting X2²"
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
 
 # Absolute RMSE plot
-p_rmse <- ggplot(performance_summary,
-                 aes(x = n, y = rmse,
-                     color = confound_label, group = confound_label)) +
+p_rmse <- ggplot(
+  performance_summary,
+  aes(x = n, y = rmse, color = confound_label, group = confound_label)
+) +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "RMSE of ACE estimator",
-       color = "Confounding\nnon-linearity",
-       title = "Absolute RMSE of ACE Estimation") +
+  labs(
+    x = "Sample size (n)",
+    y = "RMSE of ACE estimator",
+    color = "Confounding\nnon-linearity",
+    title = "Absolute RMSE of ACE Estimation"
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
 
 # Relative RMSE plot
-p_rel_rmse <- ggplot(performance_summary,
-                     aes(x = n, y = rel_rmse,
-                         color = confound_label, group = confound_label)) +
+p_rel_rmse <- ggplot(
+  performance_summary,
+  aes(x = n, y = rel_rmse, color = confound_label, group = confound_label)
+) +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "Relative RMSE",
-       color = "Confounding\nnon-linearity",
-       title = "Relative Accuracy of ACE Estimation") +
+  labs(
+    x = "Sample size (n)",
+    y = "Relative RMSE",
+    color = "Confounding\nnon-linearity",
+    title = "Relative Accuracy of ACE Estimation"
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
 
 # Coverage plot
-p_coverage <- ggplot(performance_summary,
-                     aes(x = n, y = coverage,
-                         color = confound_label, group = confound_label)) +
+p_coverage <- ggplot(
+  performance_summary,
+  aes(x = n, y = coverage, color = confound_label, group = confound_label)
+) +
   geom_hline(yintercept = 0.95, linetype = "dashed", color = "gray50") +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "Coverage of 95% CI",
-       color = "Confounding\nnon-linearity",
-       title = "CI Coverage Under Residual Confounding") +
+  labs(
+    x = "Sample size (n)",
+    y = "Coverage of 95% CI",
+    color = "Confounding\nnon-linearity",
+    title = "CI Coverage Under Residual Confounding"
+  ) +
   coord_cartesian(ylim = c(0, 1)) +
   theme_minimal() +
   theme(legend.position = "right")
 
 # CI Width plot
-p_width <- ggplot(performance_summary,
-                  aes(x = n, y = width,
-                      color = confound_label, group = confound_label)) +
+p_width <- ggplot(
+  performance_summary,
+  aes(x = n, y = width, color = confound_label, group = confound_label)
+) +
   geom_point(size = 3) +
   geom_line() +
-  labs(x = "Sample size (n)",
-       y = "Average CI width",
-       color = "Confounding\nnon-linearity",
-       title = "Precision of Confidence Intervals") +
+  labs(
+    x = "Sample size (n)",
+    y = "Average CI width",
+    color = "Confounding\nnon-linearity",
+    title = "Precision of Confidence Intervals"
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
 
@@ -1022,8 +1076,7 @@ legend <- get_legend(
 )
 
 plot_grid(
-  plot_grid(p_rel_bias, p_rel_rmse, p_coverage, p_width, 
-            ncol = 2, nrow = 2),
+  plot_grid(p_rel_bias, p_rel_rmse, p_coverage, p_width, ncol = 2, nrow = 2),
   legend,
   rel_widths = c(3, 0.4)
 )
@@ -1046,58 +1099,44 @@ results_display <- performance_summary %>%
     `Coverage` = sprintf("%.3f", coverage),
     `CI Width` = sprintf("%.3f", width)
   ) %>%
-  select(`Sample Size`, `Confounding`, `Relative Bias`, 
-         `Relative RMSE`, `Coverage`, `CI Width`)
+  select(
+    `Sample Size`,
+    `Confounding`,
+    `Relative Bias`,
+    `Relative RMSE`,
+    `Coverage`,
+    `CI Width`
+  )
 
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
 
+### Reproducing the Simulation and Results
 
-### Reproducing the Simulation
+As previously mentioned, and although we recommend it, researchers may not want 
+or know how to use dynamic document generation. In this case, one could still 
+follow the same steps shown thus far focusing only on the .R files while still 
+benefiting from a reproducible computational environment. 
 
-As described before, \[...\] For streamlined execution, we provide a master
-script (`06_run_all.R`) that runs the complete simulation and calculates the
-results as well as visualizations. The script begins by loading the required
-packages, then proceeds through three steps: first, it sources
-`03_run_simulation.R`, which in turn loads the data generation function
-(`01_data_generation.R`) and the model estimation functions (`02_models.R`) to
-run the Monte Carlo simulation; second, it sources `04_performance_metrics.R` to
-calculate the performance criteria from the saved simulation results; and third,
-it sources `05_plots.R` to generate the figures (see @fig-performance). The
-script has the following content (@lst-run-all):
-
-\small
-
-```{r}
-#| lst-label: lst-run-all
-#| lst-cap: "Master script for running the complete simulation workflow"
-#| eval: false
-#| echo: true
-#| message: false
-
-library(marginaleffects); library(simhelpers); library(rvinecopulib)
-library(doParallel); library(doRNG); library(ggplot2); library(cowplot); 
-library(dplyr)
-
-source("03_run_simulation.R")
-source("04_performance_metrics.R")
-source("05_plots.R")
-```
-
-\normalsize
-
-Thus, to reproduce the simulation from within the Nix shell, meaning after
-running nix-build and nix-shell (@lst-run-simulation):
+To illustrate it, after following Steps I-III, without needing to define packages
+for the document rendering in Step I, the simulation study may be 
+reproduced (@lst-run-simulation) as follows:
 
 ::: {#lst-run-simulation}
 \small
 
 ``` bash
-Rscript 06_run_all.R
+[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$ 
+  Rscript Simulation_Scripts/03_run_simulation.R
 ```
 
 Running the complete simulation workflow \normalsize
 :::
+
+In this same way one may also execute the .R file associated with the 
+performance criteria calculation and visualization. Therefore, the key advantage 
+of executing within `nix-shell` is that all dependencies—R version, 
+packages, and system tools—match exactly those specified in `default.nix`.
 
 Alternatively, individual scripts can be executed separately (i.e.,
 `Rscript 03_run_simulation.R)`). Therefore, the key advantage of executing
