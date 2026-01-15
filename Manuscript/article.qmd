@@ -204,7 +204,7 @@ implementations. Beyond R packages themselves, many packages rely on
 system-level libraries that must be installed separately from R. Our simulation
 illustrates this dependency structure directly: the {rvinecopulib} package
 interfaces with a C++ backend and links against external libraries such as
-Boost, Eigen, and RcppThread [\@rvinecopulib\].
+Boost, Eigen, and RcppThread \[\@rvinecopulib\].
 
 The R language version introduces another layer of dependency. Code written for
 R 4.3 may rely on syntax or functionality that is unavailable in earlier
@@ -216,24 +216,25 @@ is consequential.
 
 Finally, when analyses are embedded in a literate programming workflow—that is,
 documents that combine narrative text and executable code—additional layers of
-software dependencies arise. For example, rendering R Markdown (`.rmd`) or Quarto
-documents (`.qmd`) requires both a document conversion tool (e.g., Pandoc, which converts
-`.rmd` or `.qmd` files into formats such as PDF or HTML) and a typesetting
-system such as a LaTeX distribution or Typst. Each of these components
-introduces its own versioning constraints and platform-specific installation
-requirements. Taken together, these layers highlight that reproducibility
-depends not only on code and data, but also on the broader computational
-environment in which analyses are executed.
+software dependencies arise. For example, rendering R Markdown (`.rmd`) or
+Quarto documents (`.qmd`) requires both a document conversion tool (e.g.,
+Pandoc, which converts `.rmd` or `.qmd` files into formats such as PDF or HTML)
+and a typesetting system such as a LaTeX distribution or Typst. Each of these
+components introduces its own versioning constraints and platform-specific
+installation requirements. Taken together, these layers highlight that
+reproducibility depends not only on code and data, but also on the broader
+computational environment in which analyses are executed.
 
 # Nix and {rix}: A Comprehensive Solution
 
 A potential solution to the above issue is Nix [@dolstra_etall_2004]. Nix is a
 software ecosystem centered on a purely functional package manager and build
 system designed to make software environments reproducible, declarative, and
-isolated across platforms (think Apple's or Android's application store). In practical terms, this means that Nix allows
-researchers to specify *exactly* which versions of programming languages,
-packages, and system libraries an analysis requires, and to recreate that same
-environment reliably on another machine.
+isolated across platforms (think Apple's or Android's application store). In
+practical terms, this means that Nix allows researchers to specify *exactly*
+which versions of programming languages, packages, and system libraries an
+analysis requires, and to recreate that same environment reliably on another
+machine.
 
 Unlike familiar tools such as `install.packages()` in R, `apt-get` on Linux, or
 `uv` in Python—which typically manage only a single layer of the software
@@ -728,17 +729,36 @@ nix-shell --pure
 ```
 
 Activating the Nix environment with strict isolation \normalsize
-:::
-
 ```{r}
 #| lst-label: lst-data-generation
 #| lst-cap: "Data Generation Function"
 #| echo: false
 #| message: false
 
-# Data generation function - defined in functions/gen_data.R
-# Results are pre-computed by the rixpress pipeline
+# fixed DGP parameters
+alpha0 <- 0
+alpha1 <- 0.5   
+alpha2 <- 0.2   
+beta0  <- -0.5
+beta1  <- 0.7   
+gamma1 <- -0.4  
 
+# this will generate one dataset
+gen_data <- function(n, gamma2) {
+  
+  # complete overhead. This was done just to use a package written in C++:
+  # generate independent uniform pairs via independence copula, then transform to standard normal
+  u <- rbicop(n, "indep", 0, numeric(0))
+  X2 <- qnorm(u[, 1])
+  error_X1 <- qnorm(u[, 2])
+  
+  X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + error_X1
+  eta_true <- beta0 + beta1 * X1 + gamma1 * X2 + gamma2 * X2^2
+  p <- plogis(eta_true)
+  y <- rbinom(n, size = 1, prob = p)
+  
+  data.frame(y = y, x1 = X1, x2 = X2)
+}
 ```
 
 ```{r}
@@ -747,9 +767,35 @@ Activating the Nix environment with strict isolation \normalsize
 #| echo: false
 #| message: false
 
-# Model estimation functions - defined in functions/run_one_rep.R and functions/compute_true_ace.R
-# Results are pre-computed by the rixpress pipeline
+# for running one simulation replicate with MISSPECIFIED model
+run_one_rep <- function(n, gamma2) {
+  dat <- gen_data(n, gamma2)
+  
+  fit_misspec <- glm(y ~ x1 + x2, 
+                     data = dat, 
+                     family = binomial())
+  
+  ace_est <- avg_slopes(fit_misspec, variables = "x1")
+  
+  data.frame(
+    est = ace_est$estimate[1],
+    se  = ace_est$std.error[1],
+    lo  = ace_est$conf.low[1],
+    hi  = ace_est$conf.high[1]
+  )
+}
 
+# for computing the true ACE using the correctly specified model
+compute_true_ace <- function(gamma2_val, seed = 12345) {
+  set.seed(seed)
+  bigdat <- gen_data(2e5, gamma2_val)
+  
+  fit_correct <- glm(y ~ x1 + x2 + I(x2^2), 
+                     data = bigdat, 
+                     family = binomial())
+  
+  avg_slopes(fit_correct, variables = "x1")$estimate[1]
+}
 ```
 
 ```{r}
@@ -759,9 +805,72 @@ Activating the Nix environment with strict isolation \normalsize
 #| message: false
 #| output: false
 
-# Simulation loop - executed via rixpress pipeline with 9 parallel condition derivations
-# sim_results loaded via rxp_load() at top of document
+# simulation parameters
+nsim  <- 100
+ncore <- 1
+master_seed <- 12345
 
+# design matrix
+n_values <- c(50, 100, 2000)
+gamma2_values <- c(0, 0.3, 0.8)
+gamma2_labels <- c("none", "mild", "severe")
+
+designs <- expand.grid(
+  n = n_values,
+  gamma2 = gamma2_values,
+  stringsAsFactors = FALSE
+)
+
+designs$confound_label <- factor(
+  designs$gamma2,
+  levels = gamma2_values,
+  labels = gamma2_labels
+)
+
+# step 1: compute true values based on a large sample
+# note that in our scenario this is possible to be done analytically
+cat("Computing true ACE values\n")
+true_ACE_values <- sapply(gamma2_values, compute_true_ace)
+names(true_ACE_values) <- as.character(gamma2_values)
+print(true_ACE_values)
+
+# step 2: parallel processing
+cl <- makeCluster(ncore)
+registerDoParallel(cl)
+
+# step 3: run simulation for all conditions
+all_results <- vector("list", nrow(designs))
+
+for (k in seq_len(nrow(designs))) {
+  n_k      <- designs$n[k]
+  gamma2_k <- designs$gamma2[k]
+  label_k  <- as.character(designs$confound_label[k])
+  
+  cat("\nCondition:", label_k, "(gamma2 =", gamma2_k, "), n =", n_k, "\n")
+  
+  true_ACE_k <- true_ACE_values[as.character(gamma2_k)]
+  
+  # replications
+  res_list <- foreach(
+    i = seq_len(nsim),
+    .packages = c("marginaleffects", "rvinecopulib")
+  ) %dorng% {
+    run_one_rep(n_k, gamma2_k)
+  }
+  
+  res <- do.call(rbind, res_list)
+  res$true_param <- true_ACE_k
+  res$n <- n_k
+  res$gamma2 <- gamma2_k
+  res$confound_label <- label_k
+  
+  all_results[[k]] <- res
+}
+
+stopCluster(cl)
+
+# for storing results
+sim_results <- do.call(rbind, all_results)
 ```
 
 ```{r}
@@ -770,9 +879,49 @@ Activating the Nix environment with strict isolation \normalsize
 #| echo: false
 #| message: false
 
-# Performance metrics - computed via rixpress pipeline
-# performance_summary loaded via rxp_load() at top of document
+# unique conditions
+conditions <- unique(sim_results[, c("n", "gamma2", "confound_label")])
 
+# calculate metrics for each condition
+summary_list <- vector("list", nrow(conditions))
+
+for (k in seq_len(nrow(conditions))) {
+  res <- subset(sim_results, 
+                n == conditions$n[k] & 
+                  gamma2 == conditions$gamma2[k])
+  
+  perf_abs <- calc_absolute(
+    data = res,
+    estimates = est,
+    true_param = true_param,
+    criteria = c("bias", "variance", "mse", "rmse")
+  )
+  
+  perf_rel <- calc_relative(
+    data = res,
+    estimates = est,
+    true_param = true_param,
+    criteria = c("relative bias", "relative rmse")
+  )
+  
+  perf_cov <- calc_coverage(
+    data = res,
+    lower_bound = lo,
+    upper_bound = hi,
+    true_param = true_param,
+    criteria = c("coverage", "width")
+  )
+  
+  summary_list[[k]] <- cbind(
+    conditions[k, ],
+    true_ace = unique(res$true_param),
+    perf_abs,
+    perf_rel,
+    perf_cov
+  )
+}
+
+performance_summary <- do.call(rbind, summary_list)
 ```
 
 ```{r}
@@ -902,6 +1051,7 @@ results_display <- performance_summary %>%
 
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
+
 
 ### Reproducing the Simulation
 
