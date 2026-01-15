@@ -65,7 +65,7 @@ library(ggplot2)
 library(cowplot)
 library(knitr)
 library(dplyr)
-
+library(rixpress)
 # Load pre-computed results from rixpress pipeline
 rixpress::rxp_load("performance_summary")
 rixpress::rxp_load("sim_results")
