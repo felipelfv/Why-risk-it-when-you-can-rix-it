@@ -1,7 +1,7 @@
 library(rix)
 
 rix(
-  date = "2026-01-12",
+  date = "2026-01-14",
   r_pkgs = c(
     "rix",
     "quarto",
