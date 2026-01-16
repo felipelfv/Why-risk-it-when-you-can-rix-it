@@ -108,7 +108,7 @@ let
       pandoc;
   };
  
-  wrapped_pkgs = pkgs.rstudioWrapper.override {
+  wrapped_pkgs = pkgs.rWrapper.override {
     packages = [  rpkgs  ];
   };
  
