@@ -216,11 +216,7 @@ window.Quarto = {
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<<<<<<< Updated upstream
-<p><em>Word Count</em>: 5779</p>
-=======
 <p><em>Word Count</em>: 5755</p>
->>>>>>> Stashed changes
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -236,13 +232,8 @@ window.Quarto = {
 </section>
 <section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
 <h1>A Practical Example: Setting up a Reproducible Simulation Study with {rix}</h1>
-<<<<<<< Updated upstream
-<p>Imagine you have just been awarded an extraordinarily prestigious (and generously funded) grant to conduct a large-scale simulation study. The study is designed to evaluate the performance of several statistical models under varying data-generating conditions (see Appendix A for full technical details). After completing the analysis and publishing the results, another researcher wishes to reproduce your findings—running the same code and obtaining the same numerical results.</p>
-<p>This tutorial is organized around that scenario. We use a stylized simulation study to ground the discussion in a concrete and familiar example, mirroring the structure of a typical methods manuscript. The scenario describes both the statistical design and the computational workflow one might reasonably encounter in practice. Although the example is illustrative rather than substantive—readers can follow the tutorial without engaging deeply with the simulation details—it provides a tangible reference point for discussing reproducibility challenges.</p>
-=======
 <p>Imagine you have just been awarded an extraordinarily prestigious (and generously funded) grant to conduct a large-scale simulation study. The study is designed to evaluate the performance of several statistical models under varying data-generating conditions (see Appendix A for full technical details).</p>
 <p>This tutorial is organized around this scenario. We use a stylized simulation study to ground the discussion in a concrete and familiar example, mirroring the structure of a typical methods manuscript. The scenario describes both the statistical design and the computational workflow one might reasonably encounter in practice. Although the example is illustrative rather than substantive—readers can follow the tutorial without engaging deeply with the simulation details—it provides a tangible reference point for discussing reproducibility challenges.</p>
->>>>>>> Stashed changes
 <p>In a conventional workflow, simulation studies are typically implemented across multiple component files, each corresponding to a distinct analytical stage. In our case, the simulation is organized into five sequential scripts: data generation (01_data_generation.R), model specification (02_models.R), simulation execution (03_run_simulation.R), performance metric calculation (04_performance_metrics.R), and results visualization (05_plots.R). This modular structure reflects common practice and facilitates development and debugging.</p>
 <p>However, because our focus is on the reproducibility of the <em>entire manuscript</em>, we embed all simulation code directly within this document as executable code chunks in a single .qmd file. When the document is rendered, the simulation runs from start to finish, producing the reported results and figures automatically. This approach is not required—and would be impractical for many real-world simulation studies, which are often too computationally intensive to execute during manuscript compilation. We return to this trade-off later in the tutorial.</p>
 <p>Now suppose a researcher attempts to reproduce the simulation results reported in the article. What might prevent them from obtaining identical outcomes? The natural first concern is package versioning. Installing R packages at a later time may lead to errors if functions have been renamed or deprecated, or to subtly different results due to changes in default settings or numerical implementations. Beyond R packages themselves, many packages rely on system-level libraries that must be installed separately from R. Our simulation illustrates this dependency structure directly: the {rvinecopulib} package interfaces with a C++ backend and links against external libraries such as Boost, Eigen, and RcppThread [@rvinecopulib].</p>
@@ -682,7 +673,7 @@ White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to che
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix="">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -795,7 +786,7 @@ White, I. R., Pham, T. M., Quartagno, M., &amp; Morris, T. P. (2024). How to che
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix="" data-fignum="1">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix="">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
