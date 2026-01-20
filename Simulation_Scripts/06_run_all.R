@@ -4,17 +4,21 @@
 library(marginaleffects); library(simhelpers); library(rvinecopulib)
 library(doParallel); library(doRNG); library(ggplot2); library(cowplot)
 
-cat("Starting simulation workflow...\n\n")
+cat("\nSimulation workflow\n")
 
-# step 1: run simulation
-cat("Step 1: Running simulation (sources 01 and 02)\n")
+# source functions needed for the simulation
+source("Simulation_Scripts/01_data_generation.R")
+source("Simulation_Scripts/02_models.R")
+
+# run simulation
+cat("\nRunning simulation (sources 01 and 02)\n")
 source("Simulation_Scripts/03_run_simulation.R")
 
-# step 2: calculate performance metrics
-cat("\nStep 2: Calculating performance metrics\n")
+# calculate performance metrics
+cat("\nCalculating performance metrics\n")
 source("Simulation_Scripts/04_performance_metrics.R")
 
-# step 3: generate plots
-cat("\nStep 3: Generating plots\n")
+# generate plots
+cat("\nGenerating plots\n")
 source("Simulation_Scripts/05_plots.R")
 
