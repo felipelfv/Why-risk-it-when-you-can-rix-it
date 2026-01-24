@@ -14,7 +14,7 @@ rix(
     "cowplot",
     "dplyr",
     "svglite",
-    "rvinecopulib",
+    "rvinecopulib"
   ),
   system_pkgs = c("quarto"),
   #system_pkgs = c("quarto", "git", "pandoc", "librsvg", "typst"),
