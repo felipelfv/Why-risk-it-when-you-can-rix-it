@@ -15,7 +15,6 @@ rix(
     "dplyr",
     "svglite",
     "rvinecopulib",
-    "rixpress"
   ),
   system_pkgs = c("quarto"),
   #system_pkgs = c("quarto", "git", "pandoc", "librsvg", "typst"),
