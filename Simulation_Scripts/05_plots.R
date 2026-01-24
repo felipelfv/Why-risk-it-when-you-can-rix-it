@@ -2,6 +2,9 @@
 
 library(ggplot2); library(cowplot)
 
+# load
+#performance_summary <- readRDS("Simulation_Scripts/performance_summary.rds")
+
 # Absolute bias plot
 p_bias <- ggplot(
   performance_summary,

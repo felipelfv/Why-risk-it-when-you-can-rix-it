@@ -2,6 +2,9 @@
 
 library(simhelpers)
 
+# load 
+#sim_results <- readRDS("sim_results.rds")
+
 # unique conditions
 conditions <- unique(sim_results[, c("n", "gamma2", "confound_label")])
 
@@ -47,3 +50,6 @@ for (k in seq_len(nrow(conditions))) {
 }
 
 performance_summary <- do.call(rbind, summary_list)
+
+# save
+#saveRDS(performance_summary, "Simulation_Scripts/performance_summary.rds")

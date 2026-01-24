@@ -2,6 +2,9 @@
 
 library(foreach); library(doParallel); library(doRNG)
 
+source("Simulation_Scripts/01_data_generation.R")                    
+source("Simulation_Scripts/02_models.R")
+
 # simulation parameters
 nsim <- 100
 ncore <- 1
@@ -69,3 +72,6 @@ stopCluster(cl)
 
 # for storing results
 sim_results <- do.call(rbind, all_results)
+
+# save
+#saveRDS(sim_results, "Simulation_Scripts/sim_results.rds")

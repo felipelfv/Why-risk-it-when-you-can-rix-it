@@ -1100,8 +1100,8 @@ library(rvinecopulib)
 ...
 
 # Source helper functions                                                   
-source("Simulation_Scripts/01_data_generation.R")                             
-source("Simulation_Scripts/02_models.R") 
+source("Simulation_Scripts/01_data_generation.R")                    
+source("Simulation_Scripts/02_models.R")
 ...
 
 ```
