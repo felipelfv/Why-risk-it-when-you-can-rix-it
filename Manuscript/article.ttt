@@ -55,3 +55,163 @@ Coverage & \(\frac{1}{K}\sum_{k=1}^K I(A_k \leq \theta \leq B_k)\) &
 Width & \(\frac{1}{K}\sum_{k=1}^K (B_k - A_k)\) &
 \(\sqrt{\frac{1}{K(K-1)}\sum_{k=1}^K(W_k - \bar{W})^2}\) \\
 \end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{rix} & Generates the Nix expression (\texttt{default.nix}) for
+reproducible environments \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Used in
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{rvinecopulib} & \texttt{01\_data\_generation.R} & Generates
+correlated data via copulas (\texttt{rbicop()}) \\
+\textbf{marginaleffects} & \texttt{02\_models.R} & Computes average
+causal effects via \texttt{avg\_slopes()} \\
+\textbf{doParallel} & \texttt{03\_run\_simulation.R} & Enables parallel
+\texttt{foreach} loops across CPU cores \\
+\textbf{doRNG} & \texttt{03\_run\_simulation.R} & Makes parallel RNG
+reproducible \\
+\textbf{simhelpers} & \texttt{04\_performance\_metrics.R} & Calculates
+bias, RMSE, coverage metrics \\
+\textbf{ggplot2} & \texttt{05\_plots.R} & Creates simulation result
+visualizations \\
+\textbf{cowplot} & \texttt{05\_plots.R} & Combines plots with
+\texttt{plot\_grid()}, extracts legends \\
+\textbf{dplyr} & \texttt{article.qmd} & Data wrangling for results
+reported in the Table 1 \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{quarto} & R interface to invoke Quarto rendering \\
+\textbf{knitr} & Executes R code chunks in \texttt{.qmd} files \\
+\textbf{svglite} & SVG graphics device; apaquarto sets
+\texttt{dev:\ svglite} for HTML output \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Package & Why apaquarto needs it \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{amsmath} & Math environments (\texttt{align}, \texttt{equation},
+etc.) \\
+\textbf{threeparttablex} & Tables with notes below (APA table format) \\
+\textbf{tcolorbox} & Callout boxes (note, warning, tip blocks) \\
+\textbf{fontawesome5} & Icons in callouts \\
+\textbf{multirow} & Table cells spanning multiple rows \\
+\textbf{newtx} & Times-like fonts (default when no custom
+\texttt{mainfont}) \\
+\textbf{geometry} & Page margins \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Package & Dependency of \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{environ} & tcolorbox \\
+\textbf{pdfcol} & tcolorbox \\
+\textbf{tikzfill} & tcolorbox \\
+\textbf{fontaxes} & newtx \\
+\textbf{xstring} & Template conditionals \\
+\textbf{scalerel} & apa7 class \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Package & Purpose \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{apa7} & The document class itself
+(\texttt{\textbackslash{}documentclass\{apa7\}}) \\
+\textbf{endfloat} & Moves floats to end of document in manuscript
+mode \\
+\textbf{threeparttable} & Dependency for threeparttablex \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Purpose
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{framed} & Shaded/framed regions for callouts \\
+\textbf{fvextra} & Enhanced verbatim for syntax-highlighted code
+blocks \\
+\textbf{fancyvrb} & Verbatim environments for code display \\
+\textbf{setspace} & Line spacing; also used in \texttt{article.qmd} for
+single-spaced code blocks \\
+\textbf{anyfontsize} & Arbitrary font sizes in code blocks \\
+\end{longtable}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Package & Purpose \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ninecolors} & Extended color palettes \\
+\textbf{wrapfig} & Text wrapping around figures \\
+\textbf{tabularray} & Modern table typesetting \\
+\textbf{siunitx} & SI units and number formatting \\
+\end{longtable}

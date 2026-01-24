@@ -94,9 +94,9 @@ v_ggplot2 <- as.character(packageVersion("ggplot2"))
 v_cowplot <- as.character(packageVersion("cowplot"))
 ```
 
-**Computational Details.** The simulation was conducted on a MacBook Pro (...), 
-running macOS Sequoia 15.6.1. All analyses were performed in R 
-(version `r r_version`). Parallel processing was implemented through the 
+**Computational Details.** The simulation was conducted on a MacBook Pro 
+(Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All analyses were performed 
+in R (version `r r_version`). Parallel processing was implemented through the 
 {doParallel} package (version `r v_doParallel`), with {doRNG} 
 (version `r v_doRNG`) to ensure independent and reproducible random number 
 streams. For data generation we used the {rvinecopulib} package 

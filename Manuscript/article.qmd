@@ -79,7 +79,7 @@ scripts, or publicly accessible datasets. At the highest level, reproducibility
 entails documenting a fully specified computational environment that allows
 others to recreate identical results—from raw data to final manuscript
 output—with minimal friction. As a result, researchers may implicitly target
-different points on this continuum and efforts to improve reproducibility can
+different points on this continuum, and efforts to improve reproducibility can
 diverge substantially in both goals and implementation.
 
 Open science initiatives have made considerable progress in encouraging movement
@@ -128,7 +128,7 @@ structure of an analysis by formalizing the order in which steps should run and
 by tracking dependencies among intermediate results. These tools clarify *how*
 an analysis proceeds, but they assume that the software stack required to run
 each step is already stable. Containerization tools such as Docker, including
-R-focused implementations like Rocker[@boettiger_2015;
+R-focused implementations like Rocker [@boettiger_2015;
 @boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling
 the full environment—operating system, system libraries, interpreter versions,
 and packages—into a single executable image. Yet their use requires familiarity
@@ -146,12 +146,12 @@ ecosystem designed to make software installation deterministic, and {rix}
 [@rodrigues_baumann_2025], an R interface that allows researchers to use Nix
 without needing deep knowledge of its underlying language or infrastructure. Our
 objective is not to introduce a specific workflow orchestration system or to
-prescribe a particular analytic structure. Instead, we aim to show how Nix and
-{rix} can establish a stable, cross-platform environment within which any
-analysis—whether organized in simple, documented script sequences (e.g., .R
-files that `source()` others), through more formal orchestration tools (e.g.,
-targets) or embedded as code chunks in `.Rmd` or `.qmd` —can be executed
-reliably.
+prescribe a particular analytic structure. Instead, we aim to show what Nix and
+{rix} are and how they can establish a stable, cross-platform environment 
+within which any simulation study—whether organized in simple, documented 
+script sequences (e.g., .R files that `source()` others), through 
+more formal orchestration tools (e.g., targets) or embedded as code 
+chunks in `.Rmd` or `.qmd` —can be executed reliably.
 
 We illustrate these ideas through a reproducible simulation study conducted in
 R, culminating in an automated APA-formatted manuscript generated with
@@ -196,8 +196,8 @@ natural first concern is package versioning. Installing R packages at a later
 time may lead to errors if functions have been renamed or deprecated 
 (e.g., `lavaan:::lav_utils_get_ancestors` renamed to 
 `lavaan:::lav_graph_get_ancestors()`), or to subtly different results due to 
-changes in default settings or numerical
-implementations (e.g., `stringsAsFactors` defaulting to FALSE as of R 4.0). 
+changes in default settings (e.g., `stringsAsFactors` defaulting to FALSE as of 
+R 4.0) or numerical implementations. 
 Beyond R packages themselves, many packages rely on
 system-level libraries that must be installed separately from R. Our simulation
 illustrates this dependency structure directly: the {rvinecopulib} package
@@ -214,8 +214,9 @@ For simulation studies—where specific random draws often underpin reported
 results—this version sensitivity is consequential.
 
 Finally, when analyses are embedded in a literate programming workflow (i.e., 
-documents that combine narrative text and executable code) additional layers of
-software dependencies arise. For example, rendering R Markdown (`.rmd`) or
+documents that combine narrative text and executable code; dynamic document 
+generation) additional layers of software dependencies arise. For example, 
+rendering R Markdown (`.rmd`) or
 Quarto documents (`.qmd`) requires both a document conversion tool (e.g.,
 Pandoc, which converts `.rmd` or `.qmd` files into formats such as PDF or HTML)
 and a typesetting system such as a LaTeX distribution or Typst. Each of these
@@ -316,24 +317,22 @@ official {rix} documentation:
     <https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html>
 
 Once Nix is installed[^1], there are two ways to access {rix}, depending on whether 
-R is already installed on your system.
+R is already installed on your system. In this tutorial, we proceed as if R was 
+already installed (@lst-install-rix-cran):
 
 [^1]: It is worth noting that {rix} can generate Nix expressions even without
     Nix installed on your system—you can write a `default.nix` file without Nix,
     but you cannot build or enter the resulting environment unless Nix is
     installed [@rodrigues_baumann_2025].
 
-If R is already installed, {rix} can be installed from CRAN or from GitHub for 
-the development version (@lst-install-rix-cran):
-
 ```{r}
 #| lst-label: lst-install-rix-cran
 #| lst-cap: "Installing {rix} from CRAN or developmental version"
 #| eval: false
 #| echo: true
-# CRAN
+# CRAN version
 install.packages("rix") 
-# Developmental
+# Development version
 install.packages(
   "rix",
   repos = c(
@@ -341,35 +340,6 @@ install.packages(
   )
 )
 ```
-
-If R is not installed, Nix can be used to drop directly into an R session with 
-{rix} available. Running the command in @lst-install-rix-nix-released provides 
-the CRAN version; the command in @lst-install-rix-nix-dev provides the 
-development version:
-
-::: {#lst-install-rix-nix-released}
-\small
-``` bash
-felipelfv@Felipes-MacBook-Pro Why-risk-it-when-you-can-rix-it % nix-shell 
-  -p R rPackages.rix
-```
-R session with the released version of {rix} \normalsize
-:::
-
-::: {#lst-install-rix-nix-dev}
-\small
-``` bash
-felipelfv@Felipes-MacBook-Pro Why-risk-it-when-you-can-rix-it % nix-shell 
-  --expr "$(curl -sl https://raw.githubusercontent.com/ropensci/rix/
-      main/inst/extdata/default.nix)"
-```
-R session with the development version of {rix} \normalsize
-:::
-
-For the remainder of this tutorial, we assume R is already installed on the 
-system. Readers who accessed {rix} via the temporary Nix shell should execute 
-the subsequent R commands from within that shell until the 
-project-specific environment is built.
 
 ## Step II: Specifying the Computational Environment {#sec-specifying-environment}
 
@@ -542,9 +512,8 @@ for immediate verification [@rodrigues_baumann_2025].
 
 While this tutorial focuses on R, researchers working across multiple
 programming languages can include Python or Julia in their environments. The
-`py_conf` parameter (@lst-python-pkgs-example) accepts a list specifying a
-Python version and required packages (e.g.,
-`py_conf = list(py_version = "3.12", py_pkgs = c("polars","pandas"))`).
+`py_conf` parameter accepts a list specifying a
+Python version and required packages (@lst-python-pkgs-example).
 Similarly, `jl_conf` enables Julia package installation. This capability is
 particularly useful, for example, for projects requiring statistical computing
 in R alongside machine learning pipelines in Python or numerical optimization in
@@ -678,8 +647,8 @@ Activating RStudio \normalsize
 [^3]: See the {rix} documentation for more:
     <https://docs.ropensci.org/rix/articles/z-advanced-topic-building-an-environment-for-literate-programming.html>
 
-To render the manuscript, one may proceed as follows in the terminal
-(@lst-quarto-render):
+Within the nix shell, one is able to render the manuscript as follows in the 
+terminal (@lst-quarto-render):
 
 ::: {#lst-quarto-render}
 \small
@@ -695,16 +664,15 @@ Rendering the manuscript with Quarto \normalsize
 This command executes all code chunks in the manuscript, incorporates results
 and figures, and generates a formatted PDF following APA style guidelines via
 the apaquarto extension [@schneider_2024]. This extension is saved in the
-project repo already.
-
-To download this extension for your own work you can install the extension by
-using the terminal (@lst-apaquarto-install):
+project repo already. To download this extension for your own work you can 
+install the extension by using the terminal (@lst-apaquarto-install):
 
 ::: {#lst-apaquarto-install}
 \small
 
 ``` bash
-quarto use template wjschne/apaquarto
+felipelfv@Felipes-MacBook-Pro your-project-directory % quarto use template 
+  wjschne/apaquarto
 ```
 
 Installing the apaquarto extension \normalsize
@@ -736,7 +704,7 @@ interactively by opening the project folder in the user’s preferred IDE.
     alternative manuscript templates are available, and Nix is agnostic to the
     specific template employed, provided the necessary extensions are installed.
 
-As mentioned, it is worth noting that Nix shells do not fully isolate you from
+It is worth noting that Nix shells do not fully isolate you from
 your existing system by default. For R users, this has a practical implication:
 packages installed in your regular R library (outside of Nix) could potentially
 be loaded when running R from within the Nix environment. The {rix} package
@@ -1114,14 +1082,34 @@ kable(results_display, align = "lccccc", row.names = FALSE)
 
 As previously mentioned, researchers may not want 
 or know how to use dynamic document generation/literate programming. 
-In this case, one could still 
-follow the same steps shown thus far focusing only on the .R files while still 
-benefiting from a reproducible computational environment. 
+In this case, one could still follow the same steps shown thus far focusing 
+only on the .R files while still benefiting from a reproducible computational 
+environment. The `Simulation_Scripts/` folder contains the five sequential 
+scripts that depend on one another through `source()` calls. For example, 
+`03_run_simulation.R` begins by loading the required packages and sourcing 
+other scripts that are needed: 
 
-To illustrate it, after following Steps I-III, without needing to define packages
-for the document rendering in Step I, the simulation study may be 
-reproduced (@lst-run-simulation) as follows:
+```{r}
+#| lst-label: lst-run-simulation
+#| lst-cap: "Code for running simulation"
+#| eval: false
+#| echo: true
 
+library(marginaleffects)
+library(rvinecopulib)
+...
+
+# Source helper functions                                                   
+source("Simulation_Scripts/01_data_generation.R")                             
+source("Simulation_Scripts/02_models.R") 
+...
+
+```
+
+To then run the simulation within the nix shell, after following Steps I-III 
+(without needing to define packages for the dynamic document rendering in Step 
+I), the simulation study may be reproduced (@lst-run-simulation) as follows:
+                 
 ::: {#lst-run-simulation}
 \small
 
@@ -1133,12 +1121,23 @@ reproduced (@lst-run-simulation) as follows:
 Running the complete simulation workflow \normalsize
 :::
 
-In this same way one may also execute the .R file associated with the 
-performance criteria calculation and visualization. Therefore, the key advantage 
-of executing within `nix-shell` is that all dependencies—R version, 
-packages, and system tools—match exactly those specified in `default.nix`.
+Therefore, the key advantage of executing within `nix-shell` is that all 
+dependencies—R version, packages, and system tools—match exactly 
+those specified in `default.nix`. In the same way, we could proceed with 
+`04_performance_metrics.R` which loads the simulation results and calculates
+the performance metrics, and `05_plots.R` uses those metrics to create the 
+plots.
 
 ## Additional Considerations for Advanced Workflows
+
+As highlighted here and previous literature [@peikert_brandmaier_2021; 
+@siepe_etall_2024; @piccolo_frampton_2016], simulation studies (and any 
+analysis in general) should in principle also have the computational workflow 
+reported completely. This may achieved through different ways, such as Make 
+files, targets in a R-focused scenario, but in this section we provide a 
+brief illustration with {rixpress}. Note we do not show how to use it as that 
+would entail a tailored and large section in this tutorial. Moreover, we also 
+provide additional considerations about certain tools aforementioned.
 
 ### Workflow Orchestration: {targets} and {rixpress}
 
@@ -1180,8 +1179,9 @@ interactively using helper functions like `rxp_read()` and `rxp_load()` (see
 {rixpress} documentation:
 <https://docs.ropensci.org/rixpress/articles/intro-concepts.html>). 
 
-For the interested reader, in the GitHub repository we included a folder in 
-which the entire simulation and manuscript are produced using {rixpress}.
+For the interested reader, in the GitHub repository we included a second branch
+that uses {rixpress} for this entire project, in which the simulation and 
+manuscript are generated.
 
 ## Converting Existing {renv} Projects
 
