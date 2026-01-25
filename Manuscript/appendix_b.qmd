@@ -4,32 +4,35 @@
 
 ### Reproducibility Infrastructure
 
-| Package | Purpose |
-|---------|---------|
-| **rix** | Generates the Nix expression (`default.nix`) for reproducible environments |
+**rix**: Generates the Nix expression (`default.nix`) for reproducible environments.
 
 ### Simulation Study
 
 These packages are used in the `Simulation_Scripts/` folder:
 
-| Package | Used in | Purpose |
-|---------|---------|---------|
-| **rvinecopulib** | `01_data_generation.R` | Generates correlated data via copulas (`rbicop()`) |
-| **marginaleffects** | `02_models.R` | Computes average causal effects via `avg_slopes()` |
-| **doParallel** | `03_run_simulation.R` | Enables parallel `foreach` loops across CPU cores |
-| **doRNG** | `03_run_simulation.R` | Makes parallel RNG reproducible |
-| **simhelpers** | `04_performance_metrics.R` | Calculates bias, RMSE, coverage metrics |
-| **ggplot2** | `05_plots.R` | Creates simulation result visualizations |
-| **cowplot** | `05_plots.R` | Combines plots with `plot_grid()`, extracts legends |
-| **dplyr** | `article.qmd` | Data wrangling for results reported in the Table 1 |
+**rvinecopulib** (used in `01_data_generation.R`): Generates correlated data via copulas using the `rbicop()` function.
+
+**marginaleffects** (used in `02_models.R`): Computes average causal effects via the `avg_slopes()` function.
+
+**doParallel** (used in `03_run_simulation.R`): Enables parallel `foreach` loops across CPU cores.
+
+**doRNG** (used in `03_run_simulation.R`): Makes parallel RNG reproducible.
+
+**simhelpers** (used in `04_performance_metrics.R`): Calculates bias, RMSE, and coverage metrics.
+
+**ggplot2** (used in `05_plots.R`): Creates simulation result visualizations.
+
+**cowplot** (used in `05_plots.R`): Combines plots with `plot_grid()` and extracts legends.
+
+**dplyr** (used in `article.qmd`): Data wrangling for results reported in Table 1.
 
 ### Dynamic Document Generation
 
-| Package | Purpose |
-|---------|---------|
-| **quarto** | R interface to invoke Quarto rendering |
-| **knitr** | Executes R code chunks in `.qmd` files |
-| **svglite** | SVG graphics device; apaquarto sets `dev: svglite` for HTML output |
+**quarto**: R interface to invoke Quarto rendering.
+
+**knitr**: Executes R code chunks in `.qmd` files.
+
+**svglite**: SVG graphics device; apaquarto sets `dev: svglite` for HTML output.
 
 ## LaTeX Packages
 
@@ -37,50 +40,60 @@ These packages are used in the `Simulation_Scripts/` folder:
 
 These are loaded in apaquarto's `header.tex` or `apatemplate.tex`:
 
-| Package | Why apaquarto needs it |
-|---------|------------------------|
-| **amsmath** | Math environments (`align`, `equation`, etc.) |
-| **threeparttablex** | Tables with notes below (APA table format) |
-| **tcolorbox** | Callout boxes (note, warning, tip blocks) |
-| **fontawesome5** | Icons in callouts |
-| **multirow** | Table cells spanning multiple rows |
-| **newtx** | Times-like fonts (default when no custom `mainfont`) |
-| **geometry** | Page margins |
+**amsmath**: Math environments (`align`, `equation`, etc.).
+
+**threeparttablex**: Tables with notes below (APA table format).
+
+**tcolorbox**: Callout boxes (note, warning, tip blocks).
+
+**fontawesome5**: Icons in callouts.
+
+**multirow**: Table cells spanning multiple rows.
+
+**newtx**: Times-like fonts (default when no custom `mainfont`).
+
+**geometry**: Page margins.
 
 ### Dependencies of apaquarto Packages
 
-| Package | Dependency of |
-|---------|---------------|
-| **environ** | tcolorbox |
-| **pdfcol** | tcolorbox |
-| **tikzfill** | tcolorbox |
-| **fontaxes** | newtx |
-| **xstring** | Template conditionals |
-| **scalerel** | apa7 class |
+**environ**: Dependency of tcolorbox.
+
+**pdfcol**: Dependency of tcolorbox.
+
+**tikzfill**: Dependency of tcolorbox.
+
+**fontaxes**: Dependency of newtx.
+
+**xstring**: Template conditionals.
+
+**scalerel**: Dependency of apa7 class.
 
 ### Required by apa7 Document Class
 
-| Package | Purpose |
-|---------|---------|
-| **apa7** | The document class itself (`\documentclass{apa7}`) |
-| **endfloat** | Moves floats to end of document in manuscript mode |
-| **threeparttable** | Dependency for threeparttablex |
+**apa7**: The document class itself (`\documentclass{apa7}`).
+
+**endfloat**: Moves floats to end of document in manuscript mode.
+
+**threeparttable**: Dependency for threeparttablex.
 
 ### Required by Quarto PDF Rendering
 
-| Package | Purpose |
-|---------|---------|
-| **framed** | Shaded/framed regions for callouts |
-| **fvextra** | Enhanced verbatim for syntax-highlighted code blocks |
-| **fancyvrb** | Verbatim environments for code display |
-| **setspace** | Line spacing; also used in `article.qmd` for single-spaced code blocks |
-| **anyfontsize** | Arbitrary font sizes in code blocks |
+**framed**: Shaded/framed regions for callouts.
+
+**fvextra**: Enhanced verbatim for syntax-highlighted code blocks.
+
+**fancyvrb**: Verbatim environments for code display.
+
+**setspace**: Line spacing; also used in `article.qmd` for single-spaced code blocks.
+
+**anyfontsize**: Arbitrary font sizes in code blocks.
 
 ### Additional Packages
 
-| Package | Purpose |
-|---------|---------|
-| **ninecolors** | Extended color palettes |
-| **wrapfig** | Text wrapping around figures |
-| **tabularray** | Modern table typesetting |
-| **siunitx** | SI units and number formatting |
+**ninecolors**: Extended color palettes.
+
+**wrapfig**: Text wrapping around figures.
+
+**tabularray**: Modern table typesetting.
+
+**siunitx**: SI units and number formatting.
