@@ -232,7 +232,7 @@ window.Quarto = {
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 5794</p>
+<p><em>Word Count</em>: 6055</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -926,113 +926,25 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <h2 data-anchor-id="r-packages">R Packages</h2>
 <section id="reproducibility-infrastructure" class="level3">
 <h3 data-anchor-id="reproducibility-infrastructure">Reproducibility Infrastructure</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>rix</strong></td>
-<td>Generates the Nix expression (<code>default.nix</code>) for reproducible environments</td>
-</tr>
-</tbody>
-</table>
+<p><strong>rix</strong>: Generates the Nix expression (<code>default.nix</code>) for reproducible environments.</p>
 </section>
 <section id="simulation-study" class="level3">
 <h3 data-anchor-id="simulation-study">Simulation Study</h3>
 <p>These packages are used in the <code>Simulation_Scripts/</code> folder:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Used in</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>rvinecopulib</strong></td>
-<td><code>01_data_generation.R</code></td>
-<td>Generates correlated data via copulas (<code>rbicop()</code>)</td>
-</tr>
-<tr class="even">
-<td><strong>marginaleffects</strong></td>
-<td><code>02_models.R</code></td>
-<td>Computes average causal effects via <code>avg_slopes()</code></td>
-</tr>
-<tr class="odd">
-<td><strong>doParallel</strong></td>
-<td><code>03_run_simulation.R</code></td>
-<td>Enables parallel <code>foreach</code> loops across CPU cores</td>
-</tr>
-<tr class="even">
-<td><strong>doRNG</strong></td>
-<td><code>03_run_simulation.R</code></td>
-<td>Makes parallel RNG reproducible</td>
-</tr>
-<tr class="odd">
-<td><strong>simhelpers</strong></td>
-<td><code>04_performance_metrics.R</code></td>
-<td>Calculates bias, RMSE, coverage metrics</td>
-</tr>
-<tr class="even">
-<td><strong>ggplot2</strong></td>
-<td><code>05_plots.R</code></td>
-<td>Creates simulation result visualizations</td>
-</tr>
-<tr class="odd">
-<td><strong>cowplot</strong></td>
-<td><code>05_plots.R</code></td>
-<td>Combines plots with <code>plot_grid()</code>, extracts legends</td>
-</tr>
-<tr class="even">
-<td><strong>dplyr</strong></td>
-<td><code>article.qmd</code></td>
-<td>Data wrangling for results reported in the Table 1</td>
-</tr>
-</tbody>
-</table>
+<p><strong>rvinecopulib</strong> (used in <code>01_data_generation.R</code>): Generates correlated data via copulas using the <code>rbicop()</code> function.</p>
+<p><strong>marginaleffects</strong> (used in <code>02_models.R</code>): Computes average causal effects via the <code>avg_slopes()</code> function.</p>
+<p><strong>doParallel</strong> (used in <code>03_run_simulation.R</code>): Enables parallel <code>foreach</code> loops across CPU cores.</p>
+<p><strong>doRNG</strong> (used in <code>03_run_simulation.R</code>): Makes parallel RNG reproducible.</p>
+<p><strong>simhelpers</strong> (used in <code>04_performance_metrics.R</code>): Calculates bias, RMSE, and coverage metrics.</p>
+<p><strong>ggplot2</strong> (used in <code>05_plots.R</code>): Creates simulation result visualizations.</p>
+<p><strong>cowplot</strong> (used in <code>05_plots.R</code>): Combines plots with <code>plot_grid()</code> and extracts legends.</p>
+<p><strong>dplyr</strong> (used in <code>article.qmd</code>): Data wrangling for results reported in Table 1.</p>
 </section>
 <section id="dynamic-document-generation" class="level3">
 <h3 data-anchor-id="dynamic-document-generation">Dynamic Document Generation</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>quarto</strong></td>
-<td>R interface to invoke Quarto rendering</td>
-</tr>
-<tr class="even">
-<td><strong>knitr</strong></td>
-<td>Executes R code chunks in <code>.qmd</code> files</td>
-</tr>
-<tr class="odd">
-<td><strong>svglite</strong></td>
-<td>SVG graphics device; apaquarto sets <code>dev: svglite</code> for HTML output</td>
-</tr>
-</tbody>
-</table>
+<p><strong>quarto</strong>: R interface to invoke Quarto rendering.</p>
+<p><strong>knitr</strong>: Executes R code chunks in <code>.qmd</code> files.</p>
+<p><strong>svglite</strong>: SVG graphics device; apaquarto sets <code>dev: svglite</code> for HTML output.</p>
 </section>
 </section>
 <section id="latex-packages" class="level2">
@@ -1040,172 +952,43 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <section id="required-by-apaquarto-extension" class="level3">
 <h3 data-anchor-id="required-by-apaquarto-extension">Required by apaquarto Extension</h3>
 <p>These are loaded in apaquarto’s <code>header.tex</code> or <code>apatemplate.tex</code>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Why apaquarto needs it</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>amsmath</strong></td>
-<td>Math environments (<code>align</code>, <code>equation</code>, etc.)</td>
-</tr>
-<tr class="even">
-<td><strong>threeparttablex</strong></td>
-<td>Tables with notes below (APA table format)</td>
-</tr>
-<tr class="odd">
-<td><strong>tcolorbox</strong></td>
-<td>Callout boxes (note, warning, tip blocks)</td>
-</tr>
-<tr class="even">
-<td><strong>fontawesome5</strong></td>
-<td>Icons in callouts</td>
-</tr>
-<tr class="odd">
-<td><strong>multirow</strong></td>
-<td>Table cells spanning multiple rows</td>
-</tr>
-<tr class="even">
-<td><strong>newtx</strong></td>
-<td>Times-like fonts (default when no custom <code>mainfont</code>)</td>
-</tr>
-<tr class="odd">
-<td><strong>geometry</strong></td>
-<td>Page margins</td>
-</tr>
-</tbody>
-</table>
+<p><strong>amsmath</strong>: Math environments (<code>align</code>, <code>equation</code>, etc.).</p>
+<p><strong>threeparttablex</strong>: Tables with notes below (APA table format).</p>
+<p><strong>tcolorbox</strong>: Callout boxes (note, warning, tip blocks).</p>
+<p><strong>fontawesome5</strong>: Icons in callouts.</p>
+<p><strong>multirow</strong>: Table cells spanning multiple rows.</p>
+<p><strong>newtx</strong>: Times-like fonts (default when no custom <code>mainfont</code>).</p>
+<p><strong>geometry</strong>: Page margins.</p>
 </section>
 <section id="dependencies-of-apaquarto-packages" class="level3">
 <h3 data-anchor-id="dependencies-of-apaquarto-packages">Dependencies of apaquarto Packages</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Dependency of</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>environ</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="even">
-<td><strong>pdfcol</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="odd">
-<td><strong>tikzfill</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="even">
-<td><strong>fontaxes</strong></td>
-<td>newtx</td>
-</tr>
-<tr class="odd">
-<td><strong>xstring</strong></td>
-<td>Template conditionals</td>
-</tr>
-<tr class="even">
-<td><strong>scalerel</strong></td>
-<td>apa7 class</td>
-</tr>
-</tbody>
-</table>
+<p><strong>environ</strong>: Dependency of tcolorbox.</p>
+<p><strong>pdfcol</strong>: Dependency of tcolorbox.</p>
+<p><strong>tikzfill</strong>: Dependency of tcolorbox.</p>
+<p><strong>fontaxes</strong>: Dependency of newtx.</p>
+<p><strong>xstring</strong>: Template conditionals.</p>
+<p><strong>scalerel</strong>: Dependency of apa7 class.</p>
 </section>
 <section id="required-by-apa7-document-class" class="level3">
 <h3 data-anchor-id="required-by-apa7-document-class">Required by apa7 Document Class</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>apa7</strong></td>
-<td>The document class itself (<code>\documentclass{apa7}</code>)</td>
-</tr>
-<tr class="even">
-<td><strong>endfloat</strong></td>
-<td>Moves floats to end of document in manuscript mode</td>
-</tr>
-<tr class="odd">
-<td><strong>threeparttable</strong></td>
-<td>Dependency for threeparttablex</td>
-</tr>
-</tbody>
-</table>
+<p><strong>apa7</strong>: The document class itself (<code>\documentclass{apa7}</code>).</p>
+<p><strong>endfloat</strong>: Moves floats to end of document in manuscript mode.</p>
+<p><strong>threeparttable</strong>: Dependency for threeparttablex.</p>
 </section>
 <section id="required-by-quarto-pdf-rendering" class="level3">
 <h3 data-anchor-id="required-by-quarto-pdf-rendering">Required by Quarto PDF Rendering</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>framed</strong></td>
-<td>Shaded/framed regions for callouts</td>
-</tr>
-<tr class="even">
-<td><strong>fvextra</strong></td>
-<td>Enhanced verbatim for syntax-highlighted code blocks</td>
-</tr>
-<tr class="odd">
-<td><strong>fancyvrb</strong></td>
-<td>Verbatim environments for code display</td>
-</tr>
-<tr class="even">
-<td><strong>setspace</strong></td>
-<td>Line spacing; also used in <code>article.qmd</code> for single-spaced code blocks</td>
-</tr>
-<tr class="odd">
-<td><strong>anyfontsize</strong></td>
-<td>Arbitrary font sizes in code blocks</td>
-</tr>
-</tbody>
-</table>
+<p><strong>framed</strong>: Shaded/framed regions for callouts.</p>
+<p><strong>fvextra</strong>: Enhanced verbatim for syntax-highlighted code blocks.</p>
+<p><strong>fancyvrb</strong>: Verbatim environments for code display.</p>
+<p><strong>setspace</strong>: Line spacing; also used in <code>article.qmd</code> for single-spaced code blocks.</p>
+<p><strong>anyfontsize</strong>: Arbitrary font sizes in code blocks.</p>
 </section>
 <section id="additional-packages" class="level3">
 <h3 data-anchor-id="additional-packages">Additional Packages</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>ninecolors</strong></td>
-<td>Extended color palettes</td>
-</tr>
-<tr class="even">
-<td><strong>wrapfig</strong></td>
-<td>Text wrapping around figures</td>
-</tr>
-<tr class="odd">
-<td><strong>tabularray</strong></td>
-<td>Modern table typesetting</td>
-</tr>
-<tr class="even">
-<td><strong>siunitx</strong></td>
-<td>SI units and number formatting</td>
-</tr>
-</tbody>
-</table>
+<p><strong>ninecolors</strong>: Extended color palettes.</p>
+<p><strong>wrapfig</strong>: Text wrapping around figures.</p>
+<p><strong>tabularray</strong>: Modern table typesetting.</p>
+<p><strong>siunitx</strong>: SI units and number formatting.</p>
 </section>
 </section>
 </section>
