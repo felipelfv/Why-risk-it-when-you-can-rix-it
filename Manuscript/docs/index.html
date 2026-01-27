@@ -216,7 +216,7 @@ window.Quarto = {
 
 <p>Felipe Fontana Vieira<sup>1</sup>, Jason Geller<sup>2</sup>, and Bruno Rodrigues<sup>3</sup></p>
 <p><sup>1</sup>Department of Data Analysis, Ghent University</p>
-<p><sup>2</sup>Department of Psychology and Neuroscience, Boston College</p>
+<p><sup>2</sup>Department of Psychology and Neuroscienc, Boston College</p>
 <p><sup>3</sup>Statistics and Data Strategy Departments, Ministry of Research and Higher Education, Luxembourg</p>
 </div>
 <br>
@@ -226,20 +226,25 @@ window.Quarto = {
 </section>
 <section id="author-note" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Author Note</h1>
+<p>Felipe Fontana Vieira <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0009-0006-0949-6569">https://orcid.org/0009-0006-0949-6569</a></p>
+<p>Jason Geller <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-7459-4505">https://orcid.org/0000-0002-7459-4505</a></p>
+<p>Bruno Rodrigues <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-3211-3689">https://orcid.org/0000-0002-3211-3689</a></p>
+<p>Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.git. The authors have no conflicts of interest to declare. We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback on earlier versions of this manuscript.</p>
+<p>Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: <em>Felipe Fontana Vieira</em><strong>: </strong>conceptualization, methodology, software, data curation, formal analysis, visualization, writing – original draft, and Writing - review &amp; editing</p>
 <p>Correspondence concerning this article should be addressed to Felipe Fontana Vieira, Department of Data Analysis, Ghent University, Email: <a href="mailto:felipe.fontanavieira@ugent.be">felipe.fontanavieira@ugent.be</a></p>
 <br>
 </section>
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 6175</p>
+<p><em>Word Count</em>: 6184</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
 <h1 class="title unnumbered unlisted">Why Risk it, When You Can {rix} it: A Tutorial for Computational Reproducibility Focused on Simulation Studies</h1>
 <p>Psychological science is in the midst of a credibility revolution, which has prompted substantial progress in how research is conducted and evaluated <span class="citation" data-cites="vazire2018">(<a href="#ref-vazire2018" role="doc-biblioref">Vazire, 2018</a>)</span>. Yet, despite notable progress, a key cornerstone of science, reproducibility (i.e., the ability to precisely reproduce the results of a study or studies based on provided data, code, materials, and software/hardware) remains limited <span class="citation" data-cites="hardwicke2020">(<a href="#ref-hardwicke2020" role="doc-biblioref">Hardwicke et al., 2020</a>)</span>. Hence, ensuring reproducibility remains an open and pressing challenge for psychological science.</p>
 <p>Addressing this gap is complicated by the fact that reproducibility is not a binary feature but instead exists along a continuum <span class="citation" data-cites="peng_2011">(<a href="#ref-peng_2011" role="doc-biblioref">Peng, 2011</a>)</span>. At the lower end, reproducibility may be interpreted as sharing only a manuscript. Further along the spectrum, it may involve providing partial code, complete analysis scripts, or publicly accessible datasets. At the highest level, reproducibility entails documenting a fully specified computational environment that allows others to recreate identical results—from raw data to final manuscript output—with minimal friction. As a result, researchers may implicitly target different points on this continuum, and efforts to improve reproducibility can diverge substantially in both goals and implementation.</p>
-<p>Open science initiatives have made considerable progress in encouraging movement along this spectrum. For example, journals now offer open-science badges <span class="citation" data-cites="kidwell_etall_2016">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>)</span>, best practices have been developed to make data sharing routine <span class="citation" data-cites="levenstein_lyle_2018">(<a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>)</span>, and platforms such as the Open Science Framework (OSF) provide infrastructure for storing and sharing research materials [@nosek_etall_2015]. However, these efforts primarily target the lower to middle portions of the continuum, emphasizing <em>what</em> is shared rather than <em>how</em> shared materials can be executed in practice.</p>
+<p>Open science initiatives have made considerable progress in encouraging movement along this spectrum. For example, journals now offer open-science badges <span class="citation" data-cites="kidwell_etall_2016">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>)</span>, best practices have been developed to make data sharing routine <span class="citation" data-cites="levenstein_lyle_2018">(<a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>)</span>, and platforms such as the Open Science Framework (OSF) provide infrastructure for storing and sharing research materials <span class="citation" data-cites="nosek_etall_2015">(<a href="#ref-nosek_etall_2015" role="doc-biblioref">Nosek et al., 2015</a>)</span>. However, these efforts primarily target the lower to middle portions of the continuum, emphasizing <em>what</em> is shared rather than <em>how</em> shared materials can be executed in practice.</p>
 <p>Data and code are never fully self-sufficient to reproduce a set of findings <span class="citation" data-cites="peikert_brandmaier_2021 epskamp_2019 wiebels_moreau_2021">(<a href="#ref-epskamp_2019" role="doc-biblioref">Epskamp, 2019</a>; <a href="#ref-peikert_brandmaier_2021" role="doc-biblioref">Peikert &amp; Brandmaier, 2021</a>; <a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>)</span>. Assuming the data and code are error-free, reproducibility depends on a hierarchy of software components—collectively referred to as <em>dependencies</em>—including the programming language version, the packages used in the analysis, and the system libraries on which those packages rely. When these dependencies differ from those used in the original analysis, code may fail, behave inconsistently across machines, or yield conflicting numerical results <span class="citation" data-cites="baker_etall_2024 hodges_etall_2023 glatard_etall_2015 nosek_etall_2022">(<a href="#ref-baker_etall_2024" role="doc-biblioref">Baker et al., 2024</a>; <a href="#ref-glatard_etall_2015" role="doc-biblioref">Glatard et al., 2015</a>; <a href="#ref-hodges_etall_2023" role="doc-biblioref">Hodges et al., 2023</a>; <a href="#ref-nosek_etall_2022" role="doc-biblioref">Nosek et al., 2022</a>)</span>. These issues are particularly acute for simulation studies, which rely on complex codebases, versioned dependencies, and intricate software configurations <span class="citation" data-cites="luijken_etall_2024 siepe_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>.</p>
 <p>To make this concrete, we use <em>computational environment</em> to refer to the complete software context required for an analysis to run successfully—the programming language version, package versions, system libraries, and operating system <span class="citation" data-cites="rodrigues_2023 rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>; <a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. We define <em>computational environment reproducibility</em> as the ability to reconstruct this entire set of software dependencies on any machine and at any future time, such that executing the same code yields the same numerical results. Empirical assessments show that current practice falls short of this ideal. <span class="citation" data-cites="siepe_etall_2024">Siepe et al. (<a href="#ref-siepe_etall_2024" role="doc-biblioref">2024</a>)</span> report that nearly two-thirds of simulation studies in psychology provide no accompanying code, and among those that do, documentation of the computational environment is rarely included. This gap is consequential: simulation studies inform methodological recommendations, meaning that insufficient reproducibility undermines confidence in those recommendations <span class="citation" data-cites="luijken_etall_2024 white_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-white_etall_2024" role="doc-biblioref">White et al., 2024</a>)</span>.</p>
 <p>Arguably, these challenges persist because researchers must navigate a fragmented landscape of solutions, each addressing only part of the problem. Package-level managers such as {renv} <span class="citation" data-cites="ushey_2024">(<a href="#ref-ushey_2024" role="doc-biblioref">Ushey, 2024</a>)</span> and {groundhog} <span class="citation" data-cites="simonsohn_2020">(<a href="#ref-simonsohn_2020" role="doc-biblioref">Simonsohn, 2020</a>)</span> stabilize R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on. Workflow orchestration tools such as {targets} <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> and Make <span class="citation" data-cites="feldman_1979">(<a href="#ref-feldman_1979" role="doc-biblioref">Feldman, 1979</a>)</span> support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run and by tracking dependencies among intermediate results. These tools clarify <em>how</em> an analysis proceeds, but they assume that the software stack required to run each step is already stable. Containerization tools such as Docker, including R-focused implementations like Rocker <span class="citation" data-cites="boettiger_2015 boettiger_eddelbuettel_2017">(<a href="#ref-boettiger_2015" role="doc-biblioref">Boettiger, 2015</a>; <a href="#ref-boettiger_eddelbuettel_2017" role="doc-biblioref">Boettiger &amp; Eddelbuettel, 2017</a>)</span> offer a more comprehensive approach by bundling the full environment—operating system, system libraries, interpreter versions, and packages—into a single executable image. Yet their use requires familiarity with Linux system administration, and even containerization may suffer from temporal drift when Dockerfiles rely on mutable upstream repositories <span class="citation" data-cites="malka2024">(<a href="#ref-malka2024" role="doc-biblioref">Malka et al., 2024</a>)</span>. For a detailed comparison of these tools and their limitations, see <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>. Researchers thus face a difficult choice between solutions that are accessible but incomplete or approaches that are powerful but demand technical expertise.</p>
@@ -652,6 +657,9 @@ Morris, T. P., White, I. R., &amp; Crowther, M. J. (2019). Using simulation stud
 <div id="ref-rvinecopulib" class="csl-entry" role="listitem">
 Nagler, T., &amp; Vatter, T. (2025). <em>Rvinecopulib: High performance algorithms for vine copula modeling</em>. <a href="https://CRAN.R-project.org/package=rvinecopulib">https://CRAN.R-project.org/package=rvinecopulib</a>
 </div>
+<div id="ref-nosek_etall_2015" class="csl-entry" role="listitem">
+Nosek, B. A., Alter, G., Banks, G. C., Borsboom, D., Bowman, S. D., Breckler, S. J., Buck, S., Chambers, C. D., Chin, G., Christensen, G., Contestabile, M., Dafoe, A., Eich, E., Freese, J., Glennerster, R., Goroff, D., Green, D. P., Hesse, B., Humphreys, M., … Yarkoni, T. (2015). Promoting an open research culture. <em>Science</em>, <em>348</em>(6242), 1422–1425. <a href="https://doi.org/10.1126/science.aab2374">https://doi.org/10.1126/science.aab2374</a>
+</div>
 <div id="ref-nosek_etall_2022" class="csl-entry" role="listitem">
 Nosek, B. A., Hardwicke, T. E., Moshontz, H., Allard, A., Corker, K. S., Dreber, A., Fidler, F., Hilgard, J., Kline Struhl, M., Nuijten, M. B., Rohrer, J. M., Romero, F., Scheel, A. M., Scherer, L. D., Schönbrodt, F. D., &amp; Vazire, S. (2022). Replicability, robustness, and reproducibility in psychological science. <em>Annual Review of Psychology</em>, <em>73</em>, 719–748. <a href="https://doi.org/10.1146/annurev-psych-020821-114157">https://doi.org/10.1146/annurev-psych-020821-114157</a>
 </div>
@@ -712,19 +720,19 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <p>Table&nbsp;1</p>
 </div>
 <div class="Caption" data-custom-style="Caption">
-<p>Performance metrics for ACE estimator across simulation conditions</p>
+<p>Performance metrics for ACE estimator across simulation conditions. Values in parentheses are Monte Carlo standard errors (MCSE).</p>
 </div>
 </figcaption>
 <div aria-describedby="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 15%">
 <col style="width: 17%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 13%">
-<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -740,74 +748,74 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <tr class="odd">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">0.957</td>
-<td style="text-align: center;">0.422</td>
-<td style="text-align: center;">0.910</td>
-<td style="text-align: center;">0.224</td>
+<td style="text-align: center;">0.957 (0.042)</td>
+<td style="text-align: center;">0.422 (0.035)</td>
+<td style="text-align: center;">0.910 (0.029)</td>
+<td style="text-align: center;">0.224 (0.004)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">1.013</td>
-<td style="text-align: center;">0.256</td>
-<td style="text-align: center;">0.930</td>
-<td style="text-align: center;">0.159</td>
+<td style="text-align: center;">1.013 (0.026)</td>
+<td style="text-align: center;">0.256 (0.020)</td>
+<td style="text-align: center;">0.930 (0.026)</td>
+<td style="text-align: center;">0.159 (0.002)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">0.997</td>
-<td style="text-align: center;">0.059</td>
-<td style="text-align: center;">0.960</td>
-<td style="text-align: center;">0.036</td>
+<td style="text-align: center;">0.997 (0.006)</td>
+<td style="text-align: center;">0.059 (0.005)</td>
+<td style="text-align: center;">0.960 (0.020)</td>
+<td style="text-align: center;">0.036 (0.000)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.173</td>
-<td style="text-align: center;">0.395</td>
-<td style="text-align: center;">0.890</td>
-<td style="text-align: center;">0.222</td>
+<td style="text-align: center;">1.173 (0.036)</td>
+<td style="text-align: center;">0.395 (0.034)</td>
+<td style="text-align: center;">0.890 (0.031)</td>
+<td style="text-align: center;">0.222 (0.004)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.157</td>
-<td style="text-align: center;">0.318</td>
-<td style="text-align: center;">0.870</td>
-<td style="text-align: center;">0.154</td>
+<td style="text-align: center;">1.157 (0.028)</td>
+<td style="text-align: center;">0.318 (0.026)</td>
+<td style="text-align: center;">0.870 (0.034)</td>
+<td style="text-align: center;">0.154 (0.002)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.114</td>
-<td style="text-align: center;">0.130</td>
-<td style="text-align: center;">0.510</td>
-<td style="text-align: center;">0.035</td>
+<td style="text-align: center;">1.114 (0.006)</td>
+<td style="text-align: center;">0.130 (0.006)</td>
+<td style="text-align: center;">0.510 (0.050)</td>
+<td style="text-align: center;">0.035 (0.000)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.200</td>
-<td style="text-align: center;">0.482</td>
-<td style="text-align: center;">0.870</td>
-<td style="text-align: center;">0.223</td>
+<td style="text-align: center;">1.200 (0.044)</td>
+<td style="text-align: center;">0.482 (0.054)</td>
+<td style="text-align: center;">0.870 (0.034)</td>
+<td style="text-align: center;">0.223 (0.005)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.235</td>
-<td style="text-align: center;">0.379</td>
-<td style="text-align: center;">0.830</td>
-<td style="text-align: center;">0.157</td>
+<td style="text-align: center;">1.235 (0.030)</td>
+<td style="text-align: center;">0.379 (0.027)</td>
+<td style="text-align: center;">0.830 (0.038)</td>
+<td style="text-align: center;">0.157 (0.002)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.257</td>
-<td style="text-align: center;">0.266</td>
-<td style="text-align: center;">0.020</td>
-<td style="text-align: center;">0.035</td>
+<td style="text-align: center;">1.257 (0.007)</td>
+<td style="text-align: center;">0.266 (0.007)</td>
+<td style="text-align: center;">0.020 (0.014)</td>
+<td style="text-align: center;">0.035 (0.000)</td>
 </tr>
 </tbody>
 </table>
@@ -911,7 +919,7 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 </tr>
 </tbody>
 </table>
-<p><strong>Performance Criteria.</strong> Table 1 presents the performance criteria used to evaluate the ACE estimator across simulation conditions.</p>
+<p><strong>Performance Criteria.</strong> Table B1 presents the performance criteria used to evaluate the ACE estimator across simulation conditions.</p>
 <p><strong>Computational Details.</strong> The simulation was conducted on a MacBook Pro (Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All analyses were performed in R (version 4.5.2). Parallel processing was implemented through the {doParallel} package (version 1.0.17), with {doRNG} (version 1.8.6.2) to ensure independent and reproducible random number streams. For data generation we used the {rvinecopulib} package (version 0.7.3.1.0). The estimator was implemented using the {marginaleffects} package (version 0.31.0). Data wrangling was performed with {dplyr} (version 1.1.4). Method performance was assessed through multiple metrics following the formulas from the {simhelpers} package (version 0.3.1). Figures were produced with {ggplot2} (version 4.0.1) and {cowplot} (version 1.2.0).</p>
 </section>
 <section class="level1">
