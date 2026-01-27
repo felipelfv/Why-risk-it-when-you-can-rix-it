@@ -48,12 +48,12 @@ jobs:
       run: nix-shell --run "quarto render Manuscript/article.qmd"
 
     - name: Rename
-      run: mv Manuscript/docs/article.html Manuscript/docs/index.html
+      run: mv docs/article.html docs/index.html
 
     - name: Push docs
       run: |
         git pull --rebase --autostash origin main
-        git add Manuscript/docs/index.html Manuscript/docs/article.pdf
+        git add docs/index.html docs/article.pdf
         if git diff --cached --quiet; then
           echo "No changes to commit."
         else
