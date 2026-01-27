@@ -174,7 +174,9 @@ or approaches that are powerful but demand technical expertise.
 
 In this article, therefore, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
-depend. For that, we introduce Nix [@dolstra_etall_2004], a functional software
+depend. For that, we introduce Nix [@dolstra_etall_2004], a functional 
+software^[*Functional* is used in the sense of functional programming (pure 
+functions, immutability, explicit inputs), not in the colloquial sense of *working*.]
 ecosystem designed to make software installation deterministic, and {rix}
 [@rodrigues_baumann_2025], an R interface that allows researchers to use Nix
 without needing deep knowledge of its underlying language or infrastructure. Our
@@ -254,14 +256,16 @@ executed.
 
 # Nix and {rix}: A Comprehensive Solution
 
-A potential solution to the above issue is Nix [@dolstra_etall_2004]. Nix is a
-software ecosystem centered on a purely functional package manager and build
-system designed to make software environments reproducible, declarative, and
-isolated across platforms (think of Apple's or Android's application store). In
-practical terms, this means that Nix allows researchers to specify *exactly*
-which versions of programming languages, packages, and system libraries an
-analysis requires, and to recreate that same environment reliably on another
-machine.
+A potential solution to this problem is Nix [@dolstra_etall_2004], a software 
+ecosystem whose primary concern is reproducible, declarative builds. To achieve this
+Nix is a programming language, a build tool and a package manager. This article
+focuses mostly on Nix the package manager. Most package managers 
+(think of Apple’s or Android’s app stores) are imperative: they modify a system’s
+state as they install or update software. Nix, in contrast, treats build 
+instructions and dependencies as immutable, enforcing reproducible, declarative, 
+and isolated environments across platforms. This allows researchers to specify 
+exactly which versions of programming languages, packages, and system libraries 
+an analysis requires, and to recreate that environment reliably on any machine.
 
 Unlike familiar tools such as `install.packages()` in R, `apt-get` on Linux, or
 `uv` in Python—which typically manage only a single layer of the software
@@ -295,20 +299,22 @@ Bioconductor. By pinning a specific commit or date, researchers freeze the
 entire software stack (i.e., R itself, R packages, and all system libraries) 
 at the time of this writing. This eliminates the system-dependency problems 
 that tools like {renv} cannot address [@rodrigues_baumann_2025]. This 
-architecture also ensures stability over time. Empirical work has shown strong rebuildability and reproducibility rates for historical nixpkgs snapshots
+architecture also ensures stability over time. Empirical work has shown strong 
+rebuildability and reproducibility rates for historical nixpkgs snapshots
 [@rodrigues_baumann_2026_polyglot]. Combined with binary caches, which often
 allow environments to materialize in seconds, Nix becomes practical for
 interactive research workflows [@rodrigues_baumann_2025].
 
 ## The {rix} Package: R Interface to Nix
 
-Nix expressions are written in a dedicated functional language unfamiliar to
-most researchers. The {rix} package removes this barrier by providing an
-R-native interface. A single call to `rix()` generates complete Nix
-configurations from standard R syntax, specifying R versions, CRAN packages,
-system libraries, and even Python or Julia components when required. Users never
-need to read or write Nix code directly, as {rix} performs the translation
-automatically [@rodrigues_baumann_2025].
+As previously stated, Nix is also a functional programming language. 
+Because the Nix package manager is declarative, it requires expressions 
+written in this language to install software. However, since Nix is a functional 
+programming language unfamiliar to most researchers, we recommend using {rix} to lower this barrier. 
+The {rix} package provides an R-native interface: a single call to `rix()` generates 
+complete Nix configurations from standard R syntax, specifying R versions, 
+CRAN packages, system libraries, and even Python or Julia components when required. 
+Users never need to read or write Nix code directly, as {rix} translates automatically [@rodrigues_baumann_2025].
 
 A key feature of {rix} is its integration with rstats-on-nix, a
 community-maintained fork offering daily CRAN snapshots and weekly tested
