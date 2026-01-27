@@ -154,9 +154,13 @@ Rscript Simulation_Scripts/04_performance_metrics.R
 Rscript Simulation_Scripts/05_plots.R
 ```
 
+## Rixpress demonstration
+
+For a demonstration of {rixpress} - a sister package to {rix} that extends Nix-based reproducibility to formalized pipelines - see the companion repository: [Why-risk-it-when-you-can-rix-it-rixpress](https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it-rixpress). That repository shows how to pre-compute simulation results via a Nix-based pipeline and load them during manuscript compilation using `rixpress::rxp_load()`.
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE)
 file for details.
 
 ## Authors
