@@ -703,7 +703,13 @@ Once Nix is installed\footnote{It is worth noting that \{rix\} can
   installed (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann,
   2025}).}, there are two ways to access \{rix\}, depending on whether R
 is already installed on your system. In this tutorial, we proceed as if
-R was already installed (Listing~\ref{lst-install-rix-cran}):
+R was already installed\footnote{We, however, recommend uninstalling
+  your local R and letting Nix manage R, R packages, and other tools
+  entirely. This approach avoids potential conflicts between
+  system-installed and Nix-managed software, an issue we will illustrate
+  later in this tutorial. See
+  \url{https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html\#case-1-you-dont-have-r-installed-and-wish-to-install-it-using-nix-as-well}
+  for more details.} (Listing~\ref{lst-install-rix-cran}):
 
 \begin{codelisting}
 
@@ -1136,7 +1142,7 @@ launch their IDE by typing its name (e.g., \texttt{rstudio} or
 \subsection[Reproducing the Complete
 Manuscript]{\texorpdfstring{Reproducing the Complete
 Manuscript\footnote{See the \{rix\} documentation for more:
-  \url{https://docs.ropensci.org/rix/articles/literate-programming.html}}}{Reproducing the Complete Manuscript}}\label{reproducing-the-complete-manuscript5}
+  \url{https://docs.ropensci.org/rix/articles/literate-programming.html}}}{Reproducing the Complete Manuscript}}\label{reproducing-the-complete-manuscript6}
 
 Within the nix shell, one is able to render the manuscript as follows in
 the terminal (Listing~\ref{lst-quarto-render}):
@@ -1224,12 +1230,12 @@ desired, the manuscript can also be reproduced interactively by opening
 the project folder in the user's preferred IDE.
 
 At this point, it is also worth noting that Nix shells do not fully
-isolate you from your existing system by default. For R users, this has
-a practical implication: packages installed in your regular R library
-(outside of Nix) could potentially be loaded when running R from within
-the Nix environment. The \{rix\} package addresses this
-automatically---when you call \texttt{rix()}, it also executes
-\texttt{rix\_init()}, which creates a project-specific
+isolate you from your existing system by default (as mentioned in
+footnote 2). For R users, this has a practical implication: packages
+installed in your regular R library (outside of Nix) could potentially
+be loaded when running R from within the Nix environment. The \{rix\}
+package addresses this automatically---when you call \texttt{rix()}, it
+also executes \texttt{rix\_init()}, which creates a project-specific
 \texttt{.Rprofile}. This file configures R to ignore external package
 libraries and also disables \texttt{install.packages()} within the
 environment. The rationale is straightforward: any new packages should
