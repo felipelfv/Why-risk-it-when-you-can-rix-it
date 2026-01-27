@@ -159,7 +159,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#generating-the-environment-specification" id="toc-generating-the-environment-specification" class="nav-link" data-scroll-target="#generating-the-environment-specification">Generating the Environment Specification</a></li>
   <li><a href="#step-iii-building-and-using-the-reproducible-environment" id="toc-step-iii-building-and-using-the-reproducible-environment" class="nav-link" data-scroll-target="#step-iii-building-and-using-the-reproducible-environment">Step III: Building and Using the Reproducible Environment</a></li>
-  <li><a href="#reproducing-the-complete-manuscript3" id="toc-reproducing-the-complete-manuscript3" class="nav-link" data-scroll-target="#reproducing-the-complete-manuscript3">Reproducing the Complete Manuscript</a>
+  <li><a href="#reproducing-the-complete-manuscript5" id="toc-reproducing-the-complete-manuscript5" class="nav-link" data-scroll-target="#reproducing-the-complete-manuscript5">Reproducing the Complete Manuscript</a>
   <ul class="collapse">
   <li><a href="#reproducing-the-simulation-and-results" id="toc-reproducing-the-simulation-and-results" class="nav-link" data-scroll-target="#reproducing-the-simulation-and-results">Reproducing the Simulation and Results</a></li>
   </ul></li>
@@ -213,7 +213,7 @@ window.Quarto = {
 
 <p>Felipe Fontana Vieira<sup>1</sup>, Jason Geller<sup>2</sup>, and Bruno Rodrigues<sup>3</sup></p>
 <p><sup>1</sup>Department of Data Analysis, Ghent University</p>
-<p><sup>2</sup>Department of Psychology and Neuroscience, Boston College</p>
+<p><sup>2</sup>Department of Psychology and Neuroscienc, Boston College</p>
 <p><sup>3</sup>Statistics and Data Strategy Departments, Ministry of Research and Higher Education, Luxembourg</p>
 </div>
 <br>
@@ -223,31 +223,36 @@ window.Quarto = {
 </section>
 <section id="author-note" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Author Note</h1>
+<p>Felipe Fontana Vieira <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0009-0006-0949-6569">https://orcid.org/0009-0006-0949-6569</a></p>
+<p>Jason Geller <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-7459-4505">https://orcid.org/0000-0002-7459-4505</a></p>
+<p>Bruno Rodrigues <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-3211-3689">https://orcid.org/0000-0002-3211-3689</a></p>
+<p>Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.git. The authors have no conflicts of interest to declare. We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback on earlier versions of this manuscript.</p>
+<p>Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: <em>Felipe Fontana Vieira</em><strong>: </strong>conceptualization, methodology, software, data curation, formal analysis, visualization, writing – original draft, and Writing - review &amp; editing</p>
 <p>Correspondence concerning this article should be addressed to Felipe Fontana Vieira, Department of Data Analysis, Ghent University, Email: <a href="mailto:felipe.fontanavieira@ugent.be">felipe.fontanavieira@ugent.be</a></p>
 <br>
 </section>
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 5794</p>
+<p><em>Word Count</em>: 6184</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
 <h1 class="title unnumbered unlisted">Why Risk it, When You Can {rix} it: A Tutorial for Computational Reproducibility Focused on Simulation Studies</h1>
 <p>Psychological science is in the midst of a credibility revolution, which has prompted substantial progress in how research is conducted and evaluated <span class="citation" data-cites="vazire2018">(<a href="#ref-vazire2018" role="doc-biblioref">Vazire, 2018</a>)</span>. Yet, despite notable progress, a key cornerstone of science, reproducibility (i.e., the ability to precisely reproduce the results of a study or studies based on provided data, code, materials, and software/hardware) remains limited <span class="citation" data-cites="hardwicke2020">(<a href="#ref-hardwicke2020" role="doc-biblioref">Hardwicke et al., 2020</a>)</span>. Hence, ensuring reproducibility remains an open and pressing challenge for psychological science.</p>
 <p>Addressing this gap is complicated by the fact that reproducibility is not a binary feature but instead exists along a continuum <span class="citation" data-cites="peng_2011">(<a href="#ref-peng_2011" role="doc-biblioref">Peng, 2011</a>)</span>. At the lower end, reproducibility may be interpreted as sharing only a manuscript. Further along the spectrum, it may involve providing partial code, complete analysis scripts, or publicly accessible datasets. At the highest level, reproducibility entails documenting a fully specified computational environment that allows others to recreate identical results—from raw data to final manuscript output—with minimal friction. As a result, researchers may implicitly target different points on this continuum, and efforts to improve reproducibility can diverge substantially in both goals and implementation.</p>
-<p>Open science initiatives have made considerable progress in encouraging movement along this spectrum. For example, journals have begun offering open-science badges <span class="citation" data-cites="kidwell_etall_2016">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>)</span>, best practices for making data sharing routine have been developed <span class="citation" data-cites="levenstein_lyle_2018">(<a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>)</span>, and platforms like the Open Science Framework (OSF) <span class="citation" data-cites="nosek_etall_2015">(<a href="#ref-nosek_etall_2015" role="doc-biblioref">Nosek et al., 2015</a>)</span> have provided infrastructure for sharing and storing research materials. However, these efforts largely focus on the lower and middle portions of the continuum, emphasizing <em>what</em> is shared rather than <em>how</em> shared materials can be executed in practice.</p>
+<p>Open science initiatives have made considerable progress in encouraging movement along this spectrum. For example, journals now offer open-science badges <span class="citation" data-cites="kidwell_etall_2016">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>)</span>, best practices have been developed to make data sharing routine <span class="citation" data-cites="levenstein_lyle_2018">(<a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>)</span>, and platforms such as the Open Science Framework (OSF) provide infrastructure for storing and sharing research materials <span class="citation" data-cites="nosek_etall_2015">(<a href="#ref-nosek_etall_2015" role="doc-biblioref">Nosek et al., 2015</a>)</span>. However, these efforts primarily target the lower to middle portions of the continuum, emphasizing <em>what</em> is shared rather than <em>how</em> shared materials can be executed in practice.</p>
 <p>Data and code are never fully self-sufficient to reproduce a set of findings <span class="citation" data-cites="peikert_brandmaier_2021 epskamp_2019 wiebels_moreau_2021">(<a href="#ref-epskamp_2019" role="doc-biblioref">Epskamp, 2019</a>; <a href="#ref-peikert_brandmaier_2021" role="doc-biblioref">Peikert &amp; Brandmaier, 2021</a>; <a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>)</span>. Assuming the data and code are error-free, reproducibility depends on a hierarchy of software components—collectively referred to as <em>dependencies</em>—including the programming language version, the packages used in the analysis, and the system libraries on which those packages rely. When these dependencies differ from those used in the original analysis, code may fail, behave inconsistently across machines, or yield conflicting numerical results <span class="citation" data-cites="baker_etall_2024 hodges_etall_2023 glatard_etall_2015 nosek_etall_2022">(<a href="#ref-baker_etall_2024" role="doc-biblioref">Baker et al., 2024</a>; <a href="#ref-glatard_etall_2015" role="doc-biblioref">Glatard et al., 2015</a>; <a href="#ref-hodges_etall_2023" role="doc-biblioref">Hodges et al., 2023</a>; <a href="#ref-nosek_etall_2022" role="doc-biblioref">Nosek et al., 2022</a>)</span>. These issues are particularly acute for simulation studies, which rely on complex codebases, versioned dependencies, and intricate software configurations <span class="citation" data-cites="luijken_etall_2024 siepe_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>.</p>
 <p>To make this concrete, we use <em>computational environment</em> to refer to the complete software context required for an analysis to run successfully—the programming language version, package versions, system libraries, and operating system <span class="citation" data-cites="rodrigues_2023 rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>; <a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. We define <em>computational environment reproducibility</em> as the ability to reconstruct this entire set of software dependencies on any machine and at any future time, such that executing the same code yields the same numerical results. Empirical assessments show that current practice falls short of this ideal. <span class="citation" data-cites="siepe_etall_2024">Siepe et al. (<a href="#ref-siepe_etall_2024" role="doc-biblioref">2024</a>)</span> report that nearly two-thirds of simulation studies in psychology provide no accompanying code, and among those that do, documentation of the computational environment is rarely included. This gap is consequential: simulation studies inform methodological recommendations, meaning that insufficient reproducibility undermines confidence in those recommendations <span class="citation" data-cites="luijken_etall_2024 white_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-white_etall_2024" role="doc-biblioref">White et al., 2024</a>)</span>.</p>
 <p>Arguably, these challenges persist because researchers must navigate a fragmented landscape of solutions, each addressing only part of the problem. Package-level managers such as {renv} <span class="citation" data-cites="ushey_2024">(<a href="#ref-ushey_2024" role="doc-biblioref">Ushey, 2024</a>)</span> and {groundhog} <span class="citation" data-cites="simonsohn_2020">(<a href="#ref-simonsohn_2020" role="doc-biblioref">Simonsohn, 2020</a>)</span> stabilize R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on. Workflow orchestration tools such as {targets} <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> and Make <span class="citation" data-cites="feldman_1979">(<a href="#ref-feldman_1979" role="doc-biblioref">Feldman, 1979</a>)</span> support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run and by tracking dependencies among intermediate results. These tools clarify <em>how</em> an analysis proceeds, but they assume that the software stack required to run each step is already stable. Containerization tools such as Docker, including R-focused implementations like Rocker <span class="citation" data-cites="boettiger_2015 boettiger_eddelbuettel_2017">(<a href="#ref-boettiger_2015" role="doc-biblioref">Boettiger, 2015</a>; <a href="#ref-boettiger_eddelbuettel_2017" role="doc-biblioref">Boettiger &amp; Eddelbuettel, 2017</a>)</span> offer a more comprehensive approach by bundling the full environment—operating system, system libraries, interpreter versions, and packages—into a single executable image. Yet their use requires familiarity with Linux system administration, and even containerization may suffer from temporal drift when Dockerfiles rely on mutable upstream repositories <span class="citation" data-cites="malka2024">(<a href="#ref-malka2024" role="doc-biblioref">Malka et al., 2024</a>)</span>. For a detailed comparison of these tools and their limitations, see <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>. Researchers thus face a difficult choice between solutions that are accessible but incomplete or approaches that are powerful but demand technical expertise.</p>
-<p>In this article, therefore, we focus specifically on computational environment reproducibility as the foundation upon which other reproducibility practices depend. For that, we introduce Nix <span class="citation" data-cites="dolstra_etall_2004">(<a href="#ref-dolstra_etall_2004" role="doc-biblioref">Dolstra et al., 2004</a>)</span>, a functional software ecosystem designed to make software installation deterministic, and {rix} <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>, an R interface that allows researchers to use Nix without needing deep knowledge of its underlying language or infrastructure. Our main objective with the tutorial is not to introduce a specific workflow orchestration system or to prescribe a particular analytic structure. Instead, we aim to show what Nix and {rix} are and how they can establish a stable, cross-platform environment within which any simulation study—whether organized in simple, documented script sequences (e.g., .R files that <code>source()</code> others), through more formal orchestration tools (e.g., targets) or embedded as code chunks in <code>.Rmd</code> or <code>.qmd</code>—can be executed reliably.</p>
+<p>In this article, therefore, we focus specifically on computational environment reproducibility as the foundation upon which other reproducibility practices depend. For that, we introduce Nix <span class="citation" data-cites="dolstra_etall_2004">(<a href="#ref-dolstra_etall_2004" role="doc-biblioref">Dolstra et al., 2004</a>)</span>, a functional software ecosystem designed to make software installation deterministic, and {rix} <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>, an R interface that allows researchers to use Nix without needing deep knowledge of its underlying language or infrastructure. Our main objective with the tutorial is not to introduce a specific workflow orchestration system or to prescribe a particular analytic structure. Instead, we aim to show what Nix and {rix} are and how they can establish a stable, cross-platform environment within which any simulation study—whether organized in simple, documented script sequences (e.g., .R files that <code>source()</code> others), through more formal orchestration tools (e.g., {targets}) or embedded as code chunks in <code>.Rmd</code> or <code>.qmd</code>—can be executed reliably.</p>
 <p>We illustrate these ideas through a reproducible simulation study conducted in R, culminating in this automated APA-formatted manuscript generated with <code>apaquarto</code> <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. Although the example centers on R because of its prominence in psychological methodology, the principles underlying environment reproducibility apply equally to other languages, including Python and Julia, and to different development environments such as RStudio, VS Code, Emacs, or Positron. At the end of the article, we also briefly introduce {rixpress} <span class="citation" data-cites="rixpress">(<a href="#ref-rixpress" role="doc-biblioref">Rodrigues, 2025</a>)</span>, a workflow orchestration tool that builds on Nix to coordinate pipelines across R, Python, and Julia.</p>
 </section>
 <section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
 <h1>A Practical Example: Setting up a Reproducible Simulation Study with {rix}</h1>
 <p>Imagine you have just been awarded a grant to conduct a large-scale simulation study. The study is designed to evaluate the performance of a statistical estimator under varying data-generating conditions (see Appendix A for full technical details). This tutorial is organized around this scenario. We use this example to ground our discussion into a typical methods section, but readers can follow the tutorial without engaging deeply with the simulation itself.</p>
 <p>In practice, simulation studies are typically organized into multiple component files, each corresponding to a distinct analytical stage, a modular structure that facilitates development and debugging. In our case, the simulation is organized into five sequential scripts: data generation (<code>01_data_generation.R</code>), model specification (<code>02_models.R</code>), simulation execution (<code>03_run_simulation.R</code>), performance metric calculation (<code>04_performance_metrics.R</code>), and results visualization (<code>05_plots.R</code>). However, because our focus is on the reproducibility of the <em>entire manuscript</em>, we embed all code directly within this document as executable chunks in a single <code>.qmd</code> file. When rendered, the simulation runs from start to finish, producing results and figures automatically. This approach would be impractical for many real-world simulation studies, which are often too computationally intensive. We return to this trade-off later in the tutorial.</p>
-<p>Now suppose a researcher attempts to reproduce the simulation results reported in the article. What might prevent them from obtaining identical outcomes? The natural first concern is package versioning. Installing R packages at a later time may lead to errors if functions have been renamed or deprecated (e.g., <code>lavaan:::lav_utils_get_ancestors</code> renamed to <code>lavaan:::lav_graph_get_ancestors()</code>), or to subtly different results due to changes in default settings (e.g., <code>stringsAsFactors</code> defaulting to FALSE as of R 4.0) or numerical implementations. Beyond R packages themselves, many packages rely on system-level libraries that must be installed separately from R. Our simulation illustrates this dependency structure directly: the {rvinecopulib} package interfaces with a C++ backend and links against external libraries such as Boost, Eigen, and RcppThread <span class="citation" data-cites="rvinecopulib">(<a href="#ref-rvinecopulib" role="doc-biblioref">Nagler &amp; Vatter, 2025</a>)</span>.</p>
+<p>Now suppose a researcher attempts to reproduce the simulation results reported in the article. What might prevent them from obtaining identical outcomes? The natural first concern is the version of packages. Installing R packages at a later time may lead to errors if functions have been renamed or deprecated (e.g., <code>lavaan:::lav_utils_get_ancestors</code> renamed to <code>lavaan:::lav_graph_get_ancestors()</code>), or to subtly different results due to changes in default settings (e.g., <code>stringsAsFactors</code> defaulting to FALSE as of R 4.0) or numerical implementations. Beyond package versioning, many packages rely on system-level libraries that must be installed separately from R. Our simulation illustrates this dependency structure directly: the {rvinecopulib} package interfaces with a C++ backend and links against external libraries such as Boost, Eigen, and RcppThread <span class="citation" data-cites="rvinecopulib">(<a href="#ref-rvinecopulib" role="doc-biblioref">Nagler &amp; Vatter, 2025</a>)</span>.</p>
 <p>The R language version introduces another layer of dependency. Code written for R 4.0 may rely on syntax or functionality that is unavailable in earlier versions (e.g., the native pipe <code>|&gt;</code> introduced in R 4.1). More subtly, changes to R’s random number generation across major versions mean that identical code executed with the same seed can nevertheless produce different random sequences <span class="citation" data-cites="ottoboni_stark_2018">(<a href="#ref-ottoboni_stark_2018" role="doc-biblioref">Ottoboni &amp; Stark, 2018</a>)</span>. For simulation studies, where specific random draws often underpin reported results, this version sensitivity is consequential.</p>
 <p>Finally, when analyses are embedded in a literate programming workflow (i.e., documents that combine narrative text and executable code; dynamic document generation) additional layers of software dependencies arise. For example, rendering R Markdown (<code>.rmd</code>) or Quarto documents (<code>.qmd</code>) requires both a document conversion tool (e.g., Pandoc, which converts <code>.rmd</code> or <code>.qmd</code> files into formats such as PDF or HTML) and a typesetting system such as a LaTeX distribution or Typst. Each of these components introduces its own versioning constraints and platform-specific installation requirements. Taken together, these layers highlight that reproducibility depends not only on code and data, but also on the broader computational environment in which analyses are executed.</p>
 </section>
@@ -259,7 +264,7 @@ window.Quarto = {
 <section id="core-principles" class="level2">
 <h2 data-anchor-id="core-principles">Core Principles</h2>
 <p>Rather than installing software into global directories (e.g., <code>/usr/lib</code>), Nix places every package in its own directory under <code>/nix/store</code>. Each package path contains a cryptographic hash representing its precise inputs—source code, dependencies, and build instructions. Because these paths are content-addressed, multiple versions of the same software can coexist without conflict. A researcher can, for example, maintain projects requiring R 4.1.0 and R 4.3.3 side by side, or use different package versions across analyses, switching between them seamlessly <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
-<p>The Nix ecosystem is built around nixpkgs, a version-controlled repository comprising more than 120,000 packages, including nearly all of CRAN and Bioconductor. By pinning a specific commit or date, researchers freeze the entire software stack—R itself, R packages, and all system libraries—at that point in time. This eliminates the system-dependency problems that tools like {renv} cannot address <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. This architecture also ensures stability over time. Empirical work has shown strong rebuildability and reproducibility rates for historical nixpkgs snapshots <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. Combined with binary caches, which often allow environments to materialize in seconds, Nix becomes practical for interactive research workflows <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
+<p>The Nix ecosystem is built around nixpkgs, a version-controlled repository comprising more than 120,000 packages, including nearly all of CRAN and Bioconductor. By pinning a specific commit or date, researchers freeze the entire software stack—R itself, R packages, and all system libraries—at the time of this writing. This eliminates the system-dependency problems that tools like {renv} cannot address <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. This architecture also ensures stability over time. Empirical work has shown strong rebuildability and reproducibility rates for historical nixpkgs snapshots <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. Combined with binary caches, which often allow environments to materialize in seconds, Nix becomes practical for interactive research workflows <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 </section>
 <section id="the-rix-package-r-interface-to-nix" class="level2">
 <h2 data-anchor-id="the-rix-package-r-interface-to-nix">The {rix} Package: R Interface to Nix</h2>
@@ -367,11 +372,11 @@ Listing&nbsp;3: Example for the git_pkgs argument
 </section>
 <section id="specifying-latex-packages" class="level4">
 <h4 data-anchor-id="specifying-latex-packages">Specifying LaTeX packages.</h4>
-<p>The <code>tex_pkgs</code> parameter specifies LaTeX packages needed for PDF compilation. When any packages are listed, Nix automatically includes a minimal TexLive distribution (<code>scheme-small</code>) as a base, to which the specified packages are added. Determining the required LaTeX packages may involve some trial and error—Quarto’s error messages during, for example, the PDF rendering indicate which packages are missing, and these can then be added to <code>tex_pkgs</code> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-system-tools.html" class="uri">https://docs.ropensci.org/rix/articles/installing-system-tools.html</a>).</p>
+<p>The <code>tex_pkgs</code> parameter specifies LaTeX packages needed for PDF compilation. When any packages are listed, Nix automatically includes a minimal TexLive distribution (<code>scheme-small</code>) as a base, to which the specified packages are added. Determining the required LaTeX packages may involve some trial and error—Quarto’s error messages during, for example, the PDF rendering indicate which packages are missing, and these can then be added to <code>tex_pkgs</code> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-system-tools.html" class="uri">https://docs.ropensci.org/rix/articles/installing-system-tools.html</a>). The tex packages included in the above code offer a nice starting point for researchers wanting to create manuscripts using LaTeX.</p>
 </section>
 <section id="configuring-the-development-environment" class="level4">
 <h4 data-anchor-id="configuring-the-development-environment">Configuring the development environment.</h4>
-<p>The <code>ide</code> parameter controls whether an integrated development environment (IDE) is included in the Nix environment, allowing users to interactively develop and run code within their editor of choice. When <code>ide</code> is specified, the project can be opened directly in the corresponding IDE, with all dependencies provided by the Nix environment. For example, setting <code>ide = "rstudio"</code> installs a project-specific version of RStudio inside the Nix environment. This is required for RStudio because, unlike most other editors, it cannot attach to an external Nix shell unless it is itself installed via Nix. On macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or environments dated 2025-02-28 or later); for earlier R versions, alternative editors must be used. Other supported IDEs include Positron (<code>ide = "positron"</code>), Visual Studio Code (<code>ide = "code"</code>), and command-line interfaces such as Radian (<code>ide = "radian"</code>). These tools may either be installed directly within the Nix environment using the <code>ide</code> parameter, or users may rely on an existing system installation by setting <code>ide = "none"</code> (or <code>ide = "other"</code>) and configuring <code>direnv</code> to automatically load the Nix environment when the project directory is opened. All IDEs installed via Nix are project-specific and do not interfere with system-wide installations. Detailed configuration instructions are provided in the {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/configuring-ide.html" class="uri">https://docs.ropensci.org/rix/articles/configuring-ide.html</a></p>
+<p>The <code>ide</code> parameter controls whether an integrated development environment (IDE) is included in the Nix environment, allowing users to interactively develop and run code within their editor of choice. When <code>ide</code> is specified, the project can be opened directly in the corresponding IDE, with all dependencies provided by the Nix environment. For example, setting <code>ide = "rstudio"</code> installs a project-specific version of RStudio inside the Nix environment. This is required for RStudio because, unlike most other editors, it cannot attach to an external Nix shell unless it is itself installed via Nix. On macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or environments dated 2025-02-28 or later); for earlier R versions, alternative editors must be used. Other supported IDEs include Positron (<code>ide = "positron"</code>), Visual Studio Code (<code>ide = "code"</code>), and command-line interfaces such as Radian (<code>ide = "radian"</code>). These tools may either be installed directly within the Nix environment using the <code>ide</code> parameter, or users may rely on an existing system installation by setting <code>ide = "none"</code> (or <code>ide = "other"</code>) and configuring <code>direnv</code> to automatically load the Nix environment when the project directory is opened<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. All IDEs installed via Nix are project-specific and do not interfere with system-wide installations. Detailed configuration instructions are provided in the {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/configuring-ide.html" class="uri">https://docs.ropensci.org/rix/articles/configuring-ide.html</a></p>
 </section>
 <section id="setting-file-output-parameters" class="level4">
 <h4 data-anchor-id="setting-file-output-parameters">Setting file output parameters.</h4>
@@ -397,7 +402,7 @@ Listing&nbsp;4: Including Python packages
 </section>
 <section id="generating-the-environment-specification" class="level2">
 <h2 data-anchor-id="generating-the-environment-specification">Generating the Environment Specification</h2>
-<p>After defining the computational environment, the <code>rix()</code> function must be executed to generate the <code>default.nix</code> file. This can be done interactively by running <code>rix()</code> in an R console, or from the terminal using <code>Rscript</code> (<a href="#lst-rscript-generate" class="quarto-xref">Listing&nbsp;5</a>):</p>
+<p>After defining the computational environment, the <code>rix()</code> function must be executed to generate the <code>default.nix</code> file. This can be done interactively by running <code>rix()</code> in an R console (<a href="#lst-rix-env-manuscript" class="quarto-xref">Listing&nbsp;2</a>) or from the terminal using <code>Rscript</code> (<a href="#lst-rscript-generate" class="quarto-xref">Listing&nbsp;5</a>):</p>
 <div id="lst-rscript-generate" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rscript-generate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -413,7 +418,7 @@ Listing&nbsp;5: Generating the environment specification from the terminal
 </section>
 <section id="step-iii-building-and-using-the-reproducible-environment" class="level2">
 <h2 data-anchor-id="step-iii-building-and-using-the-reproducible-environment">Step III: Building and Using the Reproducible Environment</h2>
-<p>Once this step is complete, build the reproducible environment by navigating to the study directory in a terminal. You may use either the integrated Terminal in RStudio (Tools → Terminal → New Terminal) or an external system terminal from which you are running the Nix project. From the study directory, run the following command (Listing <a href="#lst-nix-build" class="quarto-xref">Listing&nbsp;6</a>):</p>
+<p>Once Step 2 is complete, build the reproducible environment by navigating to the study directory in a terminal. You may use either the integrated Terminal in RStudio (Tools → Terminal → New Terminal) or an external system terminal from which you are running the Nix project. From the study directory, run the following command (Listing <a href="#lst-nix-build" class="quarto-xref">Listing&nbsp;6</a>):</p>
 <div id="lst-nix-build" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -465,7 +470,7 @@ Listing&nbsp;9: Expected output from <code>nix-shell</code>
 </div>
 </figure>
 </div>
-<p>This command drops the user into a shell where all specified packages and tools are available. The shell prompt changes to indicate that a Nix environment is active (here, <code>[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</code>). To verify that R is being provided by Nix rather than a system installation, run <code>which R</code>. This should return a path within <code>/nix/store/</code>. Moreover, from within the Nix shell, users can launch their IDE by typing its name (e.g., <code>rstudio</code> or <code>positron</code>), which opens the IDE with the Nix environment active (<a href="#lst-shell-rs" class="quarto-xref">Listing&nbsp;10</a>)</p>
+<p>This command drops the user into a shell where all specified packages and tools are available. The shell prompt changes to indicate that a Nix environment is active (here, <code>[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$</code>). To verify that R is being provided by Nix rather than a system installation, run <code>which R</code>. This should return a path within <code>/nix/store/</code>. Moreover, from within the Nix shell, users can launch their IDE by typing its name (e.g., <code>rstudio</code> or <code>positron</code>), which opens the IDE with the Nix environment active (<a href="#lst-shell-rs" class="quarto-xref">Listing&nbsp;10</a>)<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div id="lst-shell-rs" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-shell-rs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -477,8 +482,8 @@ Listing&nbsp;10: Activating RStudio
 </figure>
 </div>
 </section>
-<section id="reproducing-the-complete-manuscript3" class="level2">
-<h2 data-anchor-id="reproducing-the-complete-manuscript3">Reproducing the Complete Manuscript<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></h2>
+<section id="reproducing-the-complete-manuscript5" class="level2">
+<h2 data-anchor-id="reproducing-the-complete-manuscript5">Reproducing the Complete Manuscript<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></h2>
 <p>Within the nix shell, one is able to render the manuscript as follows in the terminal (<a href="#lst-quarto-render" class="quarto-xref">Listing&nbsp;11</a>):</p>
 <div id="lst-quarto-render" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -516,8 +521,8 @@ Listing&nbsp;13: Installing the apaquarto extension from R
 </figure>
 </div>
 </div>
-<p>The final document (.docx, .pdf, or .html) is saved directly in the project folder<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
-<p>At this point, it is worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing&nbsp;14</a>):</p>
+<p>The final document (.docx, .pdf, or .html) is saved directly in the project folder<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
+<p>At this point, it is worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing&nbsp;14</a>):</p>
 <div id="lst-nix-shell-pure" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -712,19 +717,19 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <p>Table&nbsp;1</p>
 </div>
 <div class="Caption" data-custom-style="Caption">
-<p>Performance metrics for ACE estimator across simulation conditions</p>
+<p>Performance metrics for ACE estimator across simulation conditions. Values in parentheses are Monte Carlo standard errors (MCSE).</p>
 </div>
 </figcaption>
 <div aria-describedby="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
 <table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 15%">
 <col style="width: 17%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 13%">
-<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -740,74 +745,74 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <tr class="odd">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">0.957</td>
-<td style="text-align: center;">0.422</td>
-<td style="text-align: center;">0.910</td>
-<td style="text-align: center;">0.224</td>
+<td style="text-align: center;">0.957 (0.042)</td>
+<td style="text-align: center;">0.422 (0.035)</td>
+<td style="text-align: center;">0.910 (0.029)</td>
+<td style="text-align: center;">0.224 (0.004)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">1.013</td>
-<td style="text-align: center;">0.256</td>
-<td style="text-align: center;">0.930</td>
-<td style="text-align: center;">0.159</td>
+<td style="text-align: center;">1.013 (0.026)</td>
+<td style="text-align: center;">0.256 (0.020)</td>
+<td style="text-align: center;">0.930 (0.026)</td>
+<td style="text-align: center;">0.159 (0.002)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">none</td>
-<td style="text-align: center;">0.997</td>
-<td style="text-align: center;">0.059</td>
-<td style="text-align: center;">0.960</td>
-<td style="text-align: center;">0.036</td>
+<td style="text-align: center;">0.997 (0.006)</td>
+<td style="text-align: center;">0.059 (0.005)</td>
+<td style="text-align: center;">0.960 (0.020)</td>
+<td style="text-align: center;">0.036 (0.000)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.173</td>
-<td style="text-align: center;">0.395</td>
-<td style="text-align: center;">0.890</td>
-<td style="text-align: center;">0.222</td>
+<td style="text-align: center;">1.173 (0.036)</td>
+<td style="text-align: center;">0.395 (0.034)</td>
+<td style="text-align: center;">0.890 (0.031)</td>
+<td style="text-align: center;">0.222 (0.004)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.157</td>
-<td style="text-align: center;">0.318</td>
-<td style="text-align: center;">0.870</td>
-<td style="text-align: center;">0.154</td>
+<td style="text-align: center;">1.157 (0.028)</td>
+<td style="text-align: center;">0.318 (0.026)</td>
+<td style="text-align: center;">0.870 (0.034)</td>
+<td style="text-align: center;">0.154 (0.002)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">mild</td>
-<td style="text-align: center;">1.114</td>
-<td style="text-align: center;">0.130</td>
-<td style="text-align: center;">0.510</td>
-<td style="text-align: center;">0.035</td>
+<td style="text-align: center;">1.114 (0.006)</td>
+<td style="text-align: center;">0.130 (0.006)</td>
+<td style="text-align: center;">0.510 (0.050)</td>
+<td style="text-align: center;">0.035 (0.000)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">50</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.200</td>
-<td style="text-align: center;">0.482</td>
-<td style="text-align: center;">0.870</td>
-<td style="text-align: center;">0.223</td>
+<td style="text-align: center;">1.200 (0.044)</td>
+<td style="text-align: center;">0.482 (0.054)</td>
+<td style="text-align: center;">0.870 (0.034)</td>
+<td style="text-align: center;">0.223 (0.005)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">100</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.235</td>
-<td style="text-align: center;">0.379</td>
-<td style="text-align: center;">0.830</td>
-<td style="text-align: center;">0.157</td>
+<td style="text-align: center;">1.235 (0.030)</td>
+<td style="text-align: center;">0.379 (0.027)</td>
+<td style="text-align: center;">0.830 (0.038)</td>
+<td style="text-align: center;">0.157 (0.002)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2000</td>
 <td style="text-align: center;">severe</td>
-<td style="text-align: center;">1.257</td>
-<td style="text-align: center;">0.266</td>
-<td style="text-align: center;">0.020</td>
-<td style="text-align: center;">0.035</td>
+<td style="text-align: center;">1.257 (0.007)</td>
+<td style="text-align: center;">0.266 (0.007)</td>
+<td style="text-align: center;">0.020 (0.014)</td>
+<td style="text-align: center;">0.035 (0.000)</td>
 </tr>
 </tbody>
 </table>
@@ -911,7 +916,7 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 </tr>
 </tbody>
 </table>
-<p><strong>Performance Criteria.</strong> Table 1 presents the performance criteria used to evaluate the ACE estimator across simulation conditions.</p>
+<p><strong>Performance Criteria.</strong> Table B1 presents the performance criteria used to evaluate the ACE estimator across simulation conditions.</p>
 <p><strong>Computational Details.</strong> The simulation was conducted on a MacBook Pro (Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All analyses were performed in R (version 4.4.3). Parallel processing was implemented through the {doParallel} package (version 1.0.17), with {doRNG} (version 1.8.6.2) to ensure independent and reproducible random number streams. For data generation we used the {rvinecopulib} package (version 0.7.3.1.0). The estimator was implemented using the {marginaleffects} package (version 0.31.0). Data wrangling was performed with {dplyr} (version 1.1.4). Method performance was assessed through multiple metrics following the formulas from the {simhelpers} package (version 0.3.1). Figures were produced with {ggplot2} (version 4.0.1) and {cowplot} (version 1.1.3).</p>
 </section>
 <section class="level1">
@@ -923,113 +928,25 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <h2 data-anchor-id="r-packages">R Packages</h2>
 <section id="reproducibility-infrastructure" class="level3">
 <h3 data-anchor-id="reproducibility-infrastructure">Reproducibility Infrastructure</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>rix</strong></td>
-<td>Generates the Nix expression (<code>default.nix</code>) for reproducible environments</td>
-</tr>
-</tbody>
-</table>
+<p><strong>rix</strong>: Generates the Nix expression (<code>default.nix</code>) for reproducible environments.</p>
 </section>
 <section id="simulation-study" class="level3">
 <h3 data-anchor-id="simulation-study">Simulation Study</h3>
 <p>These packages are used in the <code>Simulation_Scripts/</code> folder:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Used in</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>rvinecopulib</strong></td>
-<td><code>01_data_generation.R</code></td>
-<td>Generates correlated data via copulas (<code>rbicop()</code>)</td>
-</tr>
-<tr class="even">
-<td><strong>marginaleffects</strong></td>
-<td><code>02_models.R</code></td>
-<td>Computes average causal effects via <code>avg_slopes()</code></td>
-</tr>
-<tr class="odd">
-<td><strong>doParallel</strong></td>
-<td><code>03_run_simulation.R</code></td>
-<td>Enables parallel <code>foreach</code> loops across CPU cores</td>
-</tr>
-<tr class="even">
-<td><strong>doRNG</strong></td>
-<td><code>03_run_simulation.R</code></td>
-<td>Makes parallel RNG reproducible</td>
-</tr>
-<tr class="odd">
-<td><strong>simhelpers</strong></td>
-<td><code>04_performance_metrics.R</code></td>
-<td>Calculates bias, RMSE, coverage metrics</td>
-</tr>
-<tr class="even">
-<td><strong>ggplot2</strong></td>
-<td><code>05_plots.R</code></td>
-<td>Creates simulation result visualizations</td>
-</tr>
-<tr class="odd">
-<td><strong>cowplot</strong></td>
-<td><code>05_plots.R</code></td>
-<td>Combines plots with <code>plot_grid()</code>, extracts legends</td>
-</tr>
-<tr class="even">
-<td><strong>dplyr</strong></td>
-<td><code>article.qmd</code></td>
-<td>Data wrangling for results reported in the Table 1</td>
-</tr>
-</tbody>
-</table>
+<p><strong>rvinecopulib</strong> (used in <code>01_data_generation.R</code>): Generates correlated data via copulas using the <code>rbicop()</code> function.</p>
+<p><strong>marginaleffects</strong> (used in <code>02_models.R</code>): Computes average causal effects via the <code>avg_slopes()</code> function.</p>
+<p><strong>doParallel</strong> (used in <code>03_run_simulation.R</code>): Enables parallel <code>foreach</code> loops across CPU cores.</p>
+<p><strong>doRNG</strong> (used in <code>03_run_simulation.R</code>): Makes parallel RNG reproducible.</p>
+<p><strong>simhelpers</strong> (used in <code>04_performance_metrics.R</code>): Calculates bias, RMSE, and coverage metrics.</p>
+<p><strong>ggplot2</strong> (used in <code>05_plots.R</code>): Creates simulation result visualizations.</p>
+<p><strong>cowplot</strong> (used in <code>05_plots.R</code>): Combines plots with <code>plot_grid()</code> and extracts legends.</p>
+<p><strong>dplyr</strong> (used in <code>article.qmd</code>): Data wrangling for results reported in Table 1.</p>
 </section>
 <section id="dynamic-document-generation" class="level3">
 <h3 data-anchor-id="dynamic-document-generation">Dynamic Document Generation</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>quarto</strong></td>
-<td>R interface to invoke Quarto rendering</td>
-</tr>
-<tr class="even">
-<td><strong>knitr</strong></td>
-<td>Executes R code chunks in <code>.qmd</code> files</td>
-</tr>
-<tr class="odd">
-<td><strong>svglite</strong></td>
-<td>SVG graphics device; apaquarto sets <code>dev: svglite</code> for HTML output</td>
-</tr>
-</tbody>
-</table>
+<p><strong>quarto</strong>: R interface to invoke Quarto rendering.</p>
+<p><strong>knitr</strong>: Executes R code chunks in <code>.qmd</code> files.</p>
+<p><strong>svglite</strong>: SVG graphics device; apaquarto sets <code>dev: svglite</code> for HTML output.</p>
 </section>
 </section>
 <section id="latex-packages" class="level2">
@@ -1037,172 +954,43 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <section id="required-by-apaquarto-extension" class="level3">
 <h3 data-anchor-id="required-by-apaquarto-extension">Required by apaquarto Extension</h3>
 <p>These are loaded in apaquarto’s <code>header.tex</code> or <code>apatemplate.tex</code>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Why apaquarto needs it</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>amsmath</strong></td>
-<td>Math environments (<code>align</code>, <code>equation</code>, etc.)</td>
-</tr>
-<tr class="even">
-<td><strong>threeparttablex</strong></td>
-<td>Tables with notes below (APA table format)</td>
-</tr>
-<tr class="odd">
-<td><strong>tcolorbox</strong></td>
-<td>Callout boxes (note, warning, tip blocks)</td>
-</tr>
-<tr class="even">
-<td><strong>fontawesome5</strong></td>
-<td>Icons in callouts</td>
-</tr>
-<tr class="odd">
-<td><strong>multirow</strong></td>
-<td>Table cells spanning multiple rows</td>
-</tr>
-<tr class="even">
-<td><strong>newtx</strong></td>
-<td>Times-like fonts (default when no custom <code>mainfont</code>)</td>
-</tr>
-<tr class="odd">
-<td><strong>geometry</strong></td>
-<td>Page margins</td>
-</tr>
-</tbody>
-</table>
+<p><strong>amsmath</strong>: Math environments (<code>align</code>, <code>equation</code>, etc.).</p>
+<p><strong>threeparttablex</strong>: Tables with notes below (APA table format).</p>
+<p><strong>tcolorbox</strong>: Callout boxes (note, warning, tip blocks).</p>
+<p><strong>fontawesome5</strong>: Icons in callouts.</p>
+<p><strong>multirow</strong>: Table cells spanning multiple rows.</p>
+<p><strong>newtx</strong>: Times-like fonts (default when no custom <code>mainfont</code>).</p>
+<p><strong>geometry</strong>: Page margins.</p>
 </section>
 <section id="dependencies-of-apaquarto-packages" class="level3">
 <h3 data-anchor-id="dependencies-of-apaquarto-packages">Dependencies of apaquarto Packages</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Dependency of</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>environ</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="even">
-<td><strong>pdfcol</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="odd">
-<td><strong>tikzfill</strong></td>
-<td>tcolorbox</td>
-</tr>
-<tr class="even">
-<td><strong>fontaxes</strong></td>
-<td>newtx</td>
-</tr>
-<tr class="odd">
-<td><strong>xstring</strong></td>
-<td>Template conditionals</td>
-</tr>
-<tr class="even">
-<td><strong>scalerel</strong></td>
-<td>apa7 class</td>
-</tr>
-</tbody>
-</table>
+<p><strong>environ</strong>: Dependency of tcolorbox.</p>
+<p><strong>pdfcol</strong>: Dependency of tcolorbox.</p>
+<p><strong>tikzfill</strong>: Dependency of tcolorbox.</p>
+<p><strong>fontaxes</strong>: Dependency of newtx.</p>
+<p><strong>xstring</strong>: Template conditionals.</p>
+<p><strong>scalerel</strong>: Dependency of apa7 class.</p>
 </section>
 <section id="required-by-apa7-document-class" class="level3">
 <h3 data-anchor-id="required-by-apa7-document-class">Required by apa7 Document Class</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>apa7</strong></td>
-<td>The document class itself (<code>\documentclass{apa7}</code>)</td>
-</tr>
-<tr class="even">
-<td><strong>endfloat</strong></td>
-<td>Moves floats to end of document in manuscript mode</td>
-</tr>
-<tr class="odd">
-<td><strong>threeparttable</strong></td>
-<td>Dependency for threeparttablex</td>
-</tr>
-</tbody>
-</table>
+<p><strong>apa7</strong>: The document class itself (<code>\documentclass{apa7}</code>).</p>
+<p><strong>endfloat</strong>: Moves floats to end of document in manuscript mode.</p>
+<p><strong>threeparttable</strong>: Dependency for threeparttablex.</p>
 </section>
 <section id="required-by-quarto-pdf-rendering" class="level3">
 <h3 data-anchor-id="required-by-quarto-pdf-rendering">Required by Quarto PDF Rendering</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>framed</strong></td>
-<td>Shaded/framed regions for callouts</td>
-</tr>
-<tr class="even">
-<td><strong>fvextra</strong></td>
-<td>Enhanced verbatim for syntax-highlighted code blocks</td>
-</tr>
-<tr class="odd">
-<td><strong>fancyvrb</strong></td>
-<td>Verbatim environments for code display</td>
-</tr>
-<tr class="even">
-<td><strong>setspace</strong></td>
-<td>Line spacing; also used in <code>article.qmd</code> for single-spaced code blocks</td>
-</tr>
-<tr class="odd">
-<td><strong>anyfontsize</strong></td>
-<td>Arbitrary font sizes in code blocks</td>
-</tr>
-</tbody>
-</table>
+<p><strong>framed</strong>: Shaded/framed regions for callouts.</p>
+<p><strong>fvextra</strong>: Enhanced verbatim for syntax-highlighted code blocks.</p>
+<p><strong>fancyvrb</strong>: Verbatim environments for code display.</p>
+<p><strong>setspace</strong>: Line spacing; also used in <code>article.qmd</code> for single-spaced code blocks.</p>
+<p><strong>anyfontsize</strong>: Arbitrary font sizes in code blocks.</p>
 </section>
 <section id="additional-packages" class="level3">
 <h3 data-anchor-id="additional-packages">Additional Packages</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Package</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>ninecolors</strong></td>
-<td>Extended color palettes</td>
-</tr>
-<tr class="even">
-<td><strong>wrapfig</strong></td>
-<td>Text wrapping around figures</td>
-</tr>
-<tr class="odd">
-<td><strong>tabularray</strong></td>
-<td>Modern table typesetting</td>
-</tr>
-<tr class="even">
-<td><strong>siunitx</strong></td>
-<td>SI units and number formatting</td>
-</tr>
-</tbody>
-</table>
+<p><strong>ninecolors</strong>: Extended color palettes.</p>
+<p><strong>wrapfig</strong>: Text wrapping around figures.</p>
+<p><strong>tabularray</strong>: Modern table typesetting.</p>
+<p><strong>siunitx</strong>: SI units and number formatting.</p>
 </section>
 </section>
 </section>
@@ -1213,9 +1001,11 @@ Wiebels, K., &amp; Moreau, D. (2021). Leveraging containers for reproducible psy
 <ol>
 <li id="fn1"><p>It is worth noting that {rix} can generate Nix expressions even without Nix installed on your system—you can write a <code>default.nix</code> file without Nix, but you cannot build or enter the resulting environment unless Nix is installed <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>For an overarching information on the function <code>rix()</code>, we suggest the following {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/project-environments.html" class="uri">https://docs.ropensci.org/rix/articles/project-environments.html</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>See the {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/literate-programming.html" class="uri">https://docs.ropensci.org/rix/articles/literate-programming.html</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Although we use <em>apaquarto</em> in this example, many alternative manuscript templates are available, and Nix is agnostic to the specific template employed, provided the necessary extensions are installed.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>For example, when preparing this manuscript without the <code>--pure</code> flag, <code>quarto render</code> worked successfully. However, when using the <code>--pure</code> flag, the build failed. Running <code>quarto check</code> from within the Nix shell (i.e., <code>nix-shell --run "quarto check"</code>) revealed that Quarto was still accessing the system’s LaTeX installation (<code>/Library/TeX/texbin</code>) rather than being restricted to only what was specified in <code>default.nix</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><strong><code>direnv</code></strong> is a lightweight utility that integrates with the user’s shell and automatically loads project-specific environment settings when navigating into a directory (via a <code>.envrc</code> file), and unloads them when leaving. This makes environment activation implicit and reduces the risk of running analyses in the wrong software context.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Please note that activating an RStudio instance via Nix does <strong>not</strong> automatically open the specific project directory you are working in. We therefore recommend creating an <strong>RStudio project file (<code>.Rproj</code>)</strong> and opening that file when using Nix to ensure that RStudio is correctly associated with the intended project and environment.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>See the {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/literate-programming.html" class="uri">https://docs.ropensci.org/rix/articles/literate-programming.html</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Although we use <em>apaquarto</em> in this example, many alternative manuscript templates are available, and Nix is agnostic to the specific template employed, provided the necessary extensions are installed.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>For example, when preparing this manuscript without the <code>--pure</code> flag, <code>quarto render</code> worked successfully. However, when using the <code>--pure</code> flag, the build failed. Running <code>quarto check</code> from within the Nix shell (i.e., <code>nix-shell --run "quarto check"</code>) revealed that Quarto was still accessing the system’s LaTeX installation (<code>/Library/TeX/texbin</code>) rather than being restricted to only what was specified in <code>default.nix</code>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->

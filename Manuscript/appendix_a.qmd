@@ -76,7 +76,7 @@ $$
 
 : Performance criteria for evaluating the ACE estimator. $\hat{\theta}_k$ denotes the ACE estimate from replication $k$ (for $k = 1, \ldots, K$), where $K = 1000$ is the number of replications, and $\theta$ denotes the true ACE for a given condition. For coverage and width criteria, $A_k$ and $B_k$ denote the lower and upper endpoints of the 95% confidence interval from replication $k$, $W_k = B_k - A_k$ is the interval width, $c_{\beta}$ is the estimated coverage probability, and $I(\cdot)$ is an indicator function equaling 1 if the condition is true and 0 otherwise. The Monte Carlo standard error (MCSE) quantifies the simulation uncertainty in each performance measure estimate
 
-**Performance Criteria.** Table 1 presents the performance criteria used to 
+**Performance Criteria.** Table B1 presents the performance criteria used to
 evaluate the ACE estimator across simulation conditions. 
 
 ```{r}

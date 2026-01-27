@@ -4,29 +4,60 @@ shorttitle: "Reproducibility with rix"
 author:
   - name: Felipe Fontana Vieira
     corresponding: true
+    orcid: 0009-0006-0949-6569
     email: felipe.fontanavieira@ugent.be
     affiliations:
       - name: Ghent University 
         department: Department of Data Analysis 
+    roles:
+      - Conceptualization
+      - Methodology
+      - Software
+      - Data curation
+      - Formal analysis
+      - Visualization
+      - Writing - original draft
+      - Writing - review & editing
   - name: Jason Geller
+    orcid: 0000-0002-7459-4505
     affiliations:
       - name: Boston College
-        department: Department of Psychology and Neuroscience
+        department: Department of Psychology and Neuroscienc
+    #roles: to be added 
   - name: Bruno Rodrigues
+    orcid: 0000-0002-3211-3689
     affiliations:
       - name: Ministry of Research and Higher Education, Luxembourg
         department: Statistics and Data Strategy Departments
+    #roles: to be added
+      
 abstract: |
-  Reproducibility remains limited in psychology, in part because reproducibility
-  exists on a spectrum -- from sharing isolated code fragments to providing
-  fully executable pipelines that ensure identical results. This article
-  introduces Nix and the {rix} R package as a way to provide a comprehensive
-  solution for achieving full computational reproducibility in simulation
-  studies. Building on this, we also demonstrate a tutorial on how to use {rix}
-  to obtain a reproducible manuscript using the apaquarto extension.
+  Computational reproducibility remains limited in psychological research,
+  despite widespread norms for sharing data and analysis code. One reason is
+  that reproducibility exists on a continuum, ranging from partial
+  transparency—such as providing scripts or software version numbers—to fully
+  executable research compendia that regenerate all results from raw code. In
+  this article, we introduce Nix and the {rix} R package as a practical
+  framework for achieving full computational reproducibility in simulation-based
+  research. We provide a step-by-step tutorial demonstrating how {rix} can be
+  used to define, build, and share isolated, project-specific software
+  environments that precisely capture R versions, package dependencies, system
+  libraries, and integrated development environments. We further illustrate
+  this workflow by reproducing a complete manuscript using Quarto and the
+  {apaquarto} extension, showing how analyses, figures, and text can be
+  regenerated in a single, executable pipeline. Together, these tools lower the
+  technical barrier to robust, end-to-end reproducibility and offer a scalable
+  solution for simulation studies and methodological research in psychology and
+  related fields.
+
 keywords: [reproducibility, Nix, simulation studies, R, computational methods]
 word-count: true
-authornote: null
+author-note:
+  disclosures:
+    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback 
+    on earlier versions of this manuscript."
+    conflict-of-interest: "The authors have no conflicts of interest to declare."
+    data-sharing: "Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.git."
 format:
   apaquarto-pdf:
     document-mode: man
@@ -88,7 +119,7 @@ along this spectrum. For example, journals now offer open-science badges
 [@kidwell_etall_2016], best practices have been developed to make data sharing
 routine [@levenstein_lyle_2018], and platforms such as the Open Science
 Framework (OSF) provide infrastructure for storing and sharing research
-materials \[\@nosek_etall_2015\]. However, these efforts primarily target the
+materials [@nosek_etall_2015]. However, these efforts primarily target the
 lower to middle portions of the continuum, emphasizing *what* is shared rather
 than *how* shared materials can be executed in practice.
 
@@ -749,27 +780,43 @@ Activating the Nix environment with strict isolation \normalsize
 #| echo: false
 #| message: false
 
-# fixed DGP parameters
-alpha0 <- 0
-alpha1 <- 0.5
-alpha2 <- 0.2
-beta0 <- -0.5
-beta1 <- 0.7
-gamma1 <- -0.4
+# fixed data-generating process (DGP) parameters
+# parameters for treatment assignment model: X1 = alpha0 + alpha1*X2 + alpha2*X2^2 + error
+alpha0 <- 0      # intercept for treatment equation
+alpha1 <- 0.5    # linear effect of confounder X2 on treatment X1
+alpha2 <- 0.2    # quadratic effect of confounder X2 on treatment X1
 
-# this will generate one dataset
+# parameters for outcome model: logit(P(Y=1)) = beta0 + beta1*X1 + gamma1*X2 + gamma2*X2^2
+beta0 <- -0.5    # intercept for outcome equation
+beta1 <- 0.7     # causal effect of treatment X1 on outcome Y (parameter of interest)
+gamma1 <- -0.4   # linear effect of confounder X2 on outcome Y
+
+# function to generate one dataset
+# arguments:
+#   n: sample size
+#   gamma2: quadratic effect of confounder on outcome (varies by condition)
 gen_data <- function(n, gamma2) {
-  # complete overhead. This was done just to use a package written in C++:
-  # generate independent uniform pairs via independence copula, then transform to standard normal
+  # generate independent uniform pairs using {rvinecopulib} (C++ backend)
+  # this is equivalent to rnorm() but demonstrates system-level dependencies
   u <- rbicop(n, "indep", 0, numeric(0))
-  X2 <- qnorm(u[, 1])
-  error_X1 <- qnorm(u[, 2])
 
+  # transform uniform marginals to standard normal via inverse CDF
+  X2 <- qnorm(u[, 1])        # confounder
+  error_X1 <- qnorm(u[, 2])  # error term for treatment equation
+
+  # generate treatment variable (confounded by X2)
   X1 <- alpha0 + alpha1 * X2 + alpha2 * X2^2 + error_X1
+
+  # compute true linear predictor for outcome model
   eta_true <- beta0 + beta1 * X1 + gamma1 * X2 + gamma2 * X2^2
+
+  # convert to probability via logistic function
   p <- plogis(eta_true)
+
+  # generate binary outcome
   y <- rbinom(n, size = 1, prob = p)
 
+  # dataset with outcome and predictors
   data.frame(y = y, x1 = X1, x2 = X2)
 }
 ```
@@ -780,14 +827,21 @@ gen_data <- function(n, gamma2) {
 #| echo: false
 #| message: false
 
-# for running one simulation replicate with MISSPECIFIED model
+# function to run one simulation replicate using the MISSPECIFIED model
+# arguments:
+#   n: sample size
+#   gamma2: quadratic effect of confounder on outcome
 run_one_rep <- function(n, gamma2) {
+  # generate dataset for this replicate
   dat <- gen_data(n, gamma2)
 
+  # fit misspecified model (omits X2^2 term, causing residual confounding)
   fit_misspec <- glm(y ~ x1 + x2, data = dat, family = binomial())
 
+  # compute average causal effect (ACE) using {marginaleffects}
   ace_est <- avg_slopes(fit_misspec, variables = "x1")
 
+  # point estimate, standard error, and 95% CI bounds
   data.frame(
     est = ace_est$estimate[1],
     se = ace_est$std.error[1],
@@ -796,13 +850,21 @@ run_one_rep <- function(n, gamma2) {
   )
 }
 
-# for computing the true ACE using the correctly specified model
+# function to compute the "true" ACE using the correctly specified model
+# uses a large sample to approximate the population quantity
+# arguments:
+#   gamma2_val: quadratic effect of confounder on outcome
+#   seed: random seed for reproducibility
 compute_true_ace <- function(gamma2_val, seed = 12345) {
   set.seed(seed)
+
+  # generate large dataset (n = 200,000) to approximate population
   bigdat <- gen_data(2e5, gamma2_val)
 
+  # fit correctly specified model (includes X2^2 term)
   fit_correct <- glm(y ~ x1 + x2 + I(x2^2), data = bigdat, family = binomial())
 
+  # true ACE estimate
   avg_slopes(fit_correct, variables = "x1")$estimate[1]
 }
 ```
@@ -815,51 +877,55 @@ compute_true_ace <- function(gamma2_val, seed = 12345) {
 #| output: false
 
 # simulation parameters
-nsim <- 100
-ncore <- 1
-master_seed <- 12345
+nsim <- 100          # replications per condition
+ncore <- 1           # CPU cores for parallel processing
+master_seed <- 12345 # seed 
 
-# design matrix
-n_values <- c(50, 100, 2000)
-gamma2_values <- c(0, 0.3, 0.8)
-gamma2_labels <- c("none", "mild", "severe")
+# simulation factors
+n_values <- c(50, 100, 2000)              # sample sizes to evaluate
+gamma2_values <- c(0, 0.3, 0.8)           # confounding severity levels
+gamma2_labels <- c("none", "mild", "severe")  # labels for gamma2 levels
 
+# full factorial design (3 x 3 = 9 conditions)
 designs <- expand.grid(
   n = n_values,
   gamma2 = gamma2_values,
   stringsAsFactors = FALSE
 )
 
+# descriptive labels for confounding severity
 designs$confound_label <- factor(
   designs$gamma2,
   levels = gamma2_values,
   labels = gamma2_labels
 )
 
-# step 1: compute true values based on a large sample
-# note that in our scenario this is possible to be done analytically
+# compute true ACE values for each gamma2 condition
+# these serve as the reference for evaluating estimator performance
 cat("Computing true ACE values\n")
 true_ACE_values <- sapply(gamma2_values, compute_true_ace)
 names(true_ACE_values) <- as.character(gamma2_values)
 print(true_ACE_values)
 
-# step 2: parallel processing
+# parallel processing backend
 cl <- makeCluster(ncore)
 registerDoParallel(cl)
 
-# step 3: run simulation for all conditions
+# run simulation across all conditions
 all_results <- vector("list", nrow(designs))
 
 for (k in seq_len(nrow(designs))) {
+  # extract current condition parameters
   n_k <- designs$n[k]
   gamma2_k <- designs$gamma2[k]
   label_k <- as.character(designs$confound_label[k])
 
   cat("\nCondition:", label_k, "(gamma2 =", gamma2_k, "), n =", n_k, "\n")
 
+  # true ACE for this condition
   true_ACE_k <- true_ACE_values[as.character(gamma2_k)]
 
-  # replications
+  # run nsim replications in parallel with reproducible RNG via {doRNG}
   res_list <- foreach(
     i = seq_len(nsim),
     .packages = c("marginaleffects", "rvinecopulib")
@@ -868,7 +934,10 @@ for (k in seq_len(nrow(designs))) {
       run_one_rep(n_k, gamma2_k)
     }
 
+  # combine replications into data frame
   res <- do.call(rbind, res_list)
+
+  # add condition metadata to results
   res$true_param <- true_ACE_k
   res$n <- n_k
   res$gamma2 <- gamma2_k
@@ -877,9 +946,10 @@ for (k in seq_len(nrow(designs))) {
   all_results[[k]] <- res
 }
 
+# clean up parallel backend
 stopCluster(cl)
 
-# for storing results
+# all conditions into single data frame
 sim_results <- do.call(rbind, all_results)
 ```
 
@@ -889,19 +959,23 @@ sim_results <- do.call(rbind, all_results)
 #| echo: false
 #| message: false
 
-# unique conditions
+# unique simulation conditions
 conditions <- unique(sim_results[, c("n", "gamma2", "confound_label")])
 
-# calculate metrics for each condition
+# initialize list to store performance metrics for each condition
 summary_list <- vector("list", nrow(conditions))
 
+# loop over each condition to compute performance metrics
 for (k in seq_len(nrow(conditions))) {
+  # subset results for current condition
   res <- subset(
     sim_results,
     n == conditions$n[k] &
       gamma2 == conditions$gamma2[k]
   )
 
+  # absolute performance metrics using {simhelpers}
+  # includes bias, variance, MSE, and RMSE (with MCSEs)
   perf_abs <- calc_absolute(
     data = res,
     estimates = est,
@@ -909,6 +983,8 @@ for (k in seq_len(nrow(conditions))) {
     criteria = c("bias", "variance", "mse", "rmse")
   )
 
+  # relative performance metrics
+  # includes relative bias and relative RMSE (with MCSEs)
   perf_rel <- calc_relative(
     data = res,
     estimates = est,
@@ -916,6 +992,8 @@ for (k in seq_len(nrow(conditions))) {
     criteria = c("relative bias", "relative rmse")
   )
 
+  # coverage and CI width metrics
+  # evaluates 95% CI performance (with MCSEs)
   perf_cov <- calc_coverage(
     data = res,
     lower_bound = lo,
@@ -924,6 +1002,7 @@ for (k in seq_len(nrow(conditions))) {
     criteria = c("coverage", "width")
   )
 
+  # combine condition info with all performance metrics
   summary_list[[k]] <- cbind(
     conditions[k, ],
     true_ace = unique(res$true_param),
@@ -933,6 +1012,7 @@ for (k in seq_len(nrow(conditions))) {
   )
 }
 
+# all conditions into final summary data frame
 performance_summary <- do.call(rbind, summary_list)
 ```
 
@@ -946,7 +1026,8 @@ performance_summary <- do.call(rbind, summary_list)
 #| echo: false
 #| warning: false
 
-# Absolute bias plot
+# panel A: absolute bias plot (not used in final figure)
+# shows raw difference between estimated and true ACE
 p_bias <- ggplot(
   performance_summary,
   aes(x = n, y = bias, color = confound_label, group = confound_label)
@@ -956,14 +1037,15 @@ p_bias <- ggplot(
   geom_line() +
   labs(
     x = "Sample size (n)",
-    y = "Bias in ACE estimation",
+    y = "Absolute Bias",
     color = "Confounding\nnon-linearity",
-    title = "Absolute Bias from Omitting X2²"
+    title = "Absolute Bias from Omitting X²"
   ) +
   theme_minimal() +
   theme(legend.position = "right")
 
-# Relative bias plot
+# panel A (final): relative bias plot
+# ratio of estimated to true ACE (1 = unbiased)
 p_rel_bias <- ggplot(
   performance_summary,
   aes(x = n, y = rel_bias, color = confound_label, group = confound_label)
@@ -975,12 +1057,13 @@ p_rel_bias <- ggplot(
     x = "Sample size (n)",
     y = "Relative Bias",
     color = "Confounding\nnon-linearity",
-    title = "Relative Bias from Omitting X2²"
+    title = "Relative Bias from Omitting X²"
   ) +
   theme_minimal() +
   theme(legend.position = "right")
 
-# Absolute RMSE plot
+# absolute RMSE plot (not used in final figure)
+# raw root mean squared error
 p_rmse <- ggplot(
   performance_summary,
   aes(x = n, y = rmse, color = confound_label, group = confound_label)
@@ -996,7 +1079,8 @@ p_rmse <- ggplot(
   theme_minimal() +
   theme(legend.position = "right")
 
-# Relative RMSE plot
+# panel B: relative RMSE plot
+# RMSE scaled by true parameter value
 p_rel_rmse <- ggplot(
   performance_summary,
   aes(x = n, y = rel_rmse, color = confound_label, group = confound_label)
@@ -1012,7 +1096,9 @@ p_rel_rmse <- ggplot(
   theme_minimal() +
   theme(legend.position = "right")
 
-# Coverage plot
+# panel C: coverage probability plot
+# proportion of 95% CIs containing the true ACE
+# dashed line at 0.95 = nominal coverage level
 p_coverage <- ggplot(
   performance_summary,
   aes(x = n, y = coverage, color = confound_label, group = confound_label)
@@ -1022,15 +1108,16 @@ p_coverage <- ggplot(
   geom_line() +
   labs(
     x = "Sample size (n)",
-    y = "Coverage of 95% CI",
+    y = "Coverage (95% CI)",
     color = "Confounding\nnon-linearity",
-    title = "CI Coverage Under Residual Confounding"
+    title = "Coverage Under Residual Confounding"
   ) +
   coord_cartesian(ylim = c(0, 1)) +
   theme_minimal() +
   theme(legend.position = "right")
 
-# CI Width plot
+# panel D: confidence interval width plot
+# average width of 95% CIs (measures precision)
 p_width <- ggplot(
   performance_summary,
   aes(x = n, y = width, color = confound_label, group = confound_label)
@@ -1041,16 +1128,18 @@ p_width <- ggplot(
     x = "Sample size (n)",
     y = "Average CI width",
     color = "Confounding\nnon-linearity",
-    title = "Precision of Confidence Intervals"
+    title = "Precision of CI"
   ) +
   theme_minimal() +
   theme(legend.position = "right")
 
-# the 2x2 grid with all plots
+# combine plots into 2x2 grid with shared legend using {cowplot}
+# extract legend from one plot to use as shared legend
 legend <- get_legend(
   p_rel_bias + theme(legend.position = "right")
 )
 
+# arrange panels and legend side by side
 plot_grid(
   plot_grid(p_rel_bias, p_rel_rmse, p_coverage, p_width, ncol = 2, nrow = 2),
   legend,
@@ -1062,19 +1151,25 @@ plot_grid(
 #| lst-label: lst-tbl-results
 #| lst-cap: "Code for generating the performance metrics table"
 #| label: tbl-results
-#| tbl-cap: "Performance metrics for ACE estimator across simulation conditions"
+#| tbl-cap: "Performance metrics for ACE estimator across simulation conditions. Values in parentheses are Monte Carlo standard errors (MCSE)."
 #| echo: false
 
+# prepare data for display table
+# select relevant columns including estimates and their MCSEs
 results_display <- performance_summary %>%
-  select(n, confound_label, rel_bias, rel_rmse, coverage, width) %>%
+  select(n, confound_label, rel_bias, rel_bias_mcse, rel_rmse, rel_rmse_mcse,
+         coverage, coverage_mcse, width, width_mcse) %>%
   mutate(
+    # rename columns for display
     `Sample Size` = n,
     `Confounding` = confound_label,
-    `Relative Bias` = sprintf("%.3f", rel_bias),
-    `Relative RMSE` = sprintf("%.3f", rel_rmse),
-    `Coverage` = sprintf("%.3f", coverage),
-    `CI Width` = sprintf("%.3f", width)
+    # format each metric as "estimate (MCSE)" with 3 decimal places
+    `Relative Bias` = sprintf("%.3f (%.3f)", rel_bias, rel_bias_mcse),
+    `Relative RMSE` = sprintf("%.3f (%.3f)", rel_rmse, rel_rmse_mcse),
+    `Coverage` = sprintf("%.3f (%.3f)", coverage, coverage_mcse),
+    `CI Width` = sprintf("%.3f (%.3f)", width, width_mcse)
   ) %>%
+  # only the formatted columns for final display
   select(
     `Sample Size`,
     `Confounding`,
@@ -1084,6 +1179,7 @@ results_display <- performance_summary %>%
     `CI Width`
   )
 
+# render table 
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
 
