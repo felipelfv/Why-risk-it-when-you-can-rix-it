@@ -16,13 +16,19 @@ Why-risk-it-when-you-can-rix-it/
 │   ├── _quarto.yml                # Quarto project configuration
 │   ├── _extensions/               # Quarto extensions
 │   │   └── wjschne/apaquarto/     # APA 7th edition formatting extension
-│   ├── docs/                      # Rendered output files
-│   │   ├── article.pdf            # PDF version of the manuscript
-│   │   ├── article.html           # HTML version of the manuscript
-│   │   └── index.html             # GitHub Pages entry point
 │   ├── article.tex                # Generated LaTeX intermediate file
 │   ├── article.fff                # LaTeX float file (figures)
 │   └── article.ttt                # LaTeX float file (tables)
+│
+├── docs/                          # Rendered output files (GitHub Pages source)
+│   ├── index.html                 # HTML version (GitHub Pages entry point)
+│   ├── article.pdf                # PDF version of the manuscript
+│   ├── article_files/             # Supporting assets for HTML
+│   │   ├── figure-html/           # HTML figure outputs
+│   │   ├── figure-pdf/            # PDF figure outputs
+│   │   └── libs/                  # JavaScript/CSS libraries
+│   └── _extensions/               # Extension assets for HTML rendering
+│       └── wjschne/apaquarto/     # APA CSS and icons
 │
 ├── Simulation_Scripts/            # R scripts for the simulation study
 │   ├── 01_data_generation.R       # Data generating process (DGP) functions
