@@ -23,13 +23,20 @@ author:
     affiliations:
       - name: Boston College
         department: Department of Psychology and Neuroscienc
-    #roles: to be added 
+    roles: 
+      - Conceptualization
+      - Supervision
+      - Validation 
+      - Writing - review & editing
   - name: Bruno Rodrigues
     orcid: 0000-0002-3211-3689
     affiliations:
       - name: Ministry of Research and Higher Education, Luxembourg
         department: Statistics and Data Strategy Departments
-    #roles: to be added
+    roles: 
+      - Conceptualization
+      - Software
+      - Writing - review & editing
       
 abstract: |
   Computational reproducibility remains limited in psychological research,
@@ -70,7 +77,9 @@ format:
         % Single-space code blocks
         \AtBeginEnvironment{Shaded}{\singlespacing}
         \AtBeginEnvironment{verbatim}{\singlespacing}
-  apaquarto-html: default
+  apaquarto-html:
+    embed-resources: true
+    toc: true
 bibliography: references.bib
 editor: 
   markdown: 

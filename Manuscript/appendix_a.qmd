@@ -10,7 +10,7 @@ two factors: sample size ($n \in \{50, 100, 2000\}$) and degree of
 confounding non-linearity ($\gamma_2 \in \{0, 0.3, 0.8\}$, labeled as none, 
 mild, and severe). The parameter $\gamma_2$ controls the strength of the 
 quadratic confounder effect on the outcome (see Data Generation). This 
-yields nine conditions, each replicated $K = 1000$ times.
+yields nine conditions, each replicated $K = 100$ times.
 
 **Data Generation.** For each replication, data are generated following a 
 causal structure where a confounder $X_2$ affects both treatment assignment 

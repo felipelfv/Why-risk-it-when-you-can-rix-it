@@ -259,7 +259,10 @@ Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as
 follows:  Felipe Fontana
 Vieira:   Conceptualization, Methodology, Software, Data
 curation, Formal analysis, Visualization, Writing - original
-draft, Writing - review \& editing}
+draft, Writing - review \& editing; Jason
+Geller:   Conceptualization, Supervision, Validation, Writing - review
+\& editing; Bruno Rodrigues:   Conceptualization, Software, Writing -
+review \& editing}
 \par{Correspondence concerning this article should be addressed
 to Felipe Fontana
 Vieira, Email: \href{mailto:felipe.fontanavieira@ugent.be}{felipe.fontanavieira@ugent.be}}
@@ -478,11 +481,14 @@ In this article, therefore, we focus specifically on computational
 environment reproducibility as the foundation upon which other
 reproducibility practices depend. For that, we introduce Nix
 (\citeproc{ref-dolstra_etall_2004}{Dolstra et al., 2004}), a functional
-software ecosystem designed to make software installation deterministic,
-and \{rix\} (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann,
-2025}), an R interface that allows researchers to use Nix without
-needing deep knowledge of its underlying language or infrastructure. Our
-main objective with the tutorial is not to introduce a specific workflow
+software\footnote{\emph{Functional} is used in the sense of functional
+  programming (pure functions, immutability, explicit inputs), not in
+  the colloquial sense of \emph{working}.} ecosystem designed to make
+software installation deterministic, and \{rix\}
+(\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}), an
+R interface that allows researchers to use Nix without needing deep
+knowledge of its underlying language or infrastructure. Our main
+objective with the tutorial is not to introduce a specific workflow
 orchestration system or to prescribe a particular analytic structure.
 Instead, we aim to show what Nix and \{rix\} are and how they can
 establish a stable, cross-platform environment within which any
@@ -576,16 +582,19 @@ in which analyses are executed.
 \section{Nix and \{rix\}: A Comprehensive
 Solution}\label{nix-and-rix-a-comprehensive-solution}
 
-A potential solution to the above issue is Nix
-(\citeproc{ref-dolstra_etall_2004}{Dolstra et al., 2004}). Nix is a
-software ecosystem centered on a purely functional package manager and
-build system designed to make software environments reproducible,
-declarative, and isolated across platforms (think of Apple's or
-Android's application store). In practical terms, this means that Nix
-allows researchers to specify \emph{exactly} which versions of
-programming languages, packages, and system libraries an analysis
-requires, and to recreate that same environment reliably on another
-machine.
+A potential solution to this problem is Nix
+(\citeproc{ref-dolstra_etall_2004}{Dolstra et al., 2004}), a software
+ecosystem whose primary concern is reproducible, declarative builds. To
+achieve this Nix is a programming language, a build tool and a package
+manager. This article focuses mostly on Nix the package manager. Most
+package managers (think of Apple's or Android's app stores) are
+imperative: they modify a system's state as they install or update
+software. Nix, in contrast, treats build instructions and dependencies
+as immutable, enforcing reproducible, declarative, and isolated
+environments across platforms. This allows researchers to specify
+exactly which versions of programming languages, packages, and system
+libraries an analysis requires, and to recreate that environment
+reliably on any machine.
 
 Unlike familiar tools such as \texttt{install.packages()} in R,
 \texttt{apt-get} on Linux, or \texttt{uv} in Python---which typically
@@ -637,13 +646,16 @@ workflows (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann,
 \subsection{The \{rix\} Package: R Interface to
 Nix}\label{the-rix-package-r-interface-to-nix}
 
-Nix expressions are written in a dedicated functional language
-unfamiliar to most researchers. The \{rix\} package removes this barrier
-by providing an R-native interface. A single call to \texttt{rix()}
+As previously stated, Nix is also a functional programming language.
+Because the Nix package manager is declarative, it requires expressions
+written in this language to install software. However, since Nix is a
+functional programming language unfamiliar to most researchers, we
+recommend using \{rix\} to lower this barrier. The \{rix\} package
+provides an R-native interface: a single call to \texttt{rix()}
 generates complete Nix configurations from standard R syntax, specifying
 R versions, CRAN packages, system libraries, and even Python or Julia
 components when required. Users never need to read or write Nix code
-directly, as \{rix\} performs the translation automatically
+directly, as \{rix\} translates automatically
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 
 A key feature of \{rix\} is its integration with rstats-on-nix, a
@@ -1816,7 +1828,7 @@ design with two factors: sample size (\(n \in \{50, 100, 2000\}\)) and
 degree of confounding non-linearity (\(\gamma_2 \in \{0, 0.3, 0.8\}\),
 labeled as none, mild, and severe). The parameter \(\gamma_2\) controls
 the strength of the quadratic confounder effect on the outcome (see Data
-Generation). This yields nine conditions, each replicated \(K = 1000\)
+Generation). This yields nine conditions, each replicated \(K = 100\)
 times.
 
 \textbf{Data Generation.} For each replication, data are generated
