@@ -251,7 +251,7 @@ Geller}{0000-0002-7459-4505}}\par{\addORCIDlink{Bruno
 Rodrigues}{0000-0002-3211-3689}} 
 
 \par{ Data and materials from this study can be accessed at
-https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.git.  The
+https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.  The
 authors have no conflicts of interest to declare.  We would like to
 thank Julia Rohrer and Ole Schacht for their helpful feedback on earlier
 versions of this manuscript.  Author roles were classified using the
@@ -410,9 +410,10 @@ materials can be executed in practice.
 Data and code are never fully self-sufficient to reproduce a set of
 findings (\citeproc{ref-epskamp_2019}{Epskamp, 2019};
 \citeproc{ref-peikert_brandmaier_2021}{Peikert \& Brandmaier, 2021};
-\citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau, 2021}). Assuming
-the data and code are error-free, reproducibility depends on a hierarchy
-of software components---collectively referred to as
+\citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau, 2021};
+\citeproc{ref-ziemann_etall_2023}{Ziemann et al., 2023}). Assuming the
+data and code are error-free, reproducibility depends on a hierarchy of
+software components---collectively referred to as
 \emph{dependencies}---including the programming language version, the
 packages used in the analysis, and the system libraries on which those
 packages rely. When these dependencies differ from those used in the
@@ -1169,11 +1170,11 @@ the terminal (Listing~\ref{lst-quarto-render}):
 
 This command executes all code chunks in the manuscript, incorporates
 results (e.g., Table 1) and figures (e.g., Figure 1), and generates a
-formatted PDF following APA style guidelines via the apaquarto extension
-(\citeproc{ref-schneider_2024}{Schneider, 2024}). This extension is
-saved in the project repo already. To download this extension for your
-own work you can install the extension by using the terminal
-(Listing~\ref{lst-apaquarto-install}):
+formatted PDF following APA style guidelines via the \texttt{apaquarto}
+extension (\citeproc{ref-schneider_2024}{Schneider, 2024}). This
+extension is saved in the project repo already. To download this
+extension for your own work you can install the extension by using the
+terminal (Listing~\ref{lst-apaquarto-install}):
 
 \begin{codelisting}
 
@@ -1219,7 +1220,7 @@ R}
 \normalsize
 
 The final document (.docx, .pdf, or .html) is saved directly in the
-project folder\footnote{Although we use \emph{apaquarto} in this
+project folder\footnote{Although we use \texttt{apaquarto} in this
   example, many alternative manuscript templates are available, and Nix
   is agnostic to the specific template employed, provided the necessary
   extensions are installed.}. Because Quarto is installed as a
@@ -1620,6 +1621,12 @@ research in psychology and beyond.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-marginaleffects}
+Arel-Bundock, V., Greifer, N., \& Heiss, A. (2024). How to interpret
+statistical models using {marginaleffects} for {R} and {Python}.
+\emph{Journal of Statistical Software}, \emph{111}(9), 1--32.
+\url{https://doi.org/10.18637/jss.v111.i09}
+
 \bibitem[\citeproctext]{ref-baker_etall_2024}
 Baker, D. H., Berg, M., Hansford, K., Quinn, B., Segala, F., \&
 Warden-English, E. (2024). {ReproduceMe}: Lessons from a pilot project
@@ -1636,6 +1643,11 @@ Boettiger, C., \& Eddelbuettel, D. (2017). An introduction to {Rocker}:
 {Docker} containers for {R}. \emph{The R Journal}, \emph{9}(2),
 527--536. \url{https://doi.org/10.32614/RJ-2017-065}
 
+\bibitem[\citeproctext]{ref-doParallel}
+Corporation, M., \& Weston, S. (2022). \emph{doParallel: Foreach
+parallel adaptor for the 'parallel' package}.
+\url{https://CRAN.R-project.org/package=doParallel}
+
 \bibitem[\citeproctext]{ref-dolstra_etall_2004}
 Dolstra, E., De Jonge, M., \& Visser, E. (2004). Nix: A safe and
 policy-free system for software deployment. \emph{18th Large
@@ -1651,6 +1663,10 @@ Psychological Science}, \emph{2}(2), 145--155.
 Feldman, S. I. (1979). {Make} --- a program for maintaining computer
 programs. \emph{Software: Practice and Experience}, \emph{9}(4),
 255--265. \url{https://doi.org/10.1002/spe.4380090402}
+
+\bibitem[\citeproctext]{ref-doRNG}
+Gaujoux, R. (2025). \emph{doRNG: Generic reproducible parallel backend
+for 'foreach' loops}. \url{https://CRAN.R-project.org/package=doRNG}
 
 \bibitem[\citeproctext]{ref-glatard_etall_2015}
 Glatard, T., Lewis, L. B., Ferreira da Silva, R., Adalat, R., Beck, N.,
@@ -1674,6 +1690,11 @@ degrees of freedom in statistical software contribute to unreliable
 results: A comparison of nonparametric analyses conducted in {SPSS},
 {SAS}, {Stata}, and {R}. \emph{Behavior Research Methods}, \emph{55}(6),
 2813--2837. \url{https://doi.org/10.3758/s13428-022-01932-2}
+
+\bibitem[\citeproctext]{ref-simhelpers}
+Joshi, M., \& Pustejovsky, J. (2025). \emph{Simhelpers: Helper functions
+for simulation studies}.
+\url{https://CRAN.R-project.org/package=simhelpers}
 
 \bibitem[\citeproctext]{ref-kidwell_etall_2016}
 Kidwell, M. C., Lazarević, L. B., Baranski, E., Hardwicke, T. E.,
@@ -1809,11 +1830,30 @@ to check a simulation study. \emph{International Journal of
 Epidemiology}, \emph{53}(1), dyad134.
 \url{https://doi.org/10.1093/ije/dyad134}
 
+\bibitem[\citeproctext]{ref-ggplot2}
+Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}.
+Springer-Verlag New York. \url{https://ggplot2.tidyverse.org}
+
+\bibitem[\citeproctext]{ref-dplyr}
+Wickham, H., François, R., Henry, L., Müller, K., \& Vaughan, D. (2023).
+\emph{Dplyr: A grammar of data manipulation}.
+\url{https://CRAN.R-project.org/package=dplyr}
+
 \bibitem[\citeproctext]{ref-wiebels_moreau_2021}
 Wiebels, K., \& Moreau, D. (2021). Leveraging containers for
 reproducible psychological research. \emph{Advances in Methods and
 Practices in Psychological Science}, \emph{4}(2).
 \url{https://doi.org/10.1177/25152459211017853}
+
+\bibitem[\citeproctext]{ref-cowplot}
+Wilke, C. O. (2025). \emph{Cowplot: Streamlined plot theme and plot
+annotations for 'ggplot2'}. \url{https://wilkelab.org/cowplot/}
+
+\bibitem[\citeproctext]{ref-ziemann_etall_2023}
+Ziemann, M., Poulain, P., \& Bora, A. (2023). The five pillars of
+computational reproducibility: Bioinformatics and beyond.
+\emph{Briefings in Bioinformatics}, \emph{24}(6), bbad375.
+\url{https://doi.org/10.1093/bib/bbad375}
 
 \end{CSLReferences}
 
@@ -1958,15 +1998,22 @@ conditions.
 \textbf{Computational Details.} The simulation was conducted on a
 MacBook Pro (Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All
 analyses were performed in R (version 4.4.3). Parallel processing was
-implemented through the \{doParallel\} package (version 1.0.17), with
-\{doRNG\} (version 1.8.6.2) to ensure independent and reproducible
-random number streams. For data generation we used the \{rvinecopulib\}
-package (version 0.7.3.1.0). The estimator was implemented using the
-\{marginaleffects\} package (version 0.31.0). Data wrangling was
-performed with \{dplyr\} (version 1.1.4). Method performance was
-assessed through multiple metrics following the formulas from the
-\{simhelpers\} package (version 0.3.1). Figures were produced with
-\{ggplot2\} (version 4.0.1) and \{cowplot\} (version 1.1.3).
+implemented through the \{doParallel\} package {[}version 1.0.17;
+Corporation and Weston (\citeproc{ref-doParallel}{2022}){]}, with
+\{doRNG\} {[}version 1.8.6.2; Gaujoux (\citeproc{ref-doRNG}{2025}){]} to
+ensure independent and reproducible random number streams. For data
+generation we used the \{rvinecopulib\} package {[}version 0.7.3.1.0;
+Nagler and Vatter (\citeproc{ref-rvinecopulib}{2025}){]}. The estimator
+was implemented using the \{marginaleffects\} package {[}version 0.31.0;
+Arel-Bundock et al. (\citeproc{ref-marginaleffects}{2024}){]}. Data
+wrangling was performed with \{dplyr\} {[}version 1.1.4; Wickham et al.
+(\citeproc{ref-dplyr}{2023}){]}. Method performance was assessed through
+multiple metrics following the formulas from the \{simhelpers\} package
+{[}version 0.3.1; Joshi and Pustejovsky
+(\citeproc{ref-simhelpers}{2025}){]}. Figures were produced with
+\{ggplot2\} {[}version 4.0.1; Wickham (\citeproc{ref-ggplot2}{2016}){]}
+and \{cowplot\} {[}version 1.1.3; Wilke
+(\citeproc{ref-cowplot}{2025}){]}.
 
 \section{Clarifying the packages
 used}\label{apx-clarifying-the-packages-used}

@@ -64,7 +64,7 @@ author-note:
     gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback 
     on earlier versions of this manuscript."
     conflict-of-interest: "The authors have no conflicts of interest to declare."
-    data-sharing: "Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.git."
+    data-sharing: "Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it."
 format:
   apaquarto-pdf:
     document-mode: man
@@ -133,8 +133,9 @@ lower to middle portions of the continuum, emphasizing *what* is shared rather
 than *how* shared materials can be executed in practice.
 
 Data and code are never fully self-sufficient to reproduce a set of findings
-[@peikert_brandmaier_2021; @epskamp_2019; @wiebels_moreau_2021]. Assuming the
-data and code are error-free, reproducibility depends on a hierarchy of software
+[@peikert_brandmaier_2021; @epskamp_2019; @wiebels_moreau_2021; 
+@ziemann_etall_2023]. Assuming the data and code are error-free, 
+reproducibility depends on a hierarchy of software
 components—collectively referred to as *dependencies*—including the programming
 language version, the packages used in the analysis, and the system libraries on
 which those packages rely. When these dependencies differ from those used in the
@@ -711,7 +712,7 @@ Rendering the manuscript with Quarto \normalsize
 
 This command executes all code chunks in the manuscript, incorporates results 
 (e.g., Table 1) and figures (e.g., Figure 1), and generates a formatted PDF 
-following APA style guidelines via the apaquarto extension [@schneider_2024]. 
+following APA style guidelines via the `apaquarto` extension [@schneider_2024]. 
 This extension is saved in the project repo already. 
 To download this extension for your own work you can install the extension 
 by using the terminal (@lst-apaquarto-install):
@@ -749,7 +750,7 @@ environment, ensuring consistent output across machines regardless of local
 software configurations. If desired, the manuscript can also be reproduced
 interactively by opening the project folder in the user’s preferred IDE.
 
-[^7]: Although we use *apaquarto* in this example, many alternative manuscript
+[^7]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 

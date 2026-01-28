@@ -94,16 +94,18 @@ v_ggplot2 <- as.character(packageVersion("ggplot2"))
 v_cowplot <- as.character(packageVersion("cowplot"))
 ```
 
-**Computational Details.** The simulation was conducted on a MacBook Pro 
-(Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All analyses were performed 
-in R (version `r r_version`). Parallel processing was implemented through the 
-{doParallel} package (version `r v_doParallel`), with {doRNG} 
-(version `r v_doRNG`) to ensure independent and reproducible random number 
-streams. For data generation we used the {rvinecopulib} package 
-(version `r v_rvinecopulib`). The estimator was 
-implemented using the {marginaleffects} package (version `r v_marginaleffects`). 
-Data wrangling was performed with {dplyr} (version `r v_dplyr`). 
-Method performance was assessed through multiple metrics following the formulas 
-from the {simhelpers} package (version `r v_simhelpers`). 
-Figures were produced with {ggplot2} 
-(version `r v_ggplot2`) and {cowplot} (version `r v_cowplot`).
+**Computational Details.** The simulation was conducted on a MacBook Pro
+(Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All analyses were performed
+in R (version `r r_version`). Parallel processing was implemented through the
+{doParallel} package [version `r v_doParallel`; @doParallel], with {doRNG}
+[version `r v_doRNG`; @doRNG] to ensure independent and reproducible random 
+number streams. For data generation we used the {rvinecopulib} package
+[version `r v_rvinecopulib`; @rvinecopulib]. The estimator was
+implemented using the {marginaleffects} package [version `r v_marginaleffects`; 
+@marginaleffects]. Data wrangling was performed with {dplyr} 
+[version `r v_dplyr`; @dplyr]. Method performance was assessed through 
+multiple metrics following the formulas
+from the {simhelpers} package [version `r v_simhelpers`; @simhelpers].
+Figures were produced with {ggplot2}
+[version `r v_ggplot2`; @ggplot2] and {cowplot} [version `r v_cowplot`; 
+@cowplot].
