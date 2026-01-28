@@ -1,8 +1,6 @@
 # Nix and Rix tutorial
 
-This repository contains all the materials for the article submitted to 
-"AMPPS Call for Papers on Replicability and Reproducibility in Methodological 
-Research".
+This repository contains all the materials for the article "Why Risk it, When You Can {rix} it: A Tutorial for Computational Reproducibility Focused on Simulation Studies".
 
 ## Repository Structure
 
