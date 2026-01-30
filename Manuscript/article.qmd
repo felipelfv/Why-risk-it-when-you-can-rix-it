@@ -350,9 +350,9 @@ Linux, and macOS), and detailed, up-to-date instructions are maintained in the
 official {rix} documentation:
 
 -   **Linux and Windows (WSL2)**:
-    <https://docs.ropensci.org/rix/articles/b1-setting-up-and-using-rix-on-linux-and-windows.html>
+    <https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html>
 -   **macOS**:
-    <https://docs.ropensci.org/rix/articles/b2-setting-up-and-using-rix-on-macos.html>
+    <https://docs.ropensci.org/rix/articles/setting-up-macos.html>
 
 Once Nix is installed[^1], there are two ways to access {rix}, depending on
 whether R is already installed on your system. In this tutorial, we proceed as
