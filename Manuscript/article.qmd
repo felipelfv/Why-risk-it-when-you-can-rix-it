@@ -22,7 +22,7 @@ author:
     orcid: 0000-0002-7459-4505
     affiliations:
       - name: Boston College
-        department: Department of Psychology and Neuroscienc
+        department: Department of Psychology and Neuroscience
     roles: 
       - Conceptualization
       - Supervision
@@ -668,7 +668,7 @@ Expected output from `nix-shell`
 
 This command drops the user into a shell where all specified packages and tools
 are available. The shell prompt changes to indicate that a Nix environment is
-active (here, `[nix-shell:~/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it]$`).
+active (here, `[nix-shell:~/AMPPS/Why-risk-it-when-you-can-rix-it]$`).
 To verify that R is being provided by Nix rather than a system installation, run
 `which R`. This should return a path within `/nix/store/`. Moreover, from within
 the Nix shell, users can launch their IDE by typing its name (e.g., `rstudio` or
