@@ -177,7 +177,7 @@ the full environment (i.e., operating system, system libraries, interpreter
 versions, and packages) into a single executable image. Yet their use requires 
 familiarity with Linux system administration, and even containerization may 
 suffer from temporal drift when Dockerfiles rely on mutable upstream 
-repositories [@malka2024]. For a detailed comparison of these tools and 
+repositories [@malka2026docker]. For a detailed comparison of these tools and 
 their limitations, see @rodrigues_baumann_2026_polyglot. Researchers thus 
 face a difficult choice between solutions that are accessible but incomplete 
 or approaches that are powerful but demand technical expertise.
