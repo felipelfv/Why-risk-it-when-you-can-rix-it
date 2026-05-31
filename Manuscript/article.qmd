@@ -288,7 +288,7 @@ Emacs, or Positron. At the end of the article, we also briefly introduce
 {rixpress} [@rixpress], a workflow orchestration tool that builds on 
 Nix to coordinate pipelines across R, Python, and Julia.
 
-# A Practical Example: Setting up a Reproducible Simulation Study with {rix}
+# Setting the Stage: A Simulation Study and Its Reproducibility Risks
 
 Imagine you have just been awarded a grant to conduct a large-scale simulation
 study. The study is designed to evaluate the performance of a statistical
@@ -357,10 +357,10 @@ and isolated environments across platforms. This allows researchers to specify
 exactly which versions of programming languages, packages, and system libraries 
 an analysis requires, and to recreate that environment reliably on any machine.
 
-Unlike familiar tools such as `install.packages()` in R, `apt-get` on Linux, or
-`uv` in Python—which typically manage only a single layer of the software
-stack—Nix handles language versions, package versions, and system-level
-dependencies within a single framework [@rodrigues_baumann_2025]. Rather than
+Unlike familiar tools such as `install.packages()` in R or `uv` in Python, which
+typically manage only a single layer of the software stack, Nix handles language
+versions, package versions, and system-level dependencies within a single
+framework [@rodrigues_baumann_2025]. Rather than
 installing software into shared system directories, Nix builds each environment
 as an explicit, self-contained specification. As a result, multiple environments
 can coexist without conflict, and analyses can be rerun months or years later
@@ -421,6 +421,8 @@ instance, by building Docker images with Nix, converting existing {renv}
 lockfiles, or running {targets} pipelines within a Nix-defined environment
 [@rodrigues_baumann_2025]. This allows Nix to strengthen reproducibility while
 preserving established workflows. We will come back to this after the tutorial.
+
+# A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
 ## Step 1: Installing Nix and {rix}
 
