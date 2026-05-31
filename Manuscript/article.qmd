@@ -114,10 +114,10 @@ the analysis, and the summary of results. @montoya_anderson_2026 conceptually
 address each of these stages separately.
 
 Reproducibility in this sense is not all-or-nothing but occupies a continuum
-[@peng_2011], where a study's position depends on what its authors make
-available, from publication alone at the low end to code and data that are
-linked and directly executable at the high end. Reaching that executable end is
-often treated as *full* reproducibility 
+[@peng_2011], on which a study is positioned according to the extent of the
+materials that are publicly available. This ranges from publication
+alone at the low end to code and data that are linked and directly executable at
+the high end. Reaching that executable end is often treated as *full* reproducibility
 [@peikert_brandmaier_2021; @peikert_etall_2021], and open
 science initiatives have pushed work toward it [@kidwell_etall_2016;
 @levenstein_lyle_2018; @nosek_etall_2015]. Yet code and data are never fully
@@ -138,11 +138,11 @@ system (@fig-environment) [@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. W
 define *computational environment reproducibility* as the ability to reconstruct
 this entire set of software dependencies on any machine and at any future time,
 such that executing the same code yields the same numerical results. Empirical
-assessments show that current practice falls short of this ideal.
+assessments show that current practice falls short of this ideal. Indeed, 
 @siepe_etall_2024 report that, among simulation studies published in 
 psychology in 2021 and 2022, nearly two-thirds provide 
 no accompanying code, and among those that do, documentation of the 
-computational environment is rarely included. This gap is consequential:
+computational environment is rarely included. This gap is consequential, as
 simulation studies inform methodological recommendations, meaning that
 insufficient reproducibility undermines confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
@@ -228,9 +228,9 @@ ggplot() +
   theme(plot.margin = margin(8, 8, 8, 8))
 ```
 
-Arguably, these challenges may persist for multiple reasons, one highly relevant
-being that even researchers aware of these demands must navigate a fragmented
-landscape of solutions, each addressing only part of the problem.
+These challenges may persist for several reasons. Arguably, one is that even 
+researchers aware of these demands face a fragmented landscape of solutions, 
+each addressing only part of the problem.
 Package-level managers such as {renv} [@ushey_2024] and {groundhog}
 [@simonsohn_2020] stabilize R package versions but do not manage the R
 interpreter itself or the system-level libraries those packages depend on.
@@ -270,13 +270,13 @@ chunks in `.Rmd` or `.qmd`—can be executed reliably.
 [^1]: We leave workflow orchestration aside for two reasons. First, many tools
     address it, each with its own conventions, and doing them justice would
     require a more tailored treatment than a single tutorial allows. Second,
-    although formal orchestration adds value, a study whose scripts are well
-    documented, whose dependencies between files are explained, and whose
-    environment is made stable arguably already sits high on the
-    reproducibility spectrum. Thus, a stable computational environment is what
-    the other practices ultimately rest on, and it is what we focus on here. For
-    readers interested in articles with a larger focus on the workflow, we
-    suggest @peikert_etall_2021 and @vanlissa_etall_2021.
+    although formal orchestration may be necessary for full reproducibility, a 
+    study whose scripts are well documented, whose dependencies between files 
+    are explained, and whose environment is made stable arguably already sits 
+    high on the reproducibility spectrum. Moreover, a stable computational 
+    environment is what the other practices ultimately rest on, and it is what 
+    we focus on here. For readers interested in articles with a larger focus on 
+    the workflow, we suggest @peikert_etall_2021 and @vanlissa_etall_2021.
 
 We illustrate these ideas through a reproducible simulation study conducted in
 R, culminating in this automated APA-formatted manuscript generated with
