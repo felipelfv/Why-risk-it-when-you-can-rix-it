@@ -92,76 +92,145 @@ editor:
 #| message: false
 
 # required packages
-library(marginaleffects)
-library(simhelpers)
-library(rvinecopulib)
-library(doParallel)
-library(doRNG)
-library(ggplot2)
-library(cowplot)
-library(knitr)
-library(dplyr)
+library(marginaleffects); library(simhelpers); library(rvinecopulib)
+library(doParallel); library(doRNG); library(ggplot2)
+library(cowplot); library(knitr); library(dplyr)
 
 ```
 
-Psychological science is in the midst of a credibility revolution, which has
-prompted substantial progress in how research is conducted and evaluated
-[@vazire2018]. Yet, despite notable progress, a key cornerstone of science,
-reproducibility (i.e., the ability to precisely reproduce the results of a study
-or studies based on provided data, code, materials, and software/hardware)
-remains limited [@hardwicke2020]. Hence, ensuring reproducibility remains an
-open and pressing challenge for psychological science.
+Psychological science is in the midst of a credibility revolution [@vazire2018],
+yet much of that scrutiny has focused on empirical studies. Monte Carlo
+simulation studies (hereafter referred to as simulation studies) have received
+far less [@siepe_etall_2024], even though they are a primary tool for evaluating 
+the statistical methods [@morris_etall_2019] and may suffer from selective 
+reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025]. 
+One aspect of credibility that remains especially underexamined for simulations 
+is reproducibility (i.e., the ability to reproduce the results of a study or 
+studies based on provided data, code, materials, and software/hardware) 
+[@hardwicke2020; @montoya_anderson_2026]. In a simulation study this involves 
+more than reanalyzing a fixed dataset, because the code also generates the data.
+Reproducing such a study therefore means reproducing the data generation,
+the analysis, and the summary of results. @montoya_anderson_2026 conceptually
+address each of these stages separately.
 
-Addressing this gap is complicated by the fact that reproducibility is not a
-binary feature but instead exists along a continuum [@peng_2011]. At the lower
-end, reproducibility may be interpreted as sharing only a manuscript. Further
-along the spectrum, it may involve providing partial code, complete analysis
-scripts, or publicly accessible datasets. At the highest level, reproducibility
-entails documenting a fully specified computational environment that allows
-others to recreate identical results—from raw data to final manuscript
-output—with minimal friction. As a result, researchers may implicitly target
-different points on this continuum, and efforts to improve reproducibility can
-diverge substantially in both goals and implementation.
-
-Open science initiatives have made considerable progress in encouraging movement
-along this spectrum. For example, journals now offer open-science badges
-[@kidwell_etall_2016], best practices have been developed to make data sharing
-routine [@levenstein_lyle_2018], and platforms such as the Open Science
-Framework (OSF) provide infrastructure for storing and sharing research
-materials [@nosek_etall_2015]. However, these efforts primarily target the
-lower to middle portions of the continuum, emphasizing *what* is shared rather
-than *how* shared materials can be executed in practice.
-
-Data and code are never fully self-sufficient to reproduce a set of findings
-[@peikert_brandmaier_2021; @epskamp_2019; @wiebels_moreau_2021; 
-@ziemann_etall_2023]. Assuming the data and code are error-free, 
-reproducibility depends on a hierarchy of software
-components—collectively referred to as *dependencies*—including the programming
-language version, the packages used in the analysis, and the system libraries on
-which those packages rely. When these dependencies differ from those used in the
-original analysis, code may fail, behave inconsistently across machines, or
-yield conflicting numerical results [@baker_etall_2024; @hodges_etall_2023;
-@glatard_etall_2015; @nosek_etall_2022]. These issues are particularly acute for
-simulation studies, which rely on complex codebases, versioned dependencies, and
+Reproducibility in this sense is not all-or-nothing but occupies a continuum
+[@peng_2011], where a study's position depends on what its authors make
+available, from publication alone at the low end to code and data that are
+linked and directly executable at the high end. Reaching that executable end is
+often treated as *full* reproducibility 
+[@peikert_brandmaier_2021; @peikert_etall_2021], and open
+science initiatives have pushed work toward it [@kidwell_etall_2016;
+@levenstein_lyle_2018; @nosek_etall_2015]. Yet code and data are never fully
+self-sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
+error-free code depends on a hierarchy of software components, including the
+programming language version, the packages used in the analysis, and the system
+libraries those packages rely on. When these differ from the originals, code may
+fail, behave inconsistently across machines, or yield conflicting numerical
+results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
+@nosek_etall_2022]. These problems are particularly acute for simulation
+studies, which depend on complex codebases, versioned dependencies, and
 intricate software configurations [@luijken_etall_2024; @siepe_etall_2024].
 
 To make this concrete, we use *computational environment* to refer to the
-complete software context required for an analysis to run successfully—the
+complete software context required for an analysis to run successfully: the
 programming language version, package versions, system libraries, and operating
-system [@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. We define
-*computational environment reproducibility* as the ability to reconstruct this
-entire set of software dependencies on any machine and at any future time, such
-that executing the same code yields the same numerical results. Empirical
+system (@fig-environment) [@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. We
+define *computational environment reproducibility* as the ability to reconstruct
+this entire set of software dependencies on any machine and at any future time,
+such that executing the same code yields the same numerical results. Empirical
 assessments show that current practice falls short of this ideal.
-@siepe_etall_2024 report that nearly two-thirds of simulation studies in
-psychology provide no accompanying code, and among those that do, documentation
-of the computational environment is rarely included. This gap is consequential:
+@siepe_etall_2024 report that, among simulation studies published in 
+psychology in 2021 and 2022, nearly two-thirds provide 
+no accompanying code, and among those that do, documentation of the 
+computational environment is rarely included. This gap is consequential:
 simulation studies inform methodological recommendations, meaning that
 insufficient reproducibility undermines confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
 
-Arguably, these challenges persist because researchers must navigate a
-fragmented landscape of solutions, each addressing only part of the problem.
+```{r}
+#| label: fig-environment
+#| fig-cap: "The computational environment as a set of nested layers, based on Peikert & Brandmaier (2021)."
+#| echo: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 4
+
+# outer nested layers: operating system and system libraries
+env_outer <- data.frame(
+  xmin = c(0.0, 0.5),
+  xmax = c(20.0, 19.5),
+  ymin = c(0.0, 0.8),
+  ymax = c(10.0, 8.6),
+  label = c(
+    "Operating system",
+    "System libraries (e.g., Boost, Eigen, BLAS)"
+  ),
+  fill = c("grey93", "grey86"),
+  stringsAsFactors = FALSE
+)
+env_outer$labx <- (env_outer$xmin + env_outer$xmax) / 2
+
+# two parallel components inside the system libraries
+env_inner <- data.frame(
+  xmin = c(1.2, 10.4),
+  xmax = c(9.6, 18.8),
+  ymin = c(1.6, 1.6),
+  ymax = c(7.8, 7.8),
+  label = c(
+    "Language version (e.g., R 4.3.3)",
+    "Dynamic document tools (e.g., LaTeX)"
+  ),
+  fill = c("grey78", "grey78"),
+  stringsAsFactors = FALSE
+)
+env_inner$labx <- (env_inner$xmin + env_inner$xmax) / 2
+
+# R packages nested inside the language version
+env_pkg <- data.frame(
+  xmin = 1.7, xmax = 9.1, ymin = 2.2, ymax = 6.2,
+  label = "R packages\n(e.g., ggplot2, rvinecopulib)",
+  fill = "grey68", stringsAsFactors = FALSE
+)
+env_pkg$labx <- (env_pkg$xmin + env_pkg$xmax) / 2
+
+ggplot() +
+  geom_rect(
+    data = env_outer,
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
+    color = "grey20", linewidth = 0.4
+  ) +
+  geom_text(
+    data = env_outer, aes(x = labx, y = ymax - 0.4, label = label),
+    fontface = "bold", size = 3.2
+  ) +
+  geom_rect(
+    data = env_inner,
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
+    color = "grey20", linewidth = 0.4
+  ) +
+  geom_text(
+    data = env_inner, aes(x = labx, y = ymax - 0.4, label = label),
+    fontface = "bold", size = 3.0
+  ) +
+  geom_rect(
+    data = env_pkg,
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = fill),
+    color = "grey20", linewidth = 0.4
+  ) +
+  geom_text(
+    data = env_pkg, aes(x = labx, y = (ymin + ymax) / 2, label = label),
+    fontface = "bold", size = 3.0
+  ) +
+  scale_fill_identity() +
+  coord_cartesian(clip = "off") +
+  labs(x = NULL, y = NULL) +
+  theme_void() +
+  theme(plot.margin = margin(8, 8, 8, 8))
+```
+
+Arguably, these challenges may persist for multiple reasons, one highly relevant
+being that even researchers aware of these demands must navigate a fragmented
+landscape of solutions, each addressing only part of the problem.
 Package-level managers such as {renv} [@ushey_2024] and {groundhog}
 [@simonsohn_2020] stabilize R package versions but do not manage the R
 interpreter itself or the system-level libraries those packages depend on.
@@ -191,12 +260,23 @@ ecosystem designed to make software installation deterministic, and {rix}
 [@rodrigues_baumann_2025], an R interface that allows researchers to use Nix
 without needing deep knowledge of its underlying language or infrastructure. Our
 main objective with the tutorial is not to introduce a specific workflow
-orchestration system or to prescribe a particular analytic structure. Instead,
+orchestration system or to prescribe a particular analytic structure.[^1] Instead,
 we aim to show what Nix and {rix} are and how they can establish a stable,
 cross-platform environment within which any simulation study—whether organized
 in simple, documented script sequences (e.g., .R files that `source()` others),
 through more formal orchestration tools (e.g., {targets}) or embedded as code
 chunks in `.Rmd` or `.qmd`—can be executed reliably.
+
+[^1]: We leave workflow orchestration aside for two reasons. First, many tools
+    address it, each with its own conventions, and doing them justice would
+    require a more tailored treatment than a single tutorial allows. Second,
+    although formal orchestration adds value, a study whose scripts are well
+    documented, whose dependencies between files are explained, and whose
+    environment is made stable arguably already sits high on the
+    reproducibility spectrum. Thus, a stable computational environment is what
+    the other practices ultimately rest on, and it is what we focus on here. For
+    readers interested in articles with a larger focus on the workflow, we
+    suggest @peikert_etall_2021 and @vanlissa_etall_2021.
 
 We illustrate these ideas through a reproducible simulation study conducted in
 R, culminating in this automated APA-formatted manuscript generated with
@@ -354,16 +434,16 @@ official {rix} documentation:
 -   **macOS**:
     <https://docs.ropensci.org/rix/articles/setting-up-macos.html>
 
-Once Nix is installed[^1], there are two ways to access {rix}, depending on
+Once Nix is installed[^2], there are two ways to access {rix}, depending on
 whether R is already installed on your system. In this tutorial, we proceed as
-if R was already installed[^2] (@lst-install-rix-cran):
+if R was already installed[^3] (@lst-install-rix-cran):
 
-[^1]: It is worth noting that {rix} can generate Nix expressions even without
+[^2]: It is worth noting that {rix} can generate Nix expressions even without
     Nix installed on your system—you can write a `default.nix` file without Nix,
     but you cannot build or enter the resulting environment unless Nix is
     installed [@rodrigues_baumann_2025].
 
-[^2]: We, however, recommend uninstalling your local R and letting Nix manage
+[^3]: We, however, recommend uninstalling your local R and letting Nix manage
     R, R packages, and other tools entirely. This approach avoids potential
     conflicts between system-installed and Nix-managed software, an issue we
     will illustrate later in this tutorial. See
@@ -441,12 +521,12 @@ the `rix()` function.
 
 ### The Environment Generation Script
 
-The `rix()` function[^3] constructs this specification through a series of
+The `rix()` function[^4] constructs this specification through a series of
 parameters that collectively describe the computational environment. Each
 parameter serves a distinct purpose in defining the environment's
 characteristics.
 
-[^3]: For an overarching information on the function `rix()`, we suggest the
+[^4]: For an overarching information on the function `rix()`, we suggest the
     following {rix} documentation:
     <https://docs.ropensci.org/rix/articles/project-environments.html>
 
@@ -541,13 +621,13 @@ Other supported IDEs include Positron (`ide = "positron"`), Visual Studio Code
 These tools may either be installed directly within the Nix environment using
 the `ide` parameter, or users may rely on an existing system installation by
 setting `ide = "none"` (or `ide = "other"`) and configuring `direnv` to
-automatically load the Nix environment when the project directory is opened[^4].
+automatically load the Nix environment when the project directory is opened[^5].
 All IDEs installed via Nix are project-specific and do not interfere with
 system-wide installations. Detailed configuration instructions are provided in
 the {rix} documentation:
 <https://docs.ropensci.org/rix/articles/configuring-ide.html>
 
-[^4]: **`direnv`** is a lightweight utility that integrates with the user's
+[^5]: **`direnv`** is a lightweight utility that integrates with the user's
     shell and automatically loads project-specific environment settings when
     navigating into a directory (via a `.envrc` file), and unloads them when
     leaving. This makes environment activation implicit and reduces the risk of
@@ -673,9 +753,9 @@ To verify that R is being provided by Nix rather than a system installation, run
 `which R`. This should return a path within `/nix/store/`. Moreover, from within
 the Nix shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 `positron`), which opens the IDE with the Nix environment active
-(@lst-shell-rs)[^5]
+(@lst-shell-rs)[^6]
 
-[^5]: Please note that activating an RStudio instance via Nix does **not**
+[^6]: Please note that activating an RStudio instance via Nix does **not**
     automatically open the specific project directory you are working in. We
     therefore recommend creating an **RStudio project file (`.Rproj`)** and
     opening that file when using Nix to ensure that RStudio is correctly
@@ -691,9 +771,9 @@ the Nix shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 Activating RStudio \normalsize
 :::
 
-## Reproducing the Complete Manuscript[^6]
+## Reproducing the Complete Manuscript[^7]
 
-[^6]: See the {rix} documentation for more:
+[^7]: See the {rix} documentation for more:
     <https://docs.ropensci.org/rix/articles/literate-programming.html>
 
 Within the nix shell, one is able to render the manuscript as follows in the
@@ -744,13 +824,13 @@ quarto::quarto_use_template("wjschne/apaquarto")
 \normalsize
 
 The final document (.docx, .pdf, or .html) is saved directly in the project
-folder[^7]. Because Quarto is installed as a system-level package in our Nix
+folder[^8]. Because Quarto is installed as a system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
 software configurations. If desired, the manuscript can also be reproduced
 interactively by opening the project folder in the user’s preferred IDE.
 
-[^7]: Although we use `apaquarto` in this example, many alternative manuscript
+[^8]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 
@@ -765,10 +845,10 @@ This file configures R to ignore external package libraries and also disables
 `install.packages()` within the environment. The rationale is straightforward: 
 any new packages should be added to `default.nix` and the environment rebuilt, 
 preserving full reproducibility [@rodrigues_baumann_2025]. However, for 
-stricter isolation[^8] that also prevents access to other system programs not 
+stricter isolation[^9] that also prevents access to other system programs not 
 specified in `default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
 
-[^8]: For example, when preparing this manuscript without the `--pure` flag,
+[^9]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
     the build failed. Running `quarto check` from within the Nix shell (i.e.,
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
