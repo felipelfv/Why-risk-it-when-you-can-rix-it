@@ -2,6 +2,22 @@
 \ifnextchar[{\eatarg}{}
 
 
+\caption{\label{fig-environment}The computational environment as a set
+of nested layers, based on Peikert \& Brandmaier (2021).}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{article_files/figure-pdf/fig-environment-1.pdf}}
+
+}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
 \caption{\label{fig-performance}Performance of ACE estimator across
 sample sizes and confounding severity. Panel A shows relative bias,
 Panel B shows relative RMSE, Panel C shows coverage probability of 95\%
@@ -13,7 +29,7 @@ under misspecification.}
 
 \centering{
 
-\includegraphics{article_files/figure-pdf/fig-performance-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{article_files/figure-pdf/fig-performance-1.pdf}}
 
 }
 

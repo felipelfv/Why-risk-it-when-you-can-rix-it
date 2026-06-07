@@ -124,15 +124,17 @@
 
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -212,7 +214,7 @@ Rodrigues}
 
 \authorsaffiliations{
 {Department of Data Analysis, Ghent University},{Department of
-Psychology and Neuroscienc, Boston College},{Statistics and Data
+Psychology and Neuroscience, Boston College},{Statistics and Data
 Strategy Departments, Ministry of Research and Higher Education,
 Luxembourg}}
 
@@ -372,97 +374,106 @@ Vieira, Email: \href{mailto:felipe.fontanavieira@ugent.be}{felipe.fontanavieira@
 
 
 
-Psychological science is in the midst of a credibility revolution, which
-has prompted substantial progress in how research is conducted and
-evaluated (\citeproc{ref-vazire2018}{Vazire, 2018}). Yet, despite
-notable progress, a key cornerstone of science, reproducibility (i.e.,
-the ability to precisely reproduce the results of a study or studies
-based on provided data, code, materials, and software/hardware) remains
-limited (\citeproc{ref-hardwicke2020}{Hardwicke et al., 2020}). Hence,
-ensuring reproducibility remains an open and pressing challenge for
-psychological science.
+Psychological science is in the midst of a credibility revolution
+(\citeproc{ref-vazire2018}{Vazire, 2018}), yet much of that scrutiny has
+focused on empirical studies. Monte Carlo simulation studies (hereafter
+referred to as simulation studies) have received far less
+(\citeproc{ref-siepe_etall_2024}{Siepe et al., 2024}), even though they
+are a primary tool for evaluating the statistical methods
+(\citeproc{ref-morris_etall_2019}{Morris et al., 2019}) and may suffer
+from selective reporting (\citeproc{ref-bouma_etall_2026}{Bouma et al.,
+2026}; \citeproc{ref-pawel_etall_2024}{Pawel et al., 2024},
+\citeproc{ref-pawel_etall_2025}{2025}). One aspect of credibility that
+remains especially underexamined for simulations is reproducibility
+(i.e., the ability to reproduce the results of a study or studies based
+on provided data, code, materials, and software/hardware)
+(\citeproc{ref-hardwicke2020}{Hardwicke et al., 2020};
+\citeproc{ref-montoya_anderson_2026}{Montoya \& Anderson, 2026}). In a
+simulation study this involves more than reanalyzing a fixed dataset,
+because the code also generates the data. Reproducing such a study
+therefore means reproducing the data generation, the analysis, and the
+summary of results. Montoya and Anderson
+(\citeproc{ref-montoya_anderson_2026}{2026}) conceptually address each
+of these stages separately.
 
-Addressing this gap is complicated by the fact that reproducibility is
-not a binary feature but instead exists along a continuum
-(\citeproc{ref-peng_2011}{Peng, 2011}). At the lower end,
-reproducibility may be interpreted as sharing only a manuscript. Further
-along the spectrum, it may involve providing partial code, complete
-analysis scripts, or publicly accessible datasets. At the highest level,
-reproducibility entails documenting a fully specified computational
-environment that allows others to recreate identical results---from raw
-data to final manuscript output---with minimal friction. As a result,
-researchers may implicitly target different points on this continuum,
-and efforts to improve reproducibility can diverge substantially in both
-goals and implementation.
-
-Open science initiatives have made considerable progress in encouraging
-movement along this spectrum. For example, journals now offer
-open-science badges (\citeproc{ref-kidwell_etall_2016}{Kidwell et al.,
-2016}), best practices have been developed to make data sharing routine
-(\citeproc{ref-levenstein_lyle_2018}{Levenstein \& Lyle, 2018}), and
-platforms such as the Open Science Framework (OSF) provide
-infrastructure for storing and sharing research materials
-(\citeproc{ref-nosek_etall_2015}{Nosek et al., 2015}). However, these
-efforts primarily target the lower to middle portions of the continuum,
-emphasizing \emph{what} is shared rather than \emph{how} shared
-materials can be executed in practice.
-
-Data and code are never fully self-sufficient to reproduce a set of
-findings (\citeproc{ref-epskamp_2019}{Epskamp, 2019};
-\citeproc{ref-peikert_brandmaier_2021}{Peikert \& Brandmaier, 2021};
-\citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau, 2021};
-\citeproc{ref-ziemann_etall_2023}{Ziemann et al., 2023}). Assuming the
-data and code are error-free, reproducibility depends on a hierarchy of
-software components---collectively referred to as
-\emph{dependencies}---including the programming language version, the
-packages used in the analysis, and the system libraries on which those
-packages rely. When these dependencies differ from those used in the
-original analysis, code may fail, behave inconsistently across machines,
-or yield conflicting numerical results
+Reproducibility in this sense is not all-or-nothing but occupies a
+continuum (\citeproc{ref-peng_2011}{Peng, 2011}), on which a study is
+positioned according to the extent of the materials that are publicly
+available. This ranges from publication alone at the low end to code and
+data that are linked and directly executable at the high end. Reaching
+that executable end is often treated as \emph{full} reproducibility
+(\citeproc{ref-peikert_etall_2021}{Peikert et al., 2021};
+\citeproc{ref-peikert_brandmaier_2021}{Peikert \& Brandmaier, 2021}),
+and open science initiatives have pushed work toward it
+(\citeproc{ref-kidwell_etall_2016}{Kidwell et al., 2016};
+\citeproc{ref-levenstein_lyle_2018}{Levenstein \& Lyle, 2018};
+\citeproc{ref-nosek_etall_2015}{Nosek et al., 2015}). Yet code and data
+are never fully self-sufficient (\citeproc{ref-epskamp_2019}{Epskamp,
+2019}; \citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau, 2021};
+\citeproc{ref-ziemann_etall_2023}{Ziemann et al., 2023}). Even
+error-free code depends on a hierarchy of software components, including
+the programming language version, the packages used in the analysis, and
+the system libraries those packages rely on. When these differ from the
+originals, code may fail, behave inconsistently across machines, or
+yield conflicting numerical results
 (\citeproc{ref-baker_etall_2024}{Baker et al., 2024};
 \citeproc{ref-glatard_etall_2015}{Glatard et al., 2015};
 \citeproc{ref-hodges_etall_2023}{Hodges et al., 2023};
-\citeproc{ref-nosek_etall_2022}{Nosek et al., 2022}). These issues are
-particularly acute for simulation studies, which rely on complex
+\citeproc{ref-nosek_etall_2022}{Nosek et al., 2022}). These problems are
+particularly acute for simulation studies, which depend on complex
 codebases, versioned dependencies, and intricate software configurations
 (\citeproc{ref-luijken_etall_2024}{Luijken et al., 2024};
 \citeproc{ref-siepe_etall_2024}{Siepe et al., 2024}).
 
 To make this concrete, we use \emph{computational environment} to refer
 to the complete software context required for an analysis to run
-successfully---the programming language version, package versions,
-system libraries, and operating system
+successfully: the programming language version, package versions, system
+libraries, and operating system (Figure~\ref{fig-environment})
 (\citeproc{ref-rodrigues_2023}{Rodrigues, 2023};
 \citeproc{ref-rodrigues_baumann_2026_polyglot}{Rodrigues \& Baumann,
 2026}). We define \emph{computational environment reproducibility} as
 the ability to reconstruct this entire set of software dependencies on
 any machine and at any future time, such that executing the same code
 yields the same numerical results. Empirical assessments show that
-current practice falls short of this ideal. Siepe et al.
-(\citeproc{ref-siepe_etall_2024}{2024}) report that nearly two-thirds of
-simulation studies in psychology provide no accompanying code, and among
-those that do, documentation of the computational environment is rarely
-included. This gap is consequential: simulation studies inform
-methodological recommendations, meaning that insufficient
-reproducibility undermines confidence in those recommendations
+current practice falls short of this ideal. Indeed, Siepe et al.
+(\citeproc{ref-siepe_etall_2024}{2024}) report that, among simulation
+studies published in psychology in 2021 and 2022, nearly two-thirds
+provide no accompanying code, and among those that do, documentation of
+the computational environment is rarely included. This gap is
+consequential, as simulation studies inform methodological
+recommendations, meaning that insufficient reproducibility undermines
+confidence in those recommendations
 (\citeproc{ref-luijken_etall_2024}{Luijken et al., 2024};
 \citeproc{ref-white_etall_2024}{White et al., 2024}).
 
-Arguably, these challenges persist because researchers must navigate a
-fragmented landscape of solutions, each addressing only part of the
-problem. Package-level managers such as \{renv\}
-(\citeproc{ref-ushey_2024}{Ushey, 2024}) and \{groundhog\}
-(\citeproc{ref-simonsohn_2020}{Simonsohn, 2020}) stabilize R package
-versions but do not manage the R interpreter itself or the system-level
-libraries those packages depend on. Workflow orchestration tools such as
-\{targets\} (\citeproc{ref-landau_2021}{Landau, 2021}) and Make
-(\citeproc{ref-feldman_1979}{Feldman, 1979}) support reproducibility in
-a different sense: they specify the structure of an analysis by
-formalizing the order in which steps should run and by tracking
-dependencies among intermediate results. These tools clarify \emph{how}
-an analysis proceeds, but they assume that the software stack required
-to run each step is already stable. Containerization tools such as
-Docker, including R-focused implementations like Rocker
+\begin{figure}
+
+\caption{\label{fig-environment}The computational environment as a set
+of nested layers, based on Peikert \& Brandmaier (2021).}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{article_files/figure-pdf/fig-environment-1.pdf}}
+
+}
+
+\end{figure}%
+
+These challenges may persist for several reasons. Arguably, one is that
+even researchers aware of these demands face a fragmented landscape of
+solutions, each addressing only part of the problem. Package-level
+managers such as \{renv\} (\citeproc{ref-ushey_2024}{Ushey, 2024}) and
+\{groundhog\} (\citeproc{ref-simonsohn_2020}{Simonsohn, 2020}) stabilize
+R package versions but do not manage the R interpreter itself or the
+system-level libraries those packages depend on. Workflow orchestration
+tools such as \{targets\} (\citeproc{ref-landau_2021}{Landau, 2021}) and
+Make (\citeproc{ref-feldman_1979}{Feldman, 1979}) support
+reproducibility in a different sense: they specify the structure of an
+analysis by formalizing the order in which steps should run and by
+tracking dependencies among intermediate results. These tools clarify
+\emph{how} an analysis proceeds, but they assume that the software stack
+required to run each step is already stable. Containerization tools such
+as Docker, including R-focused implementations like Rocker
 (\citeproc{ref-boettiger_2015}{Boettiger, 2015};
 \citeproc{ref-boettiger_eddelbuettel_2017}{Boettiger \& Eddelbuettel,
 2017}) offer a more comprehensive approach by bundling the full
@@ -490,13 +501,26 @@ software installation deterministic, and \{rix\}
 R interface that allows researchers to use Nix without needing deep
 knowledge of its underlying language or infrastructure. Our main
 objective with the tutorial is not to introduce a specific workflow
-orchestration system or to prescribe a particular analytic structure.
-Instead, we aim to show what Nix and \{rix\} are and how they can
-establish a stable, cross-platform environment within which any
-simulation study---whether organized in simple, documented script
-sequences (e.g., .R files that \texttt{source()} others), through more
-formal orchestration tools (e.g., \{targets\}) or embedded as code
-chunks in \texttt{.Rmd} or \texttt{.qmd}---can be executed reliably.
+orchestration system or to prescribe a particular analytic
+structure.\footnote{We leave workflow orchestration aside for two
+  reasons. First, many tools address it, each with its own conventions,
+  and doing them justice would require a more tailored treatment than a
+  single tutorial allows. Second, although formal orchestration may be
+  necessary for full reproducibility, a study whose scripts are well
+  documented, whose dependencies between files are explained, and whose
+  environment is made stable arguably already sits high on the
+  reproducibility spectrum. Moreover, a stable computational environment
+  is what the other practices ultimately rest on, and it is what we
+  focus on here. For readers interested in articles with a larger focus
+  on the workflow, we suggest Peikert et al.
+  (\citeproc{ref-peikert_etall_2021}{2021}) and van Lissa et al.
+  (\citeproc{ref-vanlissa_etall_2021}{2021}).} Instead, we aim to show
+what Nix and \{rix\} are and how they can establish a stable,
+cross-platform environment within which any simulation study---whether
+organized in simple, documented script sequences (e.g., .R files that
+\texttt{source()} others), through more formal orchestration tools
+(e.g., \{targets\}) or embedded as code chunks in \texttt{.Rmd} or
+\texttt{.qmd}---can be executed reliably.
 
 We illustrate these ideas through a reproducible simulation study
 conducted in R, culminating in this automated APA-formatted manuscript
@@ -511,9 +535,8 @@ At the end of the article, we also briefly introduce \{rixpress\}
 tool that builds on Nix to coordinate pipelines across R, Python, and
 Julia.
 
-\section{A Practical Example: Setting up a Reproducible Simulation Study
-with
-\{rix\}}\label{a-practical-example-setting-up-a-reproducible-simulation-study-with-rix}
+\section{Setting the Stage: A Simulation Study and Its Reproducibility
+Risks}\label{setting-the-stage-a-simulation-study-and-its-reproducibility-risks}
 
 Imagine you have just been awarded a grant to conduct a large-scale
 simulation study. The study is designed to evaluate the performance of a
@@ -597,16 +620,16 @@ exactly which versions of programming languages, packages, and system
 libraries an analysis requires, and to recreate that environment
 reliably on any machine.
 
-Unlike familiar tools such as \texttt{install.packages()} in R,
-\texttt{apt-get} on Linux, or \texttt{uv} in Python---which typically
-manage only a single layer of the software stack---Nix handles language
-versions, package versions, and system-level dependencies within a
-single framework (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \&
-Baumann, 2025}). Rather than installing software into shared system
-directories, Nix builds each environment as an explicit, self-contained
-specification. As a result, multiple environments can coexist without
-conflict, and analyses can be rerun months or years later under
-identical computational conditions.
+Unlike familiar tools such as \texttt{install.packages()} in R or
+\texttt{uv} in Python, which typically manage only a single layer of the
+software stack, Nix handles language versions, package versions, and
+system-level dependencies within a single framework
+(\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
+Rather than installing software into shared system directories, Nix
+builds each environment as an explicit, self-contained specification. As
+a result, multiple environments can coexist without conflict, and
+analyses can be rerun months or years later under identical
+computational conditions.
 
 This unified approach directly addresses the fragmented landscape
 described above. Where researchers would otherwise need to coordinate
@@ -678,6 +701,10 @@ within a Nix-defined environment
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 This allows Nix to strengthen reproducibility while preserving
 established workflows. We will come back to this after the tutorial.
+
+\section{A Practical Example: Setting up a Reproducible Simulation Study
+with
+\{rix\}}\label{a-practical-example-setting-up-a-reproducible-simulation-study-with-rix}
 
 \subsection{Step 1: Installing Nix and
 \{rix\}}\label{step-1-installing-nix-and-rix}
@@ -1109,7 +1136,7 @@ otherwise the same warnings will appear) should look similar to
 This command drops the user into a shell where all specified packages
 and tools are available. The shell prompt changes to indicate that a Nix
 environment is active (here,
-\texttt{{[}nix-shell:\textasciitilde{}/Desktop/AMPPS/Why-risk-it-when-you-can-rix-it{]}\$}).
+\texttt{{[}nix-shell:\textasciitilde{}/AMPPS/Why-risk-it-when-you-can-rix-it{]}\$}).
 To verify that R is being provided by Nix rather than a system
 installation, run \texttt{which\ R}. This should return a path within
 \texttt{/nix/store/}. Moreover, from within the Nix shell, users can
@@ -1143,7 +1170,7 @@ launch their IDE by typing its name (e.g., \texttt{rstudio} or
 \subsection[Reproducing the Complete
 Manuscript]{\texorpdfstring{Reproducing the Complete
 Manuscript\footnote{See the \{rix\} documentation for more:
-  \url{https://docs.ropensci.org/rix/articles/literate-programming.html}}}{Reproducing the Complete Manuscript}}\label{reproducing-the-complete-manuscript6}
+  \url{https://docs.ropensci.org/rix/articles/literate-programming.html}}}{Reproducing the Complete Manuscript}}\label{reproducing-the-complete-manuscript7}
 
 Within the nix shell, one is able to render the manuscript as follows in
 the terminal (Listing~\ref{lst-quarto-render}):
@@ -1286,7 +1313,7 @@ under misspecification.}
 
 \centering{
 
-\includegraphics{article_files/figure-pdf/fig-performance-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{article_files/figure-pdf/fig-performance-1.pdf}}
 
 }
 
@@ -1300,12 +1327,12 @@ conditions. Values in parentheses are Monte Carlo standard errors
 \vspace{-20pt}}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1529}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\centering\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1412}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1529}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1765}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1765}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1765}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1765}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Sample Size
@@ -1619,7 +1646,7 @@ research in psychology and beyond.
 
 \section{References}\label{references}
 
-\phantomsection\label{refs}
+\protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-marginaleffects}
 Arel-Bundock, V., Greifer, N., \& Heiss, A. (2024). How to interpret
@@ -1642,6 +1669,12 @@ research. \emph{ACM SIGOPS Operating Systems Review}, \emph{49}(1),
 Boettiger, C., \& Eddelbuettel, D. (2017). An introduction to {Rocker}:
 {Docker} containers for {R}. \emph{The R Journal}, \emph{9}(2),
 527--536. \url{https://doi.org/10.32614/RJ-2017-065}
+
+\bibitem[\citeproctext]{ref-bouma_etall_2026}
+Bouma, A., Assen, M. A. L. M. van, Aert, R. C. M. van, \& Voncken, L.
+(2026). Reporting practices, open science practices, and trustworthiness
+of simulation studies in psychology: A questionnaire study.
+\emph{Advances in Methods and Practices in Psychological Science}.
 
 \bibitem[\citeproctext]{ref-doParallel}
 Corporation, M., \& Weston, S. (2022). \emph{doParallel: Foreach
@@ -1728,6 +1761,11 @@ Malka, J., Zacchiroli, S., \& Zimmermann, T. (2026). {Docker} does not
 guarantee reproducibility. \emph{arXiv Preprint arXiv:2601.12811}.
 \url{https://arxiv.org/abs/2601.12811}
 
+\bibitem[\citeproctext]{ref-montoya_anderson_2026}
+Montoya, A. K., \& Anderson, S. F. (2026). Repeatability in monte carlo
+simulation studies. \emph{Advances in Methods and Practices in
+Psychological Science}.
+
 \bibitem[\citeproctext]{ref-morris_etall_2019}
 Morris, T. P., White, I. R., \& Crowther, M. J. (2019). Using simulation
 studies to evaluate statistical methods. \emph{Statistics in Medicine},
@@ -1766,10 +1804,23 @@ review of current practices and recommendations. \emph{The American
 Statistician}, 1--18.
 \url{https://doi.org/10.1080/00031305.2025.2540002}
 
+\bibitem[\citeproctext]{ref-pawel_etall_2024}
+Pawel, S., Kook, L., \& Reeve, K. (2024). Pitfalls and potentials in
+simulation studies: Questionable research practices in comparative
+simulation studies allow for spurious claims of superiority of any
+method. \emph{Biometrical Journal}, \emph{66}(1), 2200091.
+\url{https://doi.org/10.1002/bimj.202200091}
+
 \bibitem[\citeproctext]{ref-peikert_brandmaier_2021}
 Peikert, A., \& Brandmaier, A. M. (2021). A reproducible data analysis
 workflow. \emph{Quantitative and Computational Methods in Behavioral
 Sciences}, \emph{1}, e3763. \url{https://doi.org/10.5964/qcmb.3763}
+
+\bibitem[\citeproctext]{ref-peikert_etall_2021}
+Peikert, A., van Lissa, C. J., \& Brandmaier, A. M. (2021). Reproducible
+research in {R}: A tutorial on how to do the same thing more than once.
+\emph{Psych}, \emph{3}(4), 836--867.
+\url{https://doi.org/10.3390/psych3040053}
 
 \bibitem[\citeproctext]{ref-peng_2011}
 Peng, R. D. (2011). Reproducible research in computational science.
@@ -1816,9 +1867,15 @@ and gitlab packages}.
 \bibitem[\citeproctext]{ref-ushey_2024}
 Ushey, K. (2024). \emph{Renv: Project environments}.
 
+\bibitem[\citeproctext]{ref-vanlissa_etall_2021}
+van Lissa, C. J., Brandmaier, A. M., Brinkman, L., Lamprecht, A.-L.,
+Peikert, A., Struiksma, M. E., \& Vreede, B. M. I. (2021). {WORCS}: A
+workflow for open reproducible code in science. \emph{Data Science},
+\emph{4}(1), 29--49. \url{https://doi.org/10.3233/DS-210031}
+
 \bibitem[\citeproctext]{ref-vazire2018}
-Vazire, S. (2018). Implications of the Credibility Revolution for
-Productivity, Creativity, and Progress. \emph{Perspectives on
+Vazire, S. (2018). Implications of the credibility revolution for
+productivity, creativity, and progress. \emph{Perspectives on
 Psychological Science}, \emph{13}(4), 411--417.
 \url{https://doi.org/10.1177/1745691617751884}
 
@@ -1934,9 +1991,9 @@ are maximum likelihood estimates from the misspecified logistic
 regression.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
 \caption{Performance criteria for evaluating the ACE estimator.
 \(\hat{\theta}_k\) denotes the ACE estimate from replication \(k\) (for
 \(k = 1, \ldots, K\)), where \(K = 1000\) is the number of replications,
@@ -1995,7 +2052,7 @@ conditions.
 
 \textbf{Computational Details.} The simulation was conducted on a
 MacBook Pro (Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All
-analyses were performed in R (version 4.4.3). Parallel processing was
+analyses were performed in R (version 4.5.2). Parallel processing was
 implemented through the \{doParallel\} package {[}version 1.0.17;
 Corporation and Weston (\citeproc{ref-doParallel}{2022}){]}, with
 \{doRNG\} {[}version 1.8.6.2; Gaujoux (\citeproc{ref-doRNG}{2025}){]} to
@@ -2004,13 +2061,13 @@ generation we used the \{rvinecopulib\} package {[}version 0.7.3.1.0;
 Nagler and Vatter (\citeproc{ref-rvinecopulib}{2025}){]}. The estimator
 was implemented using the \{marginaleffects\} package {[}version 0.31.0;
 Arel-Bundock et al. (\citeproc{ref-marginaleffects}{2024}){]}. Data
-wrangling was performed with \{dplyr\} {[}version 1.2.0; Wickham et al.
+wrangling was performed with \{dplyr\} {[}version 1.1.4; Wickham et al.
 (\citeproc{ref-dplyr}{2023}){]}. Method performance was assessed through
 multiple metrics following the formulas from the \{simhelpers\} package
 {[}version 0.3.1; Joshi and Pustejovsky
 (\citeproc{ref-simhelpers}{2025}){]}. Figures were produced with
-\{ggplot2\} {[}version 4.0.2; Wickham (\citeproc{ref-ggplot2}{2016}){]}
-and \{cowplot\} {[}version 1.1.3; Wilke
+\{ggplot2\} {[}version 4.0.1; Wickham (\citeproc{ref-ggplot2}{2016}){]}
+and \{cowplot\} {[}version 1.2.0; Wilke
 (\citeproc{ref-cowplot}{2025}){]}.
 
 \section{Clarifying the packages
