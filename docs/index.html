@@ -2385,8 +2385,9 @@ border-bottom: none;
   <li><a href="#running-the-simulation-and-results" id="toc-running-the-simulation-and-results" class="nav-link" data-scroll-target="#running-the-simulation-and-results">Running the Simulation and Results</a></li>
   </ul></li>
   <li><a href="#step-6-developing-and-making-the-complete-manuscript-reproducible11" id="toc-step-6-developing-and-making-the-complete-manuscript-reproducible11" class="nav-link" data-scroll-target="#step-6-developing-and-making-the-complete-manuscript-reproducible11">Step 6: Developing and Making the Complete Manuscript Reproducible</a></li>
-  <li><a href="#additional-considerations-for-advanced-workflows" id="toc-additional-considerations-for-advanced-workflows" class="nav-link" data-scroll-target="#additional-considerations-for-advanced-workflows">Additional Considerations for Advanced Workflows</a>
+  <li><a href="#additional-considerations-for-simulation-studies" id="toc-additional-considerations-for-simulation-studies" class="nav-link" data-scroll-target="#additional-considerations-for-simulation-studies">Additional Considerations for Simulation Studies</a>
   <ul class="collapse">
+  <li><a href="#reproducible-randomness-and-parallel-execution-for-data-generation" id="toc-reproducible-randomness-and-parallel-execution-for-data-generation" class="nav-link" data-scroll-target="#reproducible-randomness-and-parallel-execution-for-data-generation">Reproducible Randomness and Parallel Execution for Data Generation</a></li>
   <li><a href="#workflow-orchestration-targets-and-rixpress" id="toc-workflow-orchestration-targets-and-rixpress" class="nav-link" data-scroll-target="#workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</a></li>
   <li><a href="#multi-language-environment-support" id="toc-multi-language-environment-support" class="nav-link" data-scroll-target="#multi-language-environment-support">Multi-Language Environment Support</a></li>
   <li><a href="#converting-existing-renv-projects" id="toc-converting-existing-renv-projects" class="nav-link" data-scroll-target="#converting-existing-renv-projects">Converting Existing {renv} Projects</a></li>
@@ -2457,7 +2458,7 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 6930</p>
+<p><em>Word Count</em>: 7558</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -2533,7 +2534,7 @@ Listing 2: Installing {rix} from CRAN or developmental version
 </section>
 <section id="sec-specifying-environment" class="level2">
 <h2 data-anchor-id="sec-specifying-environment">Step 2: Specifying the Computational Environment</h2>
-<p>We begin with an empty folder for this project (here named <code>Why-risk-it-when-you-can-rix-it</code>). There are no simulation scripts or manuscript inside it yet, and that is intentional. The only file we write by hand for now is <code>generate-env.R</code> (or similar), which uses the <code>rix()</code> function from the {rix} package to produce a <code>default.nix</code> file: a declarative specification of all software dependencies the project needs.</p>
+<p>We then begin with an empty folder for this project (here named <code>Why-risk-it-when-you-can-rix-it</code>). There are no simulation scripts or manuscript inside it yet. The only file we write by hand for now is <code>generate-env.R</code> (or similar), which uses the <code>rix()</code> function from the {rix} package to produce a <code>default.nix</code> file: a declarative specification of all software dependencies the project needs.</p>
 <p>We start with the smallest possible environment: R version and an IDE. We add packages as the simulation takes form and extend the environment again for the manuscript later. This bare specification is shown in <a href="#lst-rix-env-base" class="quarto-xref">Listing 3</a> (the complete version, which covers the simulation and the manuscript, is on the GitHub repository, <a href="https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it" class="uri">https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it</a>, as <code>gen-env.R</code>):</p>
 <div class="cell">
 <div id="lst-rix-env-base" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
@@ -2833,9 +2834,75 @@ Listing 18: Activating the Nix environment with strict isolation
 </div>
 </section>
 </section>
-<section id="additional-considerations-for-advanced-workflows" class="level2">
-<h2 data-anchor-id="additional-considerations-for-advanced-workflows">Additional Considerations for Advanced Workflows</h2>
-<p>Thus far, we have presented Nix and {rix} as standalone solutions for computational reproducibility, contrasting initially them with tools like {renv}, Docker, and {targets}. However, these tools are not mutually exclusive, as in many cases, they can complement each other <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. Additionally, as highlighted in previous literature <span class="citation" data-cites="peikert_brandmaier_2021 siepe_etall_2024 piccolo_frampton_2016">(<a href="#ref-peikert_brandmaier_2021" role="doc-biblioref">Peikert &amp; Brandmaier, 2021</a>; <a href="#ref-piccolo_frampton_2016" role="doc-biblioref">Piccolo &amp; Frampton, 2016</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>, fully reproducible research benefits not only from a stable computational environment but also from explicit workflow orchestration. We therefore briefly introduce {rixpress}, which extends Nix-based reproducibility to formalized, multi-language pipelines. These topics are not covered in depth; our goal is simply to clarify how these tools relate to one another and orient readers toward resources for more advanced use cases.</p>
+<section id="additional-considerations-for-simulation-studies" class="level2">
+<h2 data-anchor-id="additional-considerations-for-simulation-studies">Additional Considerations for Simulation Studies</h2>
+<p>In this section, we turn to considerations that matter especially for simulation studies but fall outside this tutorial’s scope, since they depend on the details of each study. The first concerns random draws and reproducibility. The second concerns workflow orchestration and integration with tools researchers may already use. We do not cover these topics in depth. Our goal is to clarify how they relate to {rix} and to point readers toward resources for more advanced use cases.</p>
+<section id="reproducible-randomness-and-parallel-execution-for-data-generation" class="level3">
+<h3 data-anchor-id="reproducible-randomness-and-parallel-execution-for-data-generation">Reproducible Randomness and Parallel Execution for Data Generation</h3>
+<p>A simulation regenerates its data from a pseudo-random number generator, so its reproducibility depends on controlling that generator. The standard advice is to set the seed once and store it, so the same code reproduces the same sequence of draws <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. Simulation studies are typically organized as a set of conditions, each run for many repetitions, so the unit one wants to reproduce is a single repetition within a given condition. Storing the generator’s state at the start of each condition-repetition cell, rather than only the initial seed, additionally allows any single cell to be reproduced in isolation, which is convenient for debugging <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. In R, the state lives in the variable <code>.Random.seed</code>, and such a procedure would look as follows (<a href="#lst-rng-state" class="quarto-xref">Listing 19</a>):</p>
+<div class="cell">
+<div id="lst-rng-state" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rng-state-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing 19: Storing and restoring the generator state to reproduce one condition-repetition cell
+</figcaption>
+<div aria-describedby="lst-rng-state-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)                                 <span class="co"># fix the starting position once</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>conditions <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>), </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">gamma2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>)) <span class="co"># 4 conditions</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>nsim    <span class="ot">&lt;-</span> <span class="dv">1000</span>                               <span class="co"># repetitions per condition</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>states  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">list</span>(), <span class="fu">nrow</span>(conditions), nsim)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="fu">nrow</span>(conditions), nsim)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (cond <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(conditions))) {     <span class="co"># for loop&#39;s for purposes of illustration</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (r <span class="cf">in</span> <span class="fu">seq_len</span>(nsim)) {</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    states[[cond, r]] <span class="ot">&lt;-</span> .Random.seed         <span class="co"># state at the start of cell (cond, r)</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[cond])            <span class="co"># data generation advances the state</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    results[cond, r] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 3 of condition 2 on its own</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> states[[<span class="dv">2</span>, <span class="dv">3</span>]]</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">mean</span>(<span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[<span class="dv">2</span>])), results[<span class="dv">2</span>, <span class="dv">3</span>])  <span class="co"># TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</figure>
+</div>
+</div>
+<p>With a sufficient number of repetitions the particular seed does not affect the conclusions. However, parallel processing complicates this <span class="citation" data-cites="siepe_etall_2024 morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. In this case, a single seed may no longer be sufficient, because each worker would advance its own copy of the generator and could draw overlapping sequences. In practice, many researchers assign a distinct seed to each condition, for example <code>set.seed(123 + i)</code> for condition <code>i</code>, and let the repetitions within that condition draw sequentially from it. This keeps every condition reproducible and might not be a problem for most studies (given the properties of the default algorithm, i.e., Mersenne-Twister), but it does not by itself <em>guarantee</em> that the random sequences of different conditions never overlap. The recommended solution is to assign separate, non-overlapping random number streams <span class="citation" data-cites="morris_etall_2019 siepe_etall_2024">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. R offers several packages for this <span class="citation" data-cites="rcoreteam_parallel rstream doRNG">(<a href="#ref-doRNG" role="doc-biblioref">Gaujoux, 2025</a>; <a href="#ref-rstream" role="doc-biblioref">Leydold, 2022</a>; <a href="#ref-rcoreteam_parallel" role="doc-biblioref">R Core Team, 2023</a>)</span>, and we illustrate the approach with {doRNG}, which implements streams for {foreach} through the <code>%dorng%</code> operator (<a href="#lst-run-simulation-code" class="quarto-xref">Listing 11</a>). From a single master seed set before the loop, {doRNG} derives one independent stream per iteration in advance, before any work is dispatched. Each stream is bound to the iteration index rather than to a worker, so iteration seven always draws from stream seven no matter which core executes it. The number of cores (<code>ncore</code> in our script) changes only how iterations are scheduled in time, never which stream each one receives. A collaborator who reruns the study on four cores therefore reproduces data generated on twenty cores exactly. Moreover, because {doRNG} records the stream it assigned to each iteration in the <code>rng</code> attribute of the result, these states can be stored and later restored to reproduce the data of any single repetition within a condition in isolation, which the per-condition seed alone cannot do (<a href="#lst-rng-streams" class="quarto-xref">Listing 20</a>).</p>
+<div class="cell">
+<div id="lst-rng-streams" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rng-streams-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing 20: Reproducible parallel streams with {doRNG}, storing the per-iteration state so any single repetition within a condition can be reproduced
+</figcaption>
+<div aria-describedby="lst-rng-streams-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doRNG)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)                                <span class="co"># makes the streams below reproducible</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rng_states <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="fu">nrow</span>(designs))  <span class="co"># one slot per condition</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(designs))) {          <span class="co"># for loop&#39;s for purposes of illustration</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">foreach</span>(</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">seq_len</span>(nsim),</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.packages =</span> <span class="fu">c</span>(<span class="st">&quot;marginaleffects&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%dorng%</span> {</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[k], designs<span class="sc">$</span>gamma2[k])</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  rng_states[[k]] <span class="ot">&lt;-</span> <span class="fu">attr</span>(res, <span class="st">&quot;rng&quot;</span>)      <span class="co"># per-repetition stream states</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  all_results[[k]] <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 10 of condition 3 on its own</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="fu">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> rng_states[[<span class="dv">3</span>]][[<span class="dv">10</span>]]</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>rep10 <span class="ot">&lt;-</span> <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[<span class="dv">3</span>], designs<span class="sc">$</span>gamma2[<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</figure>
+</div>
+</div>
+<p>Because R’s default generator can change across R versions, by pinning the R version {rix} keeps the generator and its algorithm fixed, so the same seed reproduces the same draws across machines and over time.</p>
+</section>
 <section id="workflow-orchestration-targets-and-rixpress" class="level3">
 <h3 data-anchor-id="workflow-orchestration-targets-and-rixpress">Workflow Orchestration: {targets} and {rixpress}</h3>
 <p>Complex simulation studies often benefit from workflow management systems that track dependencies between computational steps, cache intermediate results, and enable selective re-execution when inputs change. Two complementary approaches exist within the Nix ecosystem.</p>
@@ -2850,15 +2917,15 @@ Listing 18: Activating the Nix environment with strict isolation
 </section>
 <section id="multi-language-environment-support" class="level3">
 <h3 data-anchor-id="multi-language-environment-support">Multi-Language Environment Support</h3>
-<p>While this tutorial focuses on R, researchers working across multiple programming languages can include Python or Julia in their environments. The <code>py_conf</code> parameter accepts a list specifying a Python version and required packages (<a href="#lst-python-pkgs-example" class="quarto-xref">Listing 19</a>). Similarly, <code>jl_conf</code> enables Julia package installation. This capability is particularly useful, for example, for projects requiring statistical computing in R alongside machine learning pipelines in Python or numerical optimization in Julia <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-r-packages.html" class="uri">https://docs.ropensci.org/rix/articles/installing-r-packages.html</a>).</p>
+<p>While this tutorial focuses on R, researchers working across multiple programming languages can include Python or Julia in their environments. The <code>py_conf</code> parameter accepts a list specifying a Python version and required packages (<a href="#lst-python-pkgs-example" class="quarto-xref">Listing 21</a>). Similarly, <code>jl_conf</code> enables Julia package installation. This capability is particularly useful, for example, for projects requiring statistical computing in R alongside machine learning pipelines in Python or numerical optimization in Julia <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-r-packages.html" class="uri">https://docs.ropensci.org/rix/articles/installing-r-packages.html</a>).</p>
 <div class="cell">
 <div id="lst-python-pkgs-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-python-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 19: Including Python packages
+Listing 21: Including Python packages
 </figcaption>
 <div aria-describedby="lst-python-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">&quot;3.12&quot;</span>, <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;polars&quot;</span>, <span class="st">&quot;pandas&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">&quot;3.12&quot;</span>, <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;polars&quot;</span>, <span class="st">&quot;pandas&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2939,6 +3006,9 @@ Landau, W. M. (2021). <em>Targets: Dynamic function-oriented make-like declarati
 <div id="ref-levenstein_lyle_2018" class="csl-entry" role="listitem">
 Levenstein, M. C., &amp; Lyle, J. A. (2018). Data: Sharing is caring. <em>Advances in Methods and Practices in Psychological Science</em>, <em>1</em>(1), 95–103.
 </div>
+<div id="ref-rstream" class="csl-entry" role="listitem">
+Leydold, J. (2022). <em>Rstream: Streams of random numbers</em>. <a href="https://CRAN.R-project.org/package=rstream">https://CRAN.R-project.org/package=rstream</a>
+</div>
 <div id="ref-luijken_etall_2024" class="csl-entry" role="listitem">
 Luijken, K., Lohmann, A., Alter, U., Claramunt Gonzalez, J., Clouth, F. J., Fossum, J. L., Hesen, L., Huizing, A. H. J., Ketelaar, J., Montoya, A. K., Nab, L., Nijman, R. C. C., Penning de Vries, B. B. L., Tibbe, T. D., Wang, Y. A., &amp; Groenwold, R. H. H. (2024). Replicability of simulation studies for the investigation of statistical methods: The <span>RepliSims</span> project. <em>Royal Society Open Science</em>, <em>11</em>(1), 231003. <a href="https://doi.org/10.1098/rsos.231003">https://doi.org/10.1098/rsos.231003</a>
 </div>
@@ -2978,8 +3048,8 @@ Peikert, A., van Lissa, C. J., &amp; Brandmaier, A. M. (2021). Reproducible rese
 <div id="ref-peng_2011" class="csl-entry" role="listitem">
 Peng, R. D. (2011). Reproducible research in computational science. <em>Science</em>, <em>334</em>(6060), 1226–1227.
 </div>
-<div id="ref-piccolo_frampton_2016" class="csl-entry" role="listitem">
-Piccolo, S. R., &amp; Frampton, M. B. (2016). Tools and techniques for computational reproducibility. <em>GigaScience</em>, <em>5</em>, 30. <a href="https://doi.org/10.1186/s13742-016-0135-4">https://doi.org/10.1186/s13742-016-0135-4</a>
+<div id="ref-rcoreteam_parallel" class="csl-entry" role="listitem">
+R Core Team. (2023). <em>R: A language and environment for statistical computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>
 </div>
 <div id="ref-rodrigues_2023" class="csl-entry" role="listitem">
 Rodrigues, B. (2023). <em>Building reproducible analytical pipelines with <span>R</span></em>. <a href="https://raps-with-r.dev">https://raps-with-r.dev</a>
@@ -3031,7 +3101,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="1" prefix>
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="1">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3144,7 +3214,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3163,7 +3233,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
