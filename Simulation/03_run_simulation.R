@@ -38,8 +38,16 @@ print(true_ACE_values)
 cl <- makeCluster(ncore)
 registerDoParallel(cl)
 
+# fix the master seed so the {doRNG} streams below are reproducible and
+# independent of the number of cores
+set.seed(master_seed)
+
 # run simulation across all conditions
 all_results <- vector("list", nrow(designs))
+
+# per-iteration RNG stream states, so any single repetition within a
+# condition can later be reproduced in isolation (see attr(res_list, "rng"))
+rng_states <- vector("list", nrow(designs))
 
 for (k in seq_len(nrow(designs))) {
   # extract current condition parameters
@@ -60,7 +68,10 @@ for (k in seq_len(nrow(designs))) {
     {
       run_one_rep(n_k, gamma2_k)
     }
-  
+
+  # store the stream state {doRNG} assigned to each repetition
+  rng_states[[k]] <- attr(res_list, "rng")
+
   # combine replications into data frame
   res <- do.call(rbind, res_list)
   
@@ -81,3 +92,4 @@ sim_results <- do.call(rbind, all_results)
 
 # save
 #saveRDS(sim_results, "Simulation_Scripts/sim_results.rds")
+#saveRDS(rng_states, "Simulation_Scripts/rng_states.rds")

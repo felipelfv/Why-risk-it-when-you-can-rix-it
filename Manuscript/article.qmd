@@ -502,9 +502,9 @@ install.packages(
 
 ## Step 2: Specifying the Computational Environment {#sec-specifying-environment}
 
-We begin with an empty folder for this project (here named
+We then begin with an empty folder for this project (here named
 `Why-risk-it-when-you-can-rix-it`). There are no simulation scripts or
-manuscript inside it yet, and that is intentional. The only file we write 
+manuscript inside it yet. The only file we write 
 by hand for now is `generate-env.R` (or similar), which uses the `rix()` 
 function from the {rix} package to produce a `default.nix` file: a 
 declarative specification of all software dependencies the project needs.
@@ -1425,19 +1425,119 @@ results_display <- performance_summary %>%
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
 
-## Additional Considerations for Advanced Workflows
+## Additional Considerations for Simulation Studies
 
-Thus far, we have presented Nix and {rix} as standalone solutions for
-computational reproducibility, contrasting initially them with tools like
-{renv}, Docker, and {targets}. However, these tools are not mutually exclusive,
-as in many cases, they can complement each other [@rodrigues_baumann_2025].
-Additionally, as highlighted in previous literature [@peikert_brandmaier_2021;
-@siepe_etall_2024; @piccolo_frampton_2016], fully reproducible research benefits
-not only from a stable computational environment but also from explicit workflow
-orchestration. We therefore briefly introduce {rixpress}, which extends
-Nix-based reproducibility to formalized, multi-language pipelines. These topics
-are not covered in depth; our goal is simply to clarify how these tools relate
-to one another and orient readers toward resources for more advanced use cases.
+In this section, we turn to considerations that matter especially for 
+simulation studies but fall outside this tutorial's scope, since they depend
+on the details of each study. The first concerns random draws and 
+reproducibility. The second concerns workflow orchestration and integration
+with tools researchers may already use. We do not cover these topics in depth.
+Our goal is to clarify how they relate to {rix} and to point readers toward
+resources for more advanced use cases.
+
+### Reproducible Randomness and Parallel Execution for Data Generation
+
+A simulation regenerates its data from a pseudo-random number generator, so its
+reproducibility depends on controlling that generator. The standard advice is to
+set the seed once and store it, so the same code reproduces the same sequence of
+draws [@morris_etall_2019]. Simulation studies are typically organized as a set
+of conditions, each run for many repetitions, so the unit one wants to reproduce
+is a single repetition within a given condition. Storing the generator's state at
+the start of each condition-repetition cell, rather than only the initial seed,
+additionally allows any single cell to be reproduced in isolation, which is
+convenient for debugging [@morris_etall_2019]. In R, the state lives in the
+variable `.Random.seed`, and such a procedure would look as follows
+(@lst-rng-state):
+
+```{r}
+#| lst-label: lst-rng-state
+#| lst-cap: "Storing and restoring the generator state to reproduce
+#| one condition-repetition cell"
+#| eval: false
+#| echo: true
+
+set.seed(123)                                 # fix the starting position once
+conditions <- expand.grid(n = c(50, 100), 
+                          gamma2 = c(0, 0.3)) # 4 conditions
+nsim    <- 1000                               # repetitions per condition
+states  <- matrix(list(), nrow(conditions), nsim)
+results <- matrix(NA_real_, nrow(conditions), nsim)
+
+for (cond in seq_len(nrow(conditions))) {     # for loop's for purposes of illustration
+  for (r in seq_len(nsim)) {
+    states[[cond, r]] <- .Random.seed         # state at the start of cell (cond, r)
+    x <- rnorm(conditions$n[cond])            # data generation advances the state
+    results[cond, r] <- mean(x)
+  }
+}
+
+# later, reproduce repetition 3 of condition 2 on its own
+.Random.seed <- states[[2, 3]]
+identical(mean(rnorm(conditions$n[2])), results[2, 3])  # TRUE
+
+```
+
+With a sufficient number of repetitions the particular seed does not affect 
+the conclusions. However, parallel processing complicates this 
+[@siepe_etall_2024; @morris_etall_2019]. In this case, a single seed may no 
+longer be sufficient, because each worker would advance its 
+own copy of the generator and could draw overlapping sequences. In practice,
+many researchers assign a distinct seed to each condition, for example
+`set.seed(123 + i)` for condition `i`, and let the repetitions within that
+condition draw sequentially from it. This keeps every condition reproducible and
+might not be a problem for most studies (given the properties of the default 
+algorithm, i.e., Mersenne-Twister), but it does not by itself *guarantee* 
+that the random sequences of different conditions never overlap. The recommended
+solution is to assign separate, non-overlapping random number streams
+[@morris_etall_2019; @siepe_etall_2024]. R offers several packages for this
+[@rcoreteam_parallel; @rstream; @doRNG], and we illustrate the approach with
+{doRNG}, which implements streams for {foreach} through the `%dorng%` operator
+(@lst-run-simulation-code). From a single master seed set before the
+loop, {doRNG} derives one independent stream per iteration in advance, before any
+work is dispatched. Each stream is bound to the iteration index rather than to a
+worker, so iteration seven always draws from stream seven no matter which core
+executes it. The number of cores (`ncore` in our script) changes only how
+iterations are scheduled in time, never which stream each one receives. A
+collaborator who reruns the study on four cores therefore reproduces data
+generated on twenty cores exactly. Moreover, because {doRNG} records the stream
+it assigned to each iteration in the `rng` attribute of the result, these states
+can be stored and later restored to reproduce the data of any single repetition
+within a condition in isolation, which the per-condition seed alone cannot do
+(@lst-rng-streams).
+
+```{r}
+#| lst-label: lst-rng-streams
+#| lst-cap: "Reproducible parallel streams with {doRNG}, storing the per-iteration
+#| state so any single repetition within a condition can be reproduced"
+#| eval: false
+#| echo: true
+
+library(doRNG)
+
+set.seed(123)                                # makes the streams below reproducible
+rng_states <- vector("list", nrow(designs))  # one slot per condition
+
+for (k in seq_len(nrow(designs))) {          # for loop's for purposes of illustration
+  res <- foreach(
+    i = seq_len(nsim),
+    .packages = c("marginaleffects", "rvinecopulib")
+  ) %dorng% {
+    run_one_rep(designs$n[k], designs$gamma2[k])
+  }
+  rng_states[[k]] <- attr(res, "rng")      # per-repetition stream states
+  all_results[[k]] <- do.call(rbind, res)
+}
+
+# later, reproduce repetition 10 of condition 3 on its own
+RNGkind("L'Ecuyer-CMRG")
+.Random.seed <- rng_states[[3]][[10]]
+rep10 <- run_one_rep(designs$n[3], designs$gamma2[3])
+
+```
+
+Because R's default generator can change across R versions, by pinning the R
+version {rix} keeps the generator and its algorithm fixed, so the same seed
+reproduces the same draws across machines and over time.
 
 ### Workflow Orchestration: {targets} and {rixpress}
 
