@@ -1,0 +1,45 @@
+# Glossary
+
+The following terms appear in the main text and may be unfamiliar to some 
+readers. We define them in the context of this tutorial rather than in full 
+generality.
+
+**Containerization.** Packaging an application together with its dependencies
+into a single isolated unit, a *container*, so that it runs the same way on
+different machines. Docker is the most common tool. Containerization bundles
+software, but it does not by itself guarantee that the bundled versions can be
+rebuilt identically in the future, which is the gap Nix addresses.
+
+**Functional programming language.** A type of programming language built around
+functions whose output depends only on their inputs, without hidden changes to
+shared state. Nix is such a language, and this property is what makes its builds
+reproducible. For this tutorial the only practical consequence is that Nix's
+language is unfamiliar to most R users, which is precisely why {rix} writes it
+for you. Thus, no knowledge of functional programming is required to follow 
+along.
+
+**Mutable upstream repositories.** The online sources from which software is
+downloaded (its *repositories*) can change over time, that is, they are
+*mutable*. When a build refers to "the latest version" from such a source,
+rebuilding it later may pull different software, so the result drifts. Pinning a
+fixed version, as Nix does, avoids this.
+
+**R interpreter.** The program that reads R code and executes it. Installing "R"
+means installing this interpreter. Two computers can run the same R *version*
+yet still differ in how the interpreter itself was built (for example, the
+compiler used or the system libraries it was linked against), and such
+differences can change numerical results. Pinning the environment fixes the
+interpreter, not just the version number.
+
+**System-level libraries.** Shared software components installed on the
+operating system, outside of R, that many R packages rely on to function, such
+as libraries for compression, linear algebra (e.g., BLAS and LAPACK), or the C++
+backends used by some packages. They are not installed by `install.packages()`
+and must already be present on the system. Differences in these libraries can
+make code fail or produce different results across machines.
+
+**Workflow orchestration.** Defining and automating the order in which the steps
+of an analysis run (for example, generate data, then fit models, then compute
+performance metrics, then make plots), tracking which steps depend on which, and
+re-running only the steps affected by a change. The {targets} package is a common
+example.

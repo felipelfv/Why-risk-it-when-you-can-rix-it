@@ -124,7 +124,9 @@ science initiatives have pushed work toward it [@kidwell_etall_2016;
 self-sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
 error-free code depends on a hierarchy of software components, including the
 programming language version, the packages used in the analysis, and the system
-libraries those packages rely on. When these differ from the originals, code may
+libraries those packages rely on. We define these and related computing terms,
+which may be unfamiliar to readers without a computer science background, in the
+Glossary (Appendix C). When these differ from the originals, code may
 fail, behave inconsistently across machines, or yield conflicting numerical
 results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
 @nosek_etall_2022]. These problems are particularly acute for simulation 
@@ -239,8 +241,8 @@ researchers aware of these demands face a fragmented landscape of solutions,
 each addressing only part of the problem.
 Package-level managers such as {renv} [@ushey_2024] and {groundhog}
 [@simonsohn_2020] stabilize R package versions but do not manage the R
-interpreter itself or the system-level libraries those packages depend on.
-Workflow orchestration tools such as {targets} [@landau_2021] and Make
+interpreter itself or the system-level libraries those packages depend on (see
+Glossary). Workflow orchestration tools such as {targets} [@landau_2021] and Make
 [@feldman_1979] support reproducibility in a different sense: they specify the
 structure of an analysis by formalizing the order in which steps should run and
 by tracking dependencies among intermediate results. These tools clarify *how*
@@ -1456,17 +1458,24 @@ variable `.Random.seed`, and such a procedure would look as follows
 #| eval: false
 #| echo: true
 
-set.seed(123)                                 # fix the starting position once
-conditions <- expand.grid(n = c(50, 100), 
-                          gamma2 = c(0, 0.3)) # 4 conditions
-nsim    <- 1000                               # repetitions per condition
+# fix the starting position once
+set.seed(123)
+
+# 4 conditions, 1000 repetitions per condition
+conditions <- expand.grid(n = c(50, 100), gamma2 = c(0, 0.3))
+nsim <- 1000
+
+# one slot per condition-repetition cell
 states  <- matrix(list(), nrow(conditions), nsim)
 results <- matrix(NA_real_, nrow(conditions), nsim)
 
-for (cond in seq_len(nrow(conditions))) {     # for loop's for purposes of illustration
+# nested loops shown for illustration
+for (cond in seq_len(nrow(conditions))) {
   for (r in seq_len(nsim)) {
-    states[[cond, r]] <- .Random.seed         # state at the start of cell (cond, r)
-    x <- rnorm(conditions$n[cond])            # data generation advances the state
+    # state at the start of cell (cond, r)
+    states[[cond, r]] <- .Random.seed
+    # data generation advances the state
+    x <- rnorm(conditions$n[cond])
     results[cond, r] <- mean(x)
   }
 }
@@ -1507,24 +1516,28 @@ within a condition in isolation, which the per-condition seed alone cannot do
 
 ```{r}
 #| lst-label: lst-rng-streams
-#| lst-cap: "Reproducible parallel streams with {doRNG}, storing the per-iteration
-#| state so any single repetition within a condition can be reproduced"
+#| lst-cap: "Reproducible parallel streams with {doRNG}"
 #| eval: false
 #| echo: true
 
 library(doRNG)
 
-set.seed(123)                                # makes the streams below reproducible
-rng_states <- vector("list", nrow(designs))  # one slot per condition
+# makes the streams below reproducible
+set.seed(123)
 
-for (k in seq_len(nrow(designs))) {          # for loop's for purposes of illustration
+# one slot per condition
+rng_states <- vector("list", nrow(designs))
+
+# nested loop over conditions
+for (k in seq_len(nrow(designs))) {
   res <- foreach(
     i = seq_len(nsim),
     .packages = c("marginaleffects", "rvinecopulib")
   ) %dorng% {
     run_one_rep(designs$n[k], designs$gamma2[k])
   }
-  rng_states[[k]] <- attr(res, "rng")      # per-repetition stream states
+  # per-repetition stream states for this condition
+  rng_states[[k]] <- attr(res, "rng")
   all_results[[k]] <- do.call(rbind, res)
 }
 
@@ -1659,3 +1672,5 @@ computational research in psychology and beyond.
 {{< include appendix_a.qmd >}}
 
 {{< include appendix_b.qmd >}}
+
+{{< include appendix_c.qmd >}}
