@@ -24,7 +24,7 @@ These packages are used in the `Simulation_Scripts/` folder:
 
 **cowplot** (used in `05_plots.R`): Combines plots with `plot_grid()` and extracts legends.
 
-**dplyr** (used in `article.qmd`): Data wrangling for results reported in Table 1.
+**dplyr** (used in `article.qmd`): Data wrangling for results reported in @tbl-results.
 
 ### Dynamic Document Generation
 

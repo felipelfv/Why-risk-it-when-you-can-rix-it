@@ -124,8 +124,8 @@ science initiatives have pushed work toward it [@kidwell_etall_2016;
 self-sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
 error-free code depends on a hierarchy of software components, including the
 programming language version, the packages used in the analysis, and the system
-libraries those packages rely on. We define these and related computing terms,
-which may be unfamiliar to readers without a computer science background, in
+libraries those packages rely on. We define these and related terms,
+which may be unfamiliar to some readers, in
 @tbl-glossary. When these differ from the originals, code may
 fail, behave inconsistently across machines, or yield conflicting numerical
 results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
@@ -299,6 +299,18 @@ and Julia, and to different development environments such as RStudio, VS Code,
 Emacs, or Positron. At the end of the article, we also briefly introduce 
 {rixpress} [@rixpress], a workflow orchestration tool that builds on 
 Nix to coordinate pipelines across R, Python, and Julia.
+
+| Term | Definition |
+|:-----------------------------|:--------------------------------------------------|
+| **Operating system** | The base software (e.g., Windows, macOS, Linux) that manages a computer's hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it. |
+| **R interpreter** | The `R` program that reads and runs your R code [@adler_2012]. Two machines can report the same R version yet have interpreters compiled differently or linked against different system-level libraries [see @rcoreteam_installation, Section A.3]. |
+| **System-level libraries** | Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends). These are not installed by `install.packages()`. |
+| **Workflow orchestration** | Automating the order of analysis steps and re-running only those affected by a change. |
+| **Containerization** | An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) [@wiebels_moreau_2021]. |
+| **Mutable upstream repositories** | The external sources a build pulls from (e.g., base images or package repositories) can change, or even disappear, over time without the build instructions changing, so the same instructions may later produce a different result or fail to build [@malka2026docker]. |
+| **Functional programming language** | A language whose functions depend only on their inputs. |
+
+: Glossary of computing terms used in the main text. {#tbl-glossary}
 
 # Setting the Stage: A Simulation Study and Its Reproducibility Risks
 
@@ -944,7 +956,7 @@ Rendering the manuscript with Quarto \normalsize
 
 This command executes all code chunks in the manuscript 
 (i.e., loads the R packages, runs the data generation and estimation), 
-calculates and incorporates results (e.g., Table 1) and figures (e.g., Figure 1), 
+calculates and incorporates results (e.g., @tbl-results) and figures (e.g., Figure 1),
 and generates a formatted PDF following APA style guidelines via the 
 `apaquarto` extension [@schneider_2024]. This extension is saved in the project 
 repo already. To add it to a project of your own, run the following inside 
@@ -1661,19 +1673,6 @@ achieving this goal, making fully reproducible simulation research feasible
 without requiring deep systems expertise. We hope this tutorial helps normalize
 environment-level reproducibility as a standard component of rigorous
 computational research in psychology and beyond.
-
-# Glossary
-
-| Term | Definition |
-|:-----------------------------|:--------------------------------------------------|
-| **R interpreter** | The program that runs R code. Two machines can share an R version yet differ in how the interpreter was built, which can change results. |
-| **System-level libraries** | Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends); not installed by `install.packages()`. |
-| **Workflow orchestration** | Automating the order of analysis steps and re-running only those affected by a change (e.g., the {targets} package). |
-| **Containerization** | Bundling software with its dependencies into an isolated, portable unit (e.g., Docker); does not by itself guarantee identical future rebuilds. |
-| **Mutable upstream repositories** | Online software sources that can change over time, so a later rebuild may pull different versions. |
-| **Functional programming language** | A language whose functions depend only on their inputs; Nix is one, but {rix} writes it for you. |
-
-: Glossary of computing terms used in the main text. {#tbl-glossary}
 
 {{< pagebreak >}}
 
