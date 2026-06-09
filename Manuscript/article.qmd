@@ -125,8 +125,8 @@ self-sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
 error-free code depends on a hierarchy of software components, including the
 programming language version, the packages used in the analysis, and the system
 libraries those packages rely on. We define these and related computing terms,
-which may be unfamiliar to readers without a computer science background, in the
-Glossary (Appendix C). When these differ from the originals, code may
+which may be unfamiliar to readers without a computer science background, in
+@tbl-glossary. When these differ from the originals, code may
 fail, behave inconsistently across machines, or yield conflicting numerical
 results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
 @nosek_etall_2022]. These problems are particularly acute for simulation 
@@ -242,7 +242,7 @@ each addressing only part of the problem.
 Package-level managers such as {renv} [@ushey_2024] and {groundhog}
 [@simonsohn_2020] stabilize R package versions but do not manage the R
 interpreter itself or the system-level libraries those packages depend on (see
-Glossary). Workflow orchestration tools such as {targets} [@landau_2021] and Make
+@tbl-glossary). Workflow orchestration tools such as {targets} [@landau_2021] and Make
 [@feldman_1979] support reproducibility in a different sense: they specify the
 structure of an analysis by formalizing the order in which steps should run and
 by tracking dependencies among intermediate results. These tools clarify *how*
@@ -1662,6 +1662,19 @@ without requiring deep systems expertise. We hope this tutorial helps normalize
 environment-level reproducibility as a standard component of rigorous
 computational research in psychology and beyond.
 
+# Glossary
+
+| Term | Definition |
+|:-----------------------------|:--------------------------------------------------|
+| **R interpreter** | The program that runs R code. Two machines can share an R version yet differ in how the interpreter was built, which can change results. |
+| **System-level libraries** | Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends); not installed by `install.packages()`. |
+| **Workflow orchestration** | Automating the order of analysis steps and re-running only those affected by a change (e.g., the {targets} package). |
+| **Containerization** | Bundling software with its dependencies into an isolated, portable unit (e.g., Docker); does not by itself guarantee identical future rebuilds. |
+| **Mutable upstream repositories** | Online software sources that can change over time, so a later rebuild may pull different versions. |
+| **Functional programming language** | A language whose functions depend only on their inputs; Nix is one, but {rix} writes it for you. |
+
+: Glossary of computing terms used in the main text. {#tbl-glossary}
+
 {{< pagebreak >}}
 
 # References
@@ -1672,5 +1685,3 @@ computational research in psychology and beyond.
 {{< include appendix_a.qmd >}}
 
 {{< include appendix_b.qmd >}}
-
-{{< include appendix_c.qmd >}}
