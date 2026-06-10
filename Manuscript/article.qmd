@@ -105,11 +105,11 @@ far less [@siepe_etall_2024], even though they are a primary tool for evaluating
 the statistical methods [@morris_etall_2019] and may suffer from selective 
 reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025]. 
 One aspect of credibility that remains especially underexamined for simulations 
-is reproducibility (i.e., the ability to reproduce the results of a study based 
+is reproducibility (i.e., the ability to exactly reproduce the results of a study based 
 on provided data, code, materials, and software/hardware) 
-[@hardwicke2020]. In a simulation study this involves 
+[@hardwicke2020]. In a simulation study, this involves 
 more than reanalyzing a fixed dataset, because the code also generates the data.
-Reproducing such a study therefore entails reproducing the data generation,
+Reproducing such a study therefore entails reproducing the data generation process,
 the analysis, and the summary of results. @montoya_anderson_2026 conceptually
 address each of these stages separately.
 
@@ -121,7 +121,7 @@ the high end. Reaching that executable end is often treated as *full*
 reproducibility [@peikert_brandmaier_2021; @peikert_etall_2021], and open
 science initiatives have pushed work toward it [@kidwell_etall_2016;
 @levenstein_lyle_2018; @nosek_etall_2015]. Yet code and data are never fully
-self-sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
+sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023]. Even
 error-free code depends on a hierarchy of software components, including the
 programming language version, the packages used in the analysis, and the system
 libraries those packages rely on. We define these and related terms,
@@ -134,7 +134,7 @@ studies, which typically rely on a large amount of interconnected code,
 packages versions, and the underlying system itself to generate their data and 
 produce the results of interest [@luijken_etall_2024; @siepe_etall_2024].
 
-To make this concrete, we use *computational environment* to refer to the
+To make this concrete, we use the *computational environment* to refer to the
 complete software context required for an analysis to run successfully: the
 programming language version, package versions, system-level libraries, and operating
 system (@fig-environment) [@rodrigues_2023; @rodrigues_baumann_2026_polyglot].
@@ -149,6 +149,10 @@ computational environment is rarely included. This gap is consequential, as
 simulation studies inform methodological recommendations, meaning that
 insufficient reproducibility may undermine confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
+
+::: {.callout-note}
+JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10251-x. 
+:::
 
 [^1]: We note that the definition of computational environment reproducibility
   in this context may be considered rather loose. For the interested reader, 
@@ -246,7 +250,7 @@ interpreter itself or the system-level libraries those packages depend on (see
 [@feldman_1979] support reproducibility in a different sense: they specify the
 structure of an analysis by formalizing the order in which steps should run and
 by tracking dependencies among intermediate results. These tools clarify *how*
-an analysis proceeds, but they assume that the software stack required to run
+an analysis proceeds, but they assume that the **software stack**[Is this in the library of defs?] required to run
 each step is already stable. Containerization tools such as Docker, including
 R-focused implementations like Rocker [@boettiger_2015;
 @boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling
@@ -258,7 +262,7 @@ their limitations, see @rodrigues_baumann_2026_polyglot. Researchers thus
 face a difficult choice between solutions that are accessible but incomplete 
 or approaches that are powerful but demand technical expertise.
 
-In this article, therefore, we focus specifically on computational environment
+In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
 depend. For that, we introduce Nix [@dolstra_etall_2004], a
 software ecosystem designed to make software installation deterministic, and {rix}
@@ -293,6 +297,12 @@ Nix to coordinate pipelines across R, Python, and Julia.
     here. For readers interested in the workflow side, we suggest 
     @peikert_etall_2021, @vanlissa_etall_2021, and @rodrigues_2023.
 
+
+::: {.callout-note}
+JG: Some more defs are needed?
+- What is a stack?
+- Literate programming?
+:::
 | Term | Definition |
 |:-----------------------------|:--------------------------------------------------|
 | **Operating system** | The base software (e.g., Windows, macOS, Linux) that manages a computer's hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it. |
@@ -305,6 +315,7 @@ Nix to coordinate pipelines across R, Python, and Julia.
 
 : Glossary of computing terms used in the main text. {#tbl-glossary}
 
+## This
 # Setting the Stage: A Simulation Study and Its Reproducibility Risks
 
 Imagine you have just been awarded a grant to conduct a large-scale simulation
@@ -370,13 +381,13 @@ Finally, analyses embedded in a literate programming workflow (documents that
 combine narrative text and executable code) add further dependencies. Rendering
 R Markdown (`.rmd`) or Quarto (`.qmd`) documents, for example, requires a
 document conversion tool (such as Pandoc) and a typesetting system (such as
-LaTeX), each with its own version and installation requirements. 
+LaTeX or Typst), each with its own version and installation requirements. 
 
 # Nix and {rix}: A Comprehensive Solution
 
 A potential solution is Nix [@dolstra_etall_2004], a software ecosystem built so
-that installing software gives the same result every time. Nix is at once a
-functional programming language, a build tool, and a package manager. This
+that installing software gives the same result every time. Nix is a
+functional programming language, a build tool, and a package manager wrapped in one. This
 article focuses on the latter. Most package managers (think of Apple’s
 or Android’s app stores) are imperative: they modify a system’s state as they
 install or update software. Nix instead builds each environment from an explicit
@@ -422,6 +433,10 @@ Nix code directly, as {rix} translates automatically. For more on {rix},
 including its integration with rstats-on-nix for dated, reproducible snapshots, 
 see @rodrigues_baumann_2025.
 
+::: {.callout-note}
+JG: Didnt the reviewer want us to spell out these things instead of refering to documentation?
+:::
+
 We also note that, although Nix is capable of replacing tools like Docker 
 for isolation or {renv} for package management, it does not require an 
 all-or-nothing transition. Researchers can adopt it gradually and use it 
@@ -437,7 +452,11 @@ We take the perspective of a researcher beginning a simulation study who
 wants it reproducible from the outset. Rather than writing the analysis first
 and reproducing it later, we set up the computational environment with {rix}
 first, then create and run the scripts and manuscript inside it. We then show
-how another researcher could reproduce it.
+how another researcher could reproduce it. 
+
+::: {.callout-note}
+Let's be more specific here? How about we say we are a researcher using a Linux or mac compouter and show the steps needed for that setup?
+:::
 
 ## Step 1: Installing Nix and {rix}
 
@@ -514,7 +533,11 @@ by hand for now is `generate-env.R` (or similar), which uses the `rix()`
 function from the {rix} package to produce a `default.nix` file: a 
 declarative specification of all software dependencies the project needs.
 
-We start with the smallest possible environment: R version and an IDE. 
+::: {.callout-note}
+JG: Images might work for these steps? Showing what the folder should look like at each step. Just a thought. 
+:::
+
+We start with the smallest possible environment: R version and an IDE (RStudio). 
 We add packages as the simulation takes form and extend the
 environment again for the manuscript later. This bare specification is shown in
 @lst-rix-env-base (the complete version, which covers the simulation and the
@@ -532,7 +555,7 @@ manuscript, is on the GitHub repository,
 library(rix)
 
 # choose the path to your project
-project_directory <- "." # here, the "Why-risk-it-when-you-can-rix-it" folder
+project_directory <- "." # here, the "Why-risk-it-when-you-can-rix-it" folder (root)
 
 rix(
   date = "2026-01-14", # recommendation: pin a date
@@ -750,6 +773,10 @@ rix(
 
 \normalsize
 
+::: {.callout-note}
+JG: why run nix-build and then show them the packages needed later on? Why not add from earlier step? I think this should be way earlier.
+:::
+
 ### Environment Specification
 
 #### Declaring R package dependencies
@@ -949,6 +976,10 @@ available, and we render the manuscript from the terminal (@lst-quarto-render):
 Rendering the manuscript with Quarto \normalsize
 :::
 
+::: {.callout-note}
+JG: The system level depend should be specified earlier on and re-ref here. I dont think we want to keep rebuilding this. Give the readers everything and just refrene the appropiate lines. Maybe highlight?
+:::
+
 This command executes all code chunks in the manuscript 
 (i.e., loads the R packages, runs the data generation and estimation), 
 calculates and incorporates results (e.g., @tbl-results) and figures (e.g., Figure 1),
@@ -969,7 +1000,7 @@ needs no separate installation (@lst-apaquarto-install):
 Adding the apaquarto extension \normalsize
 :::
 
-The final document (.docx, .pdf, or .html) is saved directly in the project
+The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project
 folder[^12]. Because Quarto is installed as a system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
