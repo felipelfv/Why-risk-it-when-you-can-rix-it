@@ -309,7 +309,6 @@ JG: Some more defs are needed
 - A terminal
 - Nix
 - @bruno some other ones?
-
 :::
 | Term | Definition |
 |:-----------------------------|:--------------------------------------------------|
@@ -551,6 +550,11 @@ environment again for the manuscript later. This bare specification is shown in
 @lst-rix-env-base (the complete version, which covers the simulation and the
 manuscript, is on the GitHub repository,
 <https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>, as `gen-env.R`):
+
+::: {.callout-note}
+JG: I think we should also include  a zenodo link maybe in abstract. I think it will be more perm? 
+
+:::
 
 \small
 
