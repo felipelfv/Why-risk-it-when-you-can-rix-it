@@ -151,7 +151,11 @@ insufficient reproducibility may undermine confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
 
 ::: {.callout-note}
-JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project), about 53.6% of the papers were able to be reproduced exactly. 
+JG:How many papers did Siepe look at? 
+:::
+
+::: {.callout-note}
+JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project) looiking at 600 papers from 2009-2018 about ~53%  of papers were able to be reproduced exactly. 
 :::
 
 [^1]: We note that the definition of computational environment reproducibility
@@ -303,7 +307,9 @@ JG: Some more defs are needed
 - What is a stack?
 - Literate programming?
 - A terminal
+- Nix
 - @bruno some other ones?
+
 :::
 | Term | Definition |
 |:-----------------------------|:--------------------------------------------------|
@@ -1007,6 +1013,10 @@ Rendering the manuscript with Quarto \normalsize
 
 ::: {.callout-note}
 JG: The system level depend should be specified earlier on and re-ref here. I dont think we want to keep rebuilding this. Give the readers everything and just refrene the appropiate lines. Maybe highlight?
+:::
+
+::: {.callout-note}
+JG: This is exact issue R2 mentioned. Maybe state these are all the packages we will use however it can be rebuilt if new packages or system dependencies are needed?
 :::
 
 This command executes all code chunks in the manuscript 
