@@ -2458,7 +2458,7 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 7850</p>
+<p><em>Word Count</em>: 7893</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -2476,7 +2476,20 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project), about 53.6% of the papers were able to be reproduced exactly.</p>
+<p>JG:How many papers did Siepe look at?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project) looiking at 600 papers from 2009-2018 about ~53% of papers were able to be reproduced exactly.</p>
 </div>
 </div>
 <p>These challenges may persist for several reasons. Arguably, one is that even researchers aware of these demands face a fragmented landscape of solutions, each addressing only part of the problem. Package-level managers such as {renv} <span class="citation" data-cites="ushey_2024">(<a href="#ref-ushey_2024" role="doc-biblioref">Ushey, 2024</a>)</span> and {groundhog} <span class="citation" data-cites="simonsohn_2020">(<a href="#ref-simonsohn_2020" role="doc-biblioref">Simonsohn, 2020</a>)</span> stabilize R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on (see <a href="#tbl-glossary" class="quarto-xref" aria-expanded="false">Table 1</a>). Workflow orchestration tools such as {targets} <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> and Make <span class="citation" data-cites="feldman_1979">(<a href="#ref-feldman_1979" role="doc-biblioref">Feldman, 1979</a>)</span> support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run and by tracking dependencies among intermediate results. These tools clarify <em>how</em> an analysis proceeds, but they assume that the <strong>software stack</strong>[Is this in the library of defs?] required to run each step is already stable. Containerization tools such as Docker, including R-focused implementations like Rocker <span class="citation" data-cites="boettiger_2015 boettiger_eddelbuettel_2017">(<a href="#ref-boettiger_2015" role="doc-biblioref">Boettiger, 2015</a>; <a href="#ref-boettiger_eddelbuettel_2017" role="doc-biblioref">Boettiger &amp; Eddelbuettel, 2017</a>)</span> offer a more comprehensive approach by bundling nearly the entire environment into a single executable image. Yet their use requires familiarity with Linux system administration, and even containerization may suffer from temporal drift when Dockerfiles rely on mutable upstream repositories <span class="citation" data-cites="malka2026docker">(<a href="#ref-malka2026docker" role="doc-biblioref">Malka et al., 2026</a>)</span>. For a detailed comparison of these tools and their limitations, see <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>. Researchers thus face a difficult choice between solutions that are accessible but incomplete or approaches that are powerful but demand technical expertise.</p>
@@ -2491,7 +2504,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>JG: Some more defs are needed - What is a stack? - Literate programming? - A terminal - <span class="citation" data-cites="bruno">(<a href="#ref-bruno" role="doc-biblioref"><strong>bruno?</strong></a>)</span> some other ones?</p>
+<p>JG: Some more defs are needed - What is a stack? - Literate programming? - A terminal - Nix - <span class="citation" data-cites="bruno">(<a href="#ref-bruno" role="doc-biblioref"><strong>bruno?</strong></a>)</span> some other ones?</p>
 </div>
 </div>
 <section id="this" class="level2">
@@ -2928,6 +2941,19 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>JG: The system level depend should be specified earlier on and re-ref here. I dont think we want to keep rebuilding this. Give the readers everything and just refrene the appropiate lines. Maybe highlight?</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>JG: This is exact issue R2 mentioned. Maybe state these are all the packages we will use however it can be rebuilt if new packages or system dependencies are needed?</p>
 </div>
 </div>
 <p>This command executes all code chunks in the manuscript (i.e., loads the R packages, runs the data generation and estimation), calculates and incorporates results (e.g., <a href="#tbl-results" class="quarto-xref" aria-expanded="false">Table 2</a>) and figures (e.g., Figure 1), and generates a formatted PDF following APA style guidelines via the <code>apaquarto</code> extension <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. This extension is saved in the project directory already. To add it to a project of your own, run the following inside the Nix shell, where Quarto is provided by the environment and therefore needs no separate installation (<a href="#lst-apaquarto-install" class="quarto-xref">Listing 18</a>):</p>
