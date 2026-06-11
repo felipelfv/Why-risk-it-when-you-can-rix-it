@@ -2458,14 +2458,14 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 7747</p>
+<p><em>Word Count</em>: 7850</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
 <h1 class="title unnumbered unlisted">Why Risk it, When You Can {rix} it: A Tutorial for Computational Reproducibility Focused on Simulation Studies</h1>
 <p>Psychological science is in the midst of a credibility revolution <span class="citation" data-cites="vazire2018">(<a href="#ref-vazire2018" role="doc-biblioref">Vazire, 2018</a>)</span>, yet much of that scrutiny has focused on empirical studies. Monte Carlo simulation studies (hereafter referred to as simulation studies) have received far less <span class="citation" data-cites="siepe_etall_2024">(<a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>, even though they are a primary tool for evaluating the statistical methods <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span> and may suffer from selective reporting <span class="citation" data-cites="pawel_etall_2024 bouma_etall_2026 pawel_etall_2025">(<a href="#ref-bouma_etall_2026" role="doc-biblioref">Bouma et al., 2026</a>; <a href="#ref-pawel_etall_2024" role="doc-biblioref">Pawel et al., 2024</a>, <a href="#ref-pawel_etall_2025" role="doc-biblioref">2025</a>)</span>. One aspect of credibility that remains especially underexamined for simulations is reproducibility (i.e., the ability to exactly reproduce the results of a study based on provided data, code, materials, and software/hardware) <span class="citation" data-cites="hardwicke2020">(<a href="#ref-hardwicke2020" role="doc-biblioref">Hardwicke et al., 2020</a>)</span>. In a simulation study, this involves more than reanalyzing a fixed dataset, because the code also generates the data. Reproducing such a study therefore entails reproducing the data generation process, the analysis, and the summary of results. <span class="citation" data-cites="montoya_anderson_2026">Montoya and Anderson (<a href="#ref-montoya_anderson_2026" role="doc-biblioref">2026</a>)</span> conceptually address each of these stages separately.</p>
 <p>Reproducibility in this sense is not all-or-nothing but occupies a continuum <span class="citation" data-cites="peng_2011">(<a href="#ref-peng_2011" role="doc-biblioref">Peng, 2011</a>)</span>, on which a study is positioned according to the extent of the materials that are publicly available. This ranges from publication alone at the low end to code and data that are linked and directly executable at the high end. Reaching that executable end is often treated as <em>full</em> reproducibility <span class="citation" data-cites="peikert_brandmaier_2021 peikert_etall_2021">(<a href="#ref-peikert_etall_2021" role="doc-biblioref">Peikert et al., 2021</a>; <a href="#ref-peikert_brandmaier_2021" role="doc-biblioref">Peikert &amp; Brandmaier, 2021</a>)</span>, and open science initiatives have pushed work toward it <span class="citation" data-cites="kidwell_etall_2016 levenstein_lyle_2018 nosek_etall_2015">(<a href="#ref-kidwell_etall_2016" role="doc-biblioref">Kidwell et al., 2016</a>; <a href="#ref-levenstein_lyle_2018" role="doc-biblioref">Levenstein &amp; Lyle, 2018</a>; <a href="#ref-nosek_etall_2015" role="doc-biblioref">Nosek et al., 2015</a>)</span>. Yet code and data are never fully sufficient <span class="citation" data-cites="epskamp_2019 wiebels_moreau_2021 ziemann_etall_2023">(<a href="#ref-epskamp_2019" role="doc-biblioref">Epskamp, 2019</a>; <a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>; <a href="#ref-ziemann_etall_2023" role="doc-biblioref">Ziemann et al., 2023</a>)</span>. Even error-free code depends on a hierarchy of software components, including the programming language version, the packages used in the analysis, and the system libraries those packages rely on. We define these and related terms, which may be unfamiliar to some readers, in <a href="#tbl-glossary" class="quarto-xref" aria-expanded="false">Table 1</a>. When these differ from the originals, code may fail, behave inconsistently across machines, or yield conflicting numerical results <span class="citation" data-cites="baker_etall_2024 hodges_etall_2023 glatard_etall_2015 nosek_etall_2022">(<a href="#ref-baker_etall_2024" role="doc-biblioref">Baker et al., 2024</a>; <a href="#ref-glatard_etall_2015" role="doc-biblioref">Glatard et al., 2015</a>; <a href="#ref-hodges_etall_2023" role="doc-biblioref">Hodges et al., 2023</a>; <a href="#ref-nosek_etall_2022" role="doc-biblioref">Nosek et al., 2022</a>)</span>. These problems are particularly acute for simulation studies, which typically rely on a large amount of interconnected code, packages versions, and the underlying system itself to generate their data and produce the results of interest <span class="citation" data-cites="luijken_etall_2024 siepe_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>.</p>
-<p>To make this concrete, we use the <em>computational environment</em> to refer to the complete software context required for an analysis to run successfully: the programming language version, package versions, system-level libraries, and operating system (<a href="#fig-environment" class="quarto-xref" aria-expanded="false">Figure 1</a>) <span class="citation" data-cites="rodrigues_2023 rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>; <a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. We define <em>computational environment reproducibility</em> as the ability to reconstruct these dependencies on top of whatever operating system a machine runs, at any future time, such that executing the same code yields the same numerical results<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Empirical assessments show that current practice falls short of this ideal. Indeed, <span class="citation" data-cites="siepe_etall_2024">Siepe et al. (<a href="#ref-siepe_etall_2024" role="doc-biblioref">2024</a>)</span> report that, among simulation studies published in psychology in 2021 and 2022, nearly two-thirds provide no accompanying code, and among those that do, documentation of the computational environment is rarely included. This gap is consequential, as simulation studies inform methodological recommendations, meaning that insufficient reproducibility may undermine confidence in those recommendations <span class="citation" data-cites="luijken_etall_2024 white_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-white_etall_2024" role="doc-biblioref">White et al., 2024</a>)</span>.</p>
+<p>To make this concrete, we use the <em>computational environment</em> to refer to the complete software context required for an analysis to run successfully. This entails, the programming language version, package versions, system-level libraries, and operating system (<a href="#fig-environment" class="quarto-xref" aria-expanded="false">Figure 1</a>) <span class="citation" data-cites="rodrigues_2023 rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_2023" role="doc-biblioref">Rodrigues, 2023</a>; <a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. We define <em>computational environment reproducibility</em> as the ability to reconstruct these dependencies on top of whatever operating system a machine runs, at any future time, such that executing the same code yields the same numerical results<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Empirical assessments show that current practice falls short of this ideal. Indeed, <span class="citation" data-cites="siepe_etall_2024">Siepe et al. (<a href="#ref-siepe_etall_2024" role="doc-biblioref">2024</a>)</span> report that, among simulation studies published in psychology in 2021 and 2022, nearly two-thirds provide no accompanying code, and among those that do, documentation of the computational environment is rarely included. This gap is consequential, as simulation studies inform methodological recommendations, meaning that insufficient reproducibility may undermine confidence in those recommendations <span class="citation" data-cites="luijken_etall_2024 white_etall_2024">(<a href="#ref-luijken_etall_2024" role="doc-biblioref">Luijken et al., 2024</a>; <a href="#ref-white_etall_2024" role="doc-biblioref">White et al., 2024</a>)</span>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2476,7 +2476,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10251-x.</p>
+<p>JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project), about 53.6% of the papers were able to be reproduced exactly.</p>
 </div>
 </div>
 <p>These challenges may persist for several reasons. Arguably, one is that even researchers aware of these demands face a fragmented landscape of solutions, each addressing only part of the problem. Package-level managers such as {renv} <span class="citation" data-cites="ushey_2024">(<a href="#ref-ushey_2024" role="doc-biblioref">Ushey, 2024</a>)</span> and {groundhog} <span class="citation" data-cites="simonsohn_2020">(<a href="#ref-simonsohn_2020" role="doc-biblioref">Simonsohn, 2020</a>)</span> stabilize R package versions but do not manage the R interpreter itself or the system-level libraries those packages depend on (see <a href="#tbl-glossary" class="quarto-xref" aria-expanded="false">Table 1</a>). Workflow orchestration tools such as {targets} <span class="citation" data-cites="landau_2021">(<a href="#ref-landau_2021" role="doc-biblioref">Landau, 2021</a>)</span> and Make <span class="citation" data-cites="feldman_1979">(<a href="#ref-feldman_1979" role="doc-biblioref">Feldman, 1979</a>)</span> support reproducibility in a different sense: they specify the structure of an analysis by formalizing the order in which steps should run and by tracking dependencies among intermediate results. These tools clarify <em>how</em> an analysis proceeds, but they assume that the <strong>software stack</strong>[Is this in the library of defs?] required to run each step is already stable. Containerization tools such as Docker, including R-focused implementations like Rocker <span class="citation" data-cites="boettiger_2015 boettiger_eddelbuettel_2017">(<a href="#ref-boettiger_2015" role="doc-biblioref">Boettiger, 2015</a>; <a href="#ref-boettiger_eddelbuettel_2017" role="doc-biblioref">Boettiger &amp; Eddelbuettel, 2017</a>)</span> offer a more comprehensive approach by bundling nearly the entire environment into a single executable image. Yet their use requires familiarity with Linux system administration, and even containerization may suffer from temporal drift when Dockerfiles rely on mutable upstream repositories <span class="citation" data-cites="malka2026docker">(<a href="#ref-malka2026docker" role="doc-biblioref">Malka et al., 2026</a>)</span>. For a detailed comparison of these tools and their limitations, see <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>. Researchers thus face a difficult choice between solutions that are accessible but incomplete or approaches that are powerful but demand technical expertise.</p>
@@ -2491,7 +2491,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>JG: Some more defs are needed? - What is a stack? - Literate programming?</p>
+<p>JG: Some more defs are needed - What is a stack? - Literate programming? - A terminal - <span class="citation" data-cites="bruno">(<a href="#ref-bruno" role="doc-biblioref"><strong>bruno?</strong></a>)</span> some other ones?</p>
 </div>
 </div>
 <section id="this" class="level2">
@@ -2748,7 +2748,37 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>JG: why run nix-build and then show them the packages needed later on? Why not add from earlier step? I think this should be way earlier.</p>
+<p>JG: why run nix-build and then show them the packages needed later on? Why not add from earlier step and highlight where in the code the arguments are important? I think this should be way earlier.</p>
+</div>
+</div>
+<div class="cell">
+<div id="lst-rix-env-manuscript" class="r cell-code listing quarto-float quarto-figure quarto-figure-left" data-code-line-numbers="5-14,16,17-27">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rix-env-manuscript-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing 10: Complete environment specification, adding the manuscript tools
+</figcaption>
+<div aria-describedby="lst-rix-env-manuscript-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">rix</span>(</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="at">date =</span> <span class="st">&quot;2026-01-14&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="st">&quot;rix&quot;</span>, <span class="st">&quot;quarto&quot;</span>, <span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;marginaleffects&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="st">&quot;simhelpers&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;doParallel&quot;</span>, <span class="st">&quot;doRNG&quot;</span>, <span class="st">&quot;cowplot&quot;</span>,</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;svglite&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>  ),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  <span class="at">system_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>),</span>
+<span id="cb10-9"><a href="#cb10-9"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;amsmath&quot;</span>, <span class="st">&quot;ninecolors&quot;</span>, <span class="st">&quot;apa7&quot;</span>, <span class="st">&quot;scalerel&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    <span class="st">&quot;threeparttable&quot;</span>, <span class="st">&quot;threeparttablex&quot;</span>, <span class="st">&quot;endfloat&quot;</span>, <span class="st">&quot;environ&quot;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    <span class="st">&quot;multirow&quot;</span>, <span class="st">&quot;tcolorbox&quot;</span>, <span class="st">&quot;pdfcol&quot;</span>, <span class="st">&quot;tikzfill&quot;</span>, <span class="st">&quot;fontawesome5&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="st">&quot;framed&quot;</span>, <span class="st">&quot;newtx&quot;</span>, <span class="st">&quot;fontaxes&quot;</span>, <span class="st">&quot;xstring&quot;</span>, <span class="st">&quot;wrapfig&quot;</span>, <span class="st">&quot;tabularray&quot;</span>,</span>
+<span id="cb10-13"><a href="#cb10-13"></a>    <span class="st">&quot;siunitx&quot;</span>, <span class="st">&quot;fvextra&quot;</span>, <span class="st">&quot;geometry&quot;</span>, <span class="st">&quot;setspace&quot;</span>, <span class="st">&quot;fancyvrb&quot;</span>,</span>
+<span id="cb10-14"><a href="#cb10-14"></a>    <span class="st">&quot;anyfontsize&quot;</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a>  ),</span>
+<span id="cb10-16"><a href="#cb10-16"></a>  <span class="at">ide =</span> <span class="st">&quot;rstudio&quot;</span>,</span>
+<span id="cb10-17"><a href="#cb10-17"></a>  <span class="at">project_path =</span> <span class="st">&quot;.&quot;</span>,</span>
+<span id="cb10-18"><a href="#cb10-18"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</figure>
 </div>
 </div>
 <section id="environment-specification-1" class="level3">
@@ -2760,14 +2790,14 @@ Note
 <div id="lst-git-pkgs-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-git-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 10: Example for the git_pkgs argument
+Listing 11: Example for the git_pkgs argument
 </figcaption>
 <div aria-describedby="lst-git-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>git_pkgs <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">package_name =</span> <span class="st">&quot;marginaleffects&quot;</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">repo_url =</span> <span class="st">&quot;https://github.com/vincentarelbundock/marginaleffects&quot;</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">commit =</span> <span class="st">&quot;304bff91dc31ae28b227a8485bfa4f7bdc86d625&quot;</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>git_pkgs <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">package_name =</span> <span class="st">&quot;marginaleffects&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">repo_url =</span> <span class="st">&quot;https://github.com/vincentarelbundock/marginaleffects&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">commit =</span> <span class="st">&quot;304bff91dc31ae28b227a8485bfa4f7bdc86d625&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2783,52 +2813,52 @@ Listing 10: Example for the git_pkgs argument
 <div id="lst-run-simulation-code" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-run-simulation-code-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 11: Code for running the simulation
+Listing 12: Code for running the simulation
 </figcaption>
 <div aria-describedby="lst-run-simulation-code-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>...</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Source helper functions</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;Simulation/01_data_generation.R&quot;</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Source helper functions</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;Simulation/01_data_generation.R&quot;</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
 </div>
-<p>The simulation needs nothing beyond the environment built above (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 9</a>). From within the Nix shell, the simulation runs (<a href="#lst-run-simulation" class="quarto-xref">Listing 12</a>) as follows:</p>
+<p>The simulation needs nothing beyond the environment built above (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 9</a>). From within the Nix shell, the simulation runs (<a href="#lst-run-simulation" class="quarto-xref">Listing 13</a>) as follows:</p>
 <div id="lst-run-simulation" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-run-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 12: Running the complete simulation workflow
+Listing 13: Running the complete simulation workflow
 </figcaption>
 <div aria-describedby="lst-run-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/03_run_simulation.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/03_run_simulation.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
-<p>In the same way, we run <code>04_performance_metrics.R</code> (<a href="#lst-run-performance" class="quarto-xref">Listing 13</a>), which loads the simulation results (in <code>sim_results.rds</code>) and calculates the performance metrics:</p>
+<p>In the same way, we run <code>04_performance_metrics.R</code> (<a href="#lst-run-performance" class="quarto-xref">Listing 14</a>), which loads the simulation results (in <code>sim_results.rds</code>) and calculates the performance metrics:</p>
 <div id="lst-run-performance" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-run-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 13: Running the performance metrics calculation
+Listing 14: Running the performance metrics calculation
 </figcaption>
 <div aria-describedby="lst-run-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/04_performance_metrics.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/04_performance_metrics.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
-<p>Similarly, <code>05_plots.R</code> (<a href="#lst-run-plots" class="quarto-xref">Listing 14</a>) uses those saved metrics (in <code>performance_summary.rds</code>) to create the plots:</p>
+<p>Similarly, <code>05_plots.R</code> (<a href="#lst-run-plots" class="quarto-xref">Listing 15</a>) uses those saved metrics (in <code>performance_summary.rds</code>) to create the plots:</p>
 <div id="lst-run-plots" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-run-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 14: Generating the visualization plots
+Listing 15: Generating the visualization plots
 </figcaption>
 <div aria-describedby="lst-run-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/05_plots.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">Rscript</span> Simulation/05_plots.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2837,33 +2867,33 @@ Listing 14: Generating the visualization plots
 </section>
 <section id="step-6-developing-and-making-the-complete-manuscript-reproducible11" class="level2">
 <h2 data-anchor-id="step-6-developing-and-making-the-complete-manuscript-reproducible11">Step 6: Developing and Making the Complete Manuscript Reproducible<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></h2>
-<p>To also build the manuscript, we extend the simulation environment (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 9</a>) with the literate-programming tools it lacks: Quarto, {knitr}, and a set of LaTeX packages. We add these to <code>generate-env.R</code> and rebuild, giving the complete specification (<a href="#lst-rix-env-manuscript" class="quarto-xref">Listing 15</a>):</p>
+<p>To also build the manuscript, we extend the simulation environment (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 9</a>) with the literate-programming tools it lacks: Quarto, {knitr}, and a set of LaTeX packages. We add these to <code>generate-env.R</code> and rebuild, giving the complete specification (<a href="#lst-rix-env-manuscript" class="quarto-xref">Listing 16</a>):</p>
 <div class="cell">
 <div id="lst-rix-env-manuscript" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rix-env-manuscript-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 15: Complete environment specification, adding the manuscript tools
+Listing 16: Complete environment specification, adding the manuscript tools
 </figcaption>
 <div aria-describedby="lst-rix-env-manuscript-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rix</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="st">&quot;2026-01-14&quot;</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;rix&quot;</span>, <span class="st">&quot;quarto&quot;</span>, <span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;marginaleffects&quot;</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;simhelpers&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;doParallel&quot;</span>, <span class="st">&quot;doRNG&quot;</span>, <span class="st">&quot;cowplot&quot;</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;svglite&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">system_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>),</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;amsmath&quot;</span>, <span class="st">&quot;ninecolors&quot;</span>, <span class="st">&quot;apa7&quot;</span>, <span class="st">&quot;scalerel&quot;</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;threeparttable&quot;</span>, <span class="st">&quot;threeparttablex&quot;</span>, <span class="st">&quot;endfloat&quot;</span>, <span class="st">&quot;environ&quot;</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;multirow&quot;</span>, <span class="st">&quot;tcolorbox&quot;</span>, <span class="st">&quot;pdfcol&quot;</span>, <span class="st">&quot;tikzfill&quot;</span>, <span class="st">&quot;fontawesome5&quot;</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;framed&quot;</span>, <span class="st">&quot;newtx&quot;</span>, <span class="st">&quot;fontaxes&quot;</span>, <span class="st">&quot;xstring&quot;</span>, <span class="st">&quot;wrapfig&quot;</span>, <span class="st">&quot;tabularray&quot;</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;siunitx&quot;</span>, <span class="st">&quot;fvextra&quot;</span>, <span class="st">&quot;geometry&quot;</span>, <span class="st">&quot;setspace&quot;</span>, <span class="st">&quot;fancyvrb&quot;</span>,</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;anyfontsize&quot;</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">&quot;rstudio&quot;</span>,</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">project_path =</span> <span class="st">&quot;.&quot;</span>,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rix</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> <span class="st">&quot;2026-01-14&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">r_pkgs =</span> <span class="fu">c</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;rix&quot;</span>, <span class="st">&quot;quarto&quot;</span>, <span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;marginaleffects&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;simhelpers&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;doParallel&quot;</span>, <span class="st">&quot;doRNG&quot;</span>, <span class="st">&quot;cowplot&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;svglite&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">system_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;quarto&quot;</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tex_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;amsmath&quot;</span>, <span class="st">&quot;ninecolors&quot;</span>, <span class="st">&quot;apa7&quot;</span>, <span class="st">&quot;scalerel&quot;</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;threeparttable&quot;</span>, <span class="st">&quot;threeparttablex&quot;</span>, <span class="st">&quot;endfloat&quot;</span>, <span class="st">&quot;environ&quot;</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;multirow&quot;</span>, <span class="st">&quot;tcolorbox&quot;</span>, <span class="st">&quot;pdfcol&quot;</span>, <span class="st">&quot;tikzfill&quot;</span>, <span class="st">&quot;fontawesome5&quot;</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;framed&quot;</span>, <span class="st">&quot;newtx&quot;</span>, <span class="st">&quot;fontaxes&quot;</span>, <span class="st">&quot;xstring&quot;</span>, <span class="st">&quot;wrapfig&quot;</span>, <span class="st">&quot;tabularray&quot;</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;siunitx&quot;</span>, <span class="st">&quot;fvextra&quot;</span>, <span class="st">&quot;geometry&quot;</span>, <span class="st">&quot;setspace&quot;</span>, <span class="st">&quot;fancyvrb&quot;</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;anyfontsize&quot;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ide =</span> <span class="st">&quot;rstudio&quot;</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">project_path =</span> <span class="st">&quot;.&quot;</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite =</span> <span class="cn">TRUE</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2875,15 +2905,15 @@ Listing 15: Complete environment specification, adding the manuscript tools
 <section id="specifying-latex-packages" class="level4">
 <h4 data-anchor-id="specifying-latex-packages">Specifying LaTeX packages.</h4>
 <p>The <code>tex_pkgs</code> parameter lists the LaTeX packages needed for PDF compilation. When any are listed, Nix includes a minimal TeXLive distribution (<code>scheme-small</code>) and adds the requested packages on top. Finding the exact set often takes some trial and error, since Quarto’s error messages during rendering indicate which packages are missing.</p>
-<p>After rebuilding with <code>nix-build</code> and re-entering with <code>nix-shell</code>, Quarto is available, and we render the manuscript from the terminal (<a href="#lst-quarto-render" class="quarto-xref">Listing 16</a>):</p>
+<p>After rebuilding with <code>nix-build</code> and re-entering with <code>nix-shell</code>, Quarto is available, and we render the manuscript from the terminal (<a href="#lst-quarto-render" class="quarto-xref">Listing 17</a>):</p>
 <div id="lst-quarto-render" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-quarto-render-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 16: Rendering the manuscript with Quarto
+Listing 17: Rendering the manuscript with Quarto
 </figcaption>
 <div aria-describedby="lst-quarto-render-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render Manuscript/article.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2900,28 +2930,28 @@ Note
 <p>JG: The system level depend should be specified earlier on and re-ref here. I dont think we want to keep rebuilding this. Give the readers everything and just refrene the appropiate lines. Maybe highlight?</p>
 </div>
 </div>
-<p>This command executes all code chunks in the manuscript (i.e., loads the R packages, runs the data generation and estimation), calculates and incorporates results (e.g., <a href="#tbl-results" class="quarto-xref" aria-expanded="false">Table 2</a>) and figures (e.g., Figure 1), and generates a formatted PDF following APA style guidelines via the <code>apaquarto</code> extension <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. This extension is saved in the project directory already. To add it to a project of your own, run the following inside the Nix shell, where Quarto is provided by the environment and therefore needs no separate installation (<a href="#lst-apaquarto-install" class="quarto-xref">Listing 17</a>):</p>
+<p>This command executes all code chunks in the manuscript (i.e., loads the R packages, runs the data generation and estimation), calculates and incorporates results (e.g., <a href="#tbl-results" class="quarto-xref" aria-expanded="false">Table 2</a>) and figures (e.g., Figure 1), and generates a formatted PDF following APA style guidelines via the <code>apaquarto</code> extension <span class="citation" data-cites="schneider_2024">(<a href="#ref-schneider_2024" role="doc-biblioref">Schneider, 2024</a>)</span>. This extension is saved in the project directory already. To add it to a project of your own, run the following inside the Nix shell, where Quarto is provided by the environment and therefore needs no separate installation (<a href="#lst-apaquarto-install" class="quarto-xref">Listing 18</a>):</p>
 <div id="lst-apaquarto-install" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-apaquarto-install-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 17: Adding the apaquarto extension
+Listing 18: Adding the apaquarto extension
 </figcaption>
 <div aria-describedby="lst-apaquarto-install-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> add wjschne/apaquarto</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> add wjschne/apaquarto</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
 <p>The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project folder<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
 <p>As highlighted before, we included the simulation code as code chunks for this manuscript. This was done simply for illustration purposes. In a real-world simulation study, users could simply run the simulation as in the previous sections and then load the needed results (produced within the Nix shell) in the manuscript. However, the same remark holds with respect to the formalized workflow.</p>
-<p>At this point, it is also worth noting that Nix shells do not fully isolate you from your existing system by default (as mentioned in footnote 7). For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing 18</a>):</p>
+<p>At this point, it is also worth noting that Nix shells do not fully isolate you from your existing system by default (as mentioned in footnote 7). For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically—when you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing 19</a>):</p>
 <div id="lst-nix-shell-pure" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 18: Activating the Nix environment with strict isolation
+Listing 19: Activating the Nix environment with strict isolation
 </figcaption>
 <div aria-describedby="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nix-shell</span> <span class="at">--pure</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -2932,76 +2962,76 @@ Listing 18: Activating the Nix environment with strict isolation
 <p>In this section, we turn to considerations that matter especially for simulation studies but fall outside this tutorial’s scope, since they depend on the details of each study. The first concerns random draws and reproducibility. The second concerns workflow orchestration and integration with tools researchers may already use. We do not cover these topics in depth. Our goal is to clarify how they relate to {rix} and to point readers toward resources for more advanced use cases.</p>
 <section id="reproducible-randomness-and-parallel-execution-for-data-generation" class="level3">
 <h3 data-anchor-id="reproducible-randomness-and-parallel-execution-for-data-generation">Reproducible Randomness and Parallel Execution for Data Generation</h3>
-<p>A simulation regenerates its data from a pseudo-random number generator, so its reproducibility depends on controlling that generator. The standard advice is to set the seed once and store it, so the same code reproduces the same sequence of draws <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. Simulation studies are typically organized as a set of conditions, each run for many repetitions, so the unit one wants to reproduce is a single repetition within a given condition. Storing the generator’s state at the start of each condition-repetition cell, rather than only the initial seed, additionally allows any single cell to be reproduced in isolation, which is convenient for debugging <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. In R, the state lives in the variable <code>.Random.seed</code>, and such a procedure would look as follows (<a href="#lst-rng-state" class="quarto-xref">Listing 19</a>):</p>
+<p>A simulation regenerates its data from a pseudo-random number generator, so its reproducibility depends on controlling that generator. The standard advice is to set the seed once and store it, so the same code reproduces the same sequence of draws <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. Simulation studies are typically organized as a set of conditions, each run for many repetitions, so the unit one wants to reproduce is a single repetition within a given condition. Storing the generator’s state at the start of each condition-repetition cell, rather than only the initial seed, additionally allows any single cell to be reproduced in isolation, which is convenient for debugging <span class="citation" data-cites="morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>)</span>. In R, the state lives in the variable <code>.Random.seed</code>, and such a procedure would look as follows (<a href="#lst-rng-state" class="quarto-xref">Listing 20</a>):</p>
 <div class="cell">
 <div id="lst-rng-state" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rng-state-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 19: Storing and restoring the generator state to reproduce one condition-repetition cell
+Listing 20: Storing and restoring the generator state to reproduce one condition-repetition cell
 </figcaption>
 <div aria-describedby="lst-rng-state-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the starting position once</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 4 conditions, 1000 repetitions per condition</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>conditions <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>), <span class="at">gamma2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>))</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># one slot per condition-repetition cell</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>states  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">list</span>(), <span class="fu">nrow</span>(conditions), nsim)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="fu">nrow</span>(conditions), nsim)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># nested loops shown for illustration</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (cond <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(conditions))) {</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (r <span class="cf">in</span> <span class="fu">seq_len</span>(nsim)) {</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state at the start of cell (cond, r)</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    states[[cond, r]] <span class="ot">&lt;-</span> .Random.seed</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># data generation advances the state</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[cond])</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    results[cond, r] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 3 of condition 2 on its own</span></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> states[[<span class="dv">2</span>, <span class="dv">3</span>]]</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">mean</span>(<span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[<span class="dv">2</span>])), results[<span class="dv">2</span>, <span class="dv">3</span>])  <span class="co"># TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the starting position once</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 4 conditions, 1000 repetitions per condition</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>conditions <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">100</span>), <span class="at">gamma2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># one slot per condition-repetition cell</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>states  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">list</span>(), <span class="fu">nrow</span>(conditions), nsim)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="fu">nrow</span>(conditions), nsim)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># nested loops shown for illustration</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (cond <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(conditions))) {</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (r <span class="cf">in</span> <span class="fu">seq_len</span>(nsim)) {</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state at the start of cell (cond, r)</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    states[[cond, r]] <span class="ot">&lt;-</span> .Random.seed</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># data generation advances the state</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[cond])</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    results[cond, r] <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 3 of condition 2 on its own</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> states[[<span class="dv">2</span>, <span class="dv">3</span>]]</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">mean</span>(<span class="fu">rnorm</span>(conditions<span class="sc">$</span>n[<span class="dv">2</span>])), results[<span class="dv">2</span>, <span class="dv">3</span>])  <span class="co"># TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
 </div>
-<p>With a sufficient number of repetitions the particular seed does not affect the conclusions. However, parallel processing complicates this <span class="citation" data-cites="siepe_etall_2024 morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. In this case, a single seed may no longer be sufficient, because each worker would advance its own copy of the generator and could draw overlapping sequences. In practice, many researchers assign a distinct seed to each condition, for example <code>set.seed(123 + i)</code> for condition <code>i</code>, and let the repetitions within that condition draw sequentially from it. This keeps every condition reproducible and might not be a problem for most studies (given the properties of the default algorithm, i.e., Mersenne-Twister), but it does not by itself <em>guarantee</em> that the random sequences of different conditions never overlap. The recommended solution is to assign separate, non-overlapping random number streams <span class="citation" data-cites="morris_etall_2019 siepe_etall_2024">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. R offers several packages for this <span class="citation" data-cites="rcoreteam_parallel rstream doRNG">(<a href="#ref-doRNG" role="doc-biblioref">Gaujoux, 2025</a>; <a href="#ref-rstream" role="doc-biblioref">Leydold, 2022</a>; <a href="#ref-rcoreteam_parallel" role="doc-biblioref">R Core Team, 2023</a>)</span>, and we illustrate the approach with {doRNG}, which implements streams for {foreach} through the <code>%dorng%</code> operator (<a href="#lst-run-simulation-code" class="quarto-xref">Listing 11</a>). From a single master seed set before the loop, {doRNG} derives one independent stream per iteration in advance, before any work is dispatched. Each stream is bound to the iteration index rather than to a worker, so iteration seven always draws from stream seven no matter which core executes it. The number of cores (<code>ncore</code> in our script) changes only how iterations are scheduled in time, never which stream each one receives. A collaborator who reruns the study on four cores therefore reproduces data generated on twenty cores exactly. Moreover, because {doRNG} records the stream it assigned to each iteration in the <code>rng</code> attribute of the result, these states can be stored and later restored to reproduce the data of any single repetition within a condition in isolation, which the per-condition seed alone cannot do (<a href="#lst-rng-streams" class="quarto-xref">Listing 20</a>).</p>
+<p>With a sufficient number of repetitions the particular seed does not affect the conclusions. However, parallel processing complicates this <span class="citation" data-cites="siepe_etall_2024 morris_etall_2019">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. In this case, a single seed may no longer be sufficient, because each worker would advance its own copy of the generator and could draw overlapping sequences. In practice, many researchers assign a distinct seed to each condition, for example <code>set.seed(123 + i)</code> for condition <code>i</code>, and let the repetitions within that condition draw sequentially from it. This keeps every condition reproducible and might not be a problem for most studies (given the properties of the default algorithm, i.e., Mersenne-Twister), but it does not by itself <em>guarantee</em> that the random sequences of different conditions never overlap. The recommended solution is to assign separate, non-overlapping random number streams <span class="citation" data-cites="morris_etall_2019 siepe_etall_2024">(<a href="#ref-morris_etall_2019" role="doc-biblioref">Morris et al., 2019</a>; <a href="#ref-siepe_etall_2024" role="doc-biblioref">Siepe et al., 2024</a>)</span>. R offers several packages for this <span class="citation" data-cites="rcoreteam_parallel rstream doRNG">(<a href="#ref-doRNG" role="doc-biblioref">Gaujoux, 2025</a>; <a href="#ref-rstream" role="doc-biblioref">Leydold, 2022</a>; <a href="#ref-rcoreteam_parallel" role="doc-biblioref">R Core Team, 2023</a>)</span>, and we illustrate the approach with {doRNG}, which implements streams for {foreach} through the <code>%dorng%</code> operator (<a href="#lst-run-simulation-code" class="quarto-xref">Listing 12</a>). From a single master seed set before the loop, {doRNG} derives one independent stream per iteration in advance, before any work is dispatched. Each stream is bound to the iteration index rather than to a worker, so iteration seven always draws from stream seven no matter which core executes it. The number of cores (<code>ncore</code> in our script) changes only how iterations are scheduled in time, never which stream each one receives. A collaborator who reruns the study on four cores therefore reproduces data generated on twenty cores exactly. Moreover, because {doRNG} records the stream it assigned to each iteration in the <code>rng</code> attribute of the result, these states can be stored and later restored to reproduce the data of any single repetition within a condition in isolation, which the per-condition seed alone cannot do (<a href="#lst-rng-streams" class="quarto-xref">Listing 21</a>).</p>
 <div class="cell">
 <div id="lst-rng-streams" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-rng-streams-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 20: Reproducible parallel streams with {doRNG}
+Listing 21: Reproducible parallel streams with {doRNG}
 </figcaption>
 <div aria-describedby="lst-rng-streams-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doRNG)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># makes the streams below reproducible</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># one slot per condition</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>rng_states <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="fu">nrow</span>(designs))</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># nested loop over conditions</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(designs))) {</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">foreach</span>(</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">seq_len</span>(nsim),</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.packages =</span> <span class="fu">c</span>(<span class="st">&quot;marginaleffects&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span>)</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%dorng%</span> {</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[k], designs<span class="sc">$</span>gamma2[k])</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># per-repetition stream states for this condition</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  rng_states[[k]] <span class="ot">&lt;-</span> <span class="fu">attr</span>(res, <span class="st">&quot;rng&quot;</span>)</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  all_results[[k]] <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res)</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 10 of condition 3 on its own</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="fu">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> rng_states[[<span class="dv">3</span>]][[<span class="dv">10</span>]]</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>rep10 <span class="ot">&lt;-</span> <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[<span class="dv">3</span>], designs<span class="sc">$</span>gamma2[<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(doRNG)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># makes the streams below reproducible</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># one slot per condition</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>rng_states <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="fu">nrow</span>(designs))</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># nested loop over conditions</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(designs))) {</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">foreach</span>(</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">seq_len</span>(nsim),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.packages =</span> <span class="fu">c</span>(<span class="st">&quot;marginaleffects&quot;</span>, <span class="st">&quot;rvinecopulib&quot;</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%dorng%</span> {</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[k], designs<span class="sc">$</span>gamma2[k])</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># per-repetition stream states for this condition</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  rng_states[[k]] <span class="ot">&lt;-</span> <span class="fu">attr</span>(res, <span class="st">&quot;rng&quot;</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  all_results[[k]] <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, res)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co"># later, reproduce repetition 10 of condition 3 on its own</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="fu">RNGkind</span>(<span class="st">&quot;L&#39;Ecuyer-CMRG&quot;</span>)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>.Random.seed <span class="ot">&lt;-</span> rng_states[[<span class="dv">3</span>]][[<span class="dv">10</span>]]</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>rep10 <span class="ot">&lt;-</span> <span class="fu">run_one_rep</span>(designs<span class="sc">$</span>n[<span class="dv">3</span>], designs<span class="sc">$</span>gamma2[<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
@@ -3022,15 +3052,15 @@ Listing 20: Reproducible parallel streams with {doRNG}
 </section>
 <section id="multi-language-environment-support" class="level3">
 <h3 data-anchor-id="multi-language-environment-support">Multi-Language Environment Support</h3>
-<p>While this tutorial focuses on R, researchers working across multiple programming languages can include Python or Julia in their environments. The <code>py_conf</code> parameter accepts a list specifying a Python version and required packages (<a href="#lst-python-pkgs-example" class="quarto-xref">Listing 21</a>). Similarly, <code>jl_conf</code> enables Julia package installation. This capability is particularly useful, for example, for projects requiring statistical computing in R alongside machine learning pipelines in Python or numerical optimization in Julia <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-r-packages.html" class="uri">https://docs.ropensci.org/rix/articles/installing-r-packages.html</a>).</p>
+<p>While this tutorial focuses on R, researchers working across multiple programming languages can include Python or Julia in their environments. The <code>py_conf</code> parameter accepts a list specifying a Python version and required packages (<a href="#lst-python-pkgs-example" class="quarto-xref">Listing 22</a>). Similarly, <code>jl_conf</code> enables Julia package installation. This capability is particularly useful, for example, for projects requiring statistical computing in R alongside machine learning pipelines in Python or numerical optimization in Julia <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-r-packages.html" class="uri">https://docs.ropensci.org/rix/articles/installing-r-packages.html</a>).</p>
 <div class="cell">
 <div id="lst-python-pkgs-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-python-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Listing 21: Including Python packages
+Listing 22: Including Python packages
 </figcaption>
 <div aria-describedby="lst-python-pkgs-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">&quot;3.12&quot;</span>, <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;polars&quot;</span>, <span class="st">&quot;pandas&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>py_conf <span class="ot">=</span> <span class="fu">list</span>(<span class="at">py_version =</span> <span class="st">&quot;3.12&quot;</span>, <span class="at">py_pkgs =</span> <span class="fu">c</span>(<span class="st">&quot;polars&quot;</span>, <span class="st">&quot;pandas&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </figure>
 </div>
