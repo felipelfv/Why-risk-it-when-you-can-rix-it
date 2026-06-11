@@ -135,7 +135,7 @@ packages versions, and the underlying system itself to generate their data and
 produce the results of interest [@luijken_etall_2024; @siepe_etall_2024].
 
 To make this concrete, we use the *computational environment* to refer to the
-complete software context required for an analysis to run successfully: the
+complete software context required for an analysis to run successfully. This entails, the
 programming language version, package versions, system-level libraries, and operating
 system (@fig-environment) [@rodrigues_2023; @rodrigues_baumann_2026_polyglot].
 We define *computational environment reproducibility* as the ability to
@@ -151,7 +151,7 @@ insufficient reproducibility may undermine confidence in those recommendations
 [@luijken_etall_2024; @white_etall_2024].
 
 ::: {.callout-note}
-JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10251-x. 
+JG: I wonder: Do we include the 2026 paper on reproducibility? https://www.nature.com/articles/s41586-026-10203-5. In a larger study (SCORE project), about 53.6% of the papers were able to be reproduced exactly. 
 :::
 
 [^1]: We note that the definition of computational environment reproducibility
@@ -299,9 +299,11 @@ Nix to coordinate pipelines across R, Python, and Julia.
 
 
 ::: {.callout-note}
-JG: Some more defs are needed?
+JG: Some more defs are needed
 - What is a stack?
 - Literate programming?
+- A terminal
+- @bruno some other ones?
 :::
 | Term | Definition |
 |:-----------------------------|:--------------------------------------------------|
@@ -455,7 +457,7 @@ first, then create and run the scripts and manuscript inside it. We then show
 how another researcher could reproduce it. 
 
 ::: {.callout-note}
-Let's be more specific here? How about we say we are a researcher using a Linux or mac compouter and show the steps needed for that setup?
+Let's be more specific here? How about we say we are a researcher using a Linux or mac compouter and show the steps needed for that setup? 
 :::
 
 ## Step 1: Installing Nix and {rix}
@@ -774,9 +776,36 @@ rix(
 \normalsize
 
 ::: {.callout-note}
-JG: why run nix-build and then show them the packages needed later on? Why not add from earlier step? I think this should be way earlier.
+JG: why run nix-build and then show them the packages needed later on? Why not add from earlier step and highlight where in the code the arguments are important? I think this should be way earlier.
 :::
 
+```{r}
+#| lst-label: lst-rix-env-manuscript
+#| lst-cap: "Complete environment specification, adding the manuscript tools"
+#| eval: false
+#| echo: true
+#| code-line-numbers: "5-14,16,17-27"
+
+rix(
+  date = "2026-01-14",
+  r_pkgs = c(
+    "rix", "quarto", "knitr", "marginaleffects",
+    "simhelpers", "ggplot2", "doParallel", "doRNG", "cowplot",
+    "dplyr", "svglite", "rvinecopulib"
+  ),
+  system_pkgs = c("quarto"),
+  tex_pkgs = c("amsmath", "ninecolors", "apa7", "scalerel",
+    "threeparttable", "threeparttablex", "endfloat", "environ",
+    "multirow", "tcolorbox", "pdfcol", "tikzfill", "fontawesome5",
+    "framed", "newtx", "fontaxes", "xstring", "wrapfig", "tabularray",
+    "siunitx", "fvextra", "geometry", "setspace", "fancyvrb",
+    "anyfontsize"
+  ),
+  ide = "rstudio",
+  project_path = ".",
+  overwrite = TRUE
+)
+```
 ### Environment Specification
 
 #### Declaring R package dependencies
