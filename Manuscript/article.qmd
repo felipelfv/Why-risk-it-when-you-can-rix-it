@@ -110,9 +110,9 @@ is reproducibility (i.e., the ability to exactly reproduce the results of a
 study based on provided data, code, materials, and software/hardware) 
 [@hardwicke2020]. In a simulation study, this involves
 more than reanalyzing a fixed dataset, because the code also generates the data.
-Reproducing such a study therefore entails reproducing the data generation process,
-the analysis, and the summary of results. @montoya_anderson_2026 conceptually
-address each of these stages separately.
+Reproducing such a study therefore entails reproducing the data generation 
+process, the analysis, and the summary of results. @montoya_anderson_2026 
+conceptually address each of these stages separately.
 
 Reproducibility in this sense is not all-or-nothing but occupies a continuum
 [@peng_2011], on which a study is positioned according to the extent of the
@@ -124,11 +124,10 @@ science initiatives have pushed work toward it [@kidwell_etall_2016;
 @levenstein_lyle_2018; @nosek_etall_2015]. Yet code and data are never fully
 sufficient 
 [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023; @brodeur_etall_2026]. 
-Even error-free code depends on a hierarchy of software components, including the
-programming language version, the packages used in the analysis, and the 
+Even error-free code depends on a hierarchy of software components, including 
+the programming language version, the packages used in the analysis, and the 
 system-level libraries those packages rely on. We define these and related terms 
-used before the tutorial section in @tbl-glossary. When these differ from 
-the originals, code may
+used in @tbl-glossary. When these differ from the originals, code may
 fail, behave inconsistently across machines, or yield conflicting numerical
 results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
 @nosek_etall_2022]. These problems are particularly acute for simulation 
@@ -137,20 +136,21 @@ packages versions, and the underlying system itself to generate their data and
 produce the results of interest [@luijken_etall_2024; @siepe_etall_2024].
 
 To make this concrete, we use the *computational environment* to refer to the
-complete software context required for an analysis to run successfully. This entails the
-programming language version, package versions, system-level libraries, and operating
-system (@fig-environment) [@rodrigues_2023; @rodrigues_baumann_2026_polyglot].
+complete software context required for an analysis to run successfully. This
+entails the programming language version, package versions, system-level 
+libraries, and operating system (@fig-environment) 
+[@rodrigues_2023; @rodrigues_baumann_2026_polyglot].
 We define *computational environment reproducibility* as the ability to
 reconstruct these dependencies on top of whatever operating system a machine
 runs, at any future time, such that executing the same code yields the same
-numerical results[^1]. Empirical assessments show that current practice falls short of 
-this ideal. Indeed, @siepe_etall_2024 report that, among the 100 simulation studies they
-identified in psychology journals in 2021 and 2022, nearly two-thirds provide
-no accompanying code, and among those that do, documentation of the
-computational environment is rarely included. This gap is consequential, as
-simulation studies inform methodological recommendations, meaning that
-insufficient reproducibility may undermine confidence in those recommendations
-[@luijken_etall_2024; @white_etall_2024].
+numerical results[^1]. Empirical assessments show that current practice falls 
+short of this ideal. Indeed, @siepe_etall_2024 report that, among the 100 
+simulation studies they identified in psychology journals in 2021 and 2022, 
+nearly two-thirds provide no accompanying code, and among those that do, 
+documentation of the computational environment is rarely included. This gap is 
+consequential, as simulation studies inform methodological recommendations, 
+meaning that insufficient reproducibility may undermine confidence in those 
+recommendations [@luijken_etall_2024; @white_etall_2024].
 
 [^1]: We note that the definition of computational environment reproducibility
   in this context may be considered rather loose. For the interested reader, 
@@ -252,28 +252,28 @@ an analysis proceeds, but they assume that the software stack required to run
 each step is already stable. Containerization tools such as Docker, including
 R-focused implementations like Rocker [@boettiger_2015;
 @boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling
-nearly the entire environment into a single executable image. Yet their use requires 
-familiarity with Linux system administration, and even containerization may 
-suffer from temporal drift when Dockerfiles rely on mutable upstream 
-repositories [@malka2026docker]. For a detailed comparison of these tools and 
-their limitations, see @rodrigues_baumann_2026_polyglot. Researchers thus 
-face a difficult choice between solutions that are accessible but incomplete 
-or approaches that are powerful but demand technical expertise.
+nearly the entire environment into a single executable image. Yet their use 
+requires familiarity with Linux system administration, and even 
+containerization may suffer from temporal drift when Dockerfiles rely on 
+mutable upstream repositories [@malka2026docker]. For a detailed comparison of 
+these tools and their limitations, see @rodrigues_baumann_2026_polyglot. 
+Researchers thus face a difficult choice between solutions that are accessible 
+but incomplete or approaches that are powerful but demand technical expertise.
 
 In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
 depend. For that, we introduce Nix [@dolstra_etall_2004], a
-software ecosystem designed to make software installation deterministic, and {rix}
-[@rodrigues_baumann_2025], an R interface that allows researchers to use Nix
-without needing deep knowledge of its underlying language or infrastructure. Our
-main objective with the tutorial is not to introduce a specific workflow
-orchestration system or to prescribe a particular analytic structure.[^3] Instead,
-we aim to show what Nix and {rix} are and how they can establish a stable,
-cross-platform environment within which any simulation study—whether organized
-in simple, documented script sequences (e.g., .R files that `source()` others),
-through more formal orchestration tools (e.g., {targets}) or embedded as code
-chunks in `.Rmd` or `.qmd` files—can be executed reliably. We illustrate these ideas 
-through a reproducible simulation study conducted in
+software ecosystem designed to make software installation deterministic, and 
+{rix} [@rodrigues_baumann_2025], an R interface that allows researchers to use 
+Nix without needing deep knowledge of its underlying language or infrastructure. 
+Our main objective with the tutorial is not to introduce a specific workflow
+orchestration system or to prescribe a particular analytic structure[^3]. 
+Instead, we aim to show what Nix and {rix} are and how they can establish a 
+stable, cross-platform environment within which any simulation study—whether 
+organized in simple, documented script sequences (e.g., .R files that 
+`source()` others), through more formal orchestration tools (e.g., {targets}) or 
+embedded as code chunks in `.Rmd` or `.qmd` files—can be executed reliably. We 
+illustrate these ideas through a reproducible simulation study conducted in
 R, culminating in this automated APA-formatted manuscript generated with
 `apaquarto` [@schneider_2024]. Although the example centers on R because of its
 prominence, the principles underlying environment
@@ -351,8 +351,8 @@ the {rvinecopulib} package interfaces with a C++ backend [@rvinecopulib].
 
 The R language version introduces another layer of dependency. Code written for
 a recent version of R may rely on syntax or functionality that is unavailable in
-earlier versions (e.g., the native pipe `|>` introduced in R 4.1). More subtly, changes
-to R’s random number generation across versions mean that identical code
+earlier versions (e.g., the native pipe `|>` introduced in R 4.1). More subtly, 
+changes to R’s random number generation across versions mean that identical code
 executed with the same seed can nevertheless produce different random sequences
 [@ottoboni_stark_2018]. This is especially consequential for simulation studies, 
 because the random draws are not incidental to the analysis but constitute the 
@@ -360,15 +360,14 @@ data itself. Therefore, the random number generator is part of the
 computational environment: reproducing the data requires not only the same seed
 but also the same R version.
 Moreover, generating data and reproducing every statistical estimate *exactly* 
-can depend on lower-level
-components still, such as the system-level libraries R uses for matrix computations
-(e.g., BLAS/LAPACK). With respect to the latter, we do not claim that this 
-exact level of identity must be met. How much reproducibility is required is 
-ultimately for the scientific community to decide (e.g., through journals and 
-disciplinary norms), and reproducing the broader pattern of results is arguably 
-enough. Regardless, the solution we propose increases the chances of reaching 
-such a level of reproducibility, consistent with empirical findings 
-[@malka2026docker].
+can depend on lower-level components still, such as the system-level libraries 
+R uses for matrix computations (e.g., BLAS/LAPACK). With respect to the latter, 
+we do not claim that this exact level of identity must be met. How much 
+reproducibility is required is ultimately for the scientific community to decide 
+(e.g., through journals and disciplinary norms), and reproducing the broader 
+pattern of results is arguably enough. Regardless, the solution we propose 
+increases the chances of reaching such a level of reproducibility, consistent 
+with empirical findings [@malka2026docker].
 
 Finally, analyses embedded in a literate programming workflow add further 
 dependencies. Rendering
@@ -386,8 +385,8 @@ or Android’s app stores) are imperative: they modify a system’s state as the
 install or update software. Nix instead builds each environment from an explicit
 description and never alters it
 afterward, so the same description produces the same self-contained environment
-on other machines. Researchers state exactly which versions of their language and
-packages they need, and Nix works out the underlying system-level libraries
+on other machines. Researchers state exactly which versions of their language 
+and packages they need, and Nix works out the underlying system-level libraries
 automatically.
 
 ## Core Principles
@@ -407,12 +406,14 @@ comprising more than 120,000 packages, including nearly all of CRAN and
 Bioconductor. By pinning a specific commit or date, researchers freeze the
 entire software stack (i.e., R itself, R packages, and all system-level 
 libraries). This eliminates the system-dependency problems that tools like 
-{renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of historical nixpkgs
-snapshots report that old environments can still be rebuilt years later, and
-largely reproduce their original results [@rodrigues_baumann_2026_polyglot; @malka2026docker].
-Moreover, because prebuilt binaries can be downloaded from a shared binary cache instead of
-compiled from scratch, these environments are often ready in seconds, which keeps Nix
-practical for everyday interactive work [@rodrigues_baumann_2025].
+{renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of 
+historical nixpkgs snapshots report that old environments can still be rebuilt 
+years later, and largely reproduce their original results 
+[@rodrigues_baumann_2026_polyglot; @malka2026docker].
+Moreover, because prebuilt binaries can be downloaded from a shared binary 
+cache instead of compiled from scratch, these environments are often ready in 
+seconds, which keeps Nix practical for everyday interactive work 
+[@rodrigues_baumann_2025].
 
 ## The {rix} Package: R Interface to Nix
 
@@ -426,22 +427,24 @@ Python or Julia components when required. Users never need to read or write
 Nix code directly, as {rix} translates automatically. For more on {rix},
 including its integration with rstats-on-nix (a curated fork of the Nix package
 collection whose dated snapshots let users request the exact R and package
-versions available on a chosen day), see @rodrigues_baumann_2025 and @rodrigues_baumann_2026_polyglot.
+versions available on a chosen day), see @rodrigues_baumann_2025 and 
+@rodrigues_baumann_2026_polyglot.
 
 # A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
 We take the perspective of a researcher (e.g., on macOS) beginning a simulation 
-study who wants it reproducible from the outset. Rather than writing the analysis 
-first and reproducing it later, we set up the computational environment with {rix}
-first, then create and run the scripts and manuscript inside it. We then show
-how another researcher could reproduce it.
+study who wants it reproducible from the outset. Rather than writing the 
+analysis first and reproducing it later, we set up the computational environment 
+with {rix} first, then create and run the scripts and manuscript inside it. We 
+then show how another researcher could reproduce it.
 
 ## Step 1: Installing Nix and {rix}
 
 Before proceeding, both Nix and the {rix} R package need to be installed. The
 quick start below covers the common case, but the complete, up-to-date 
 instructions for each operating system are maintained in the {rix} 
-documentation: Linux and Windows (WSL2) (<https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html>) and 
+documentation: Linux and Windows (WSL2) 
+(<https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html>) and 
 macOS (<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
 The installation is the same across operating systems, with one prerequisite on
@@ -475,8 +478,8 @@ if R was already installed[^7], as that most likely will be the case for
 most readers (@lst-install-rix-cran):
 
 [^6]: It is worth noting that {rix} can generate Nix expressions even without
-    Nix installed on your system: you can write a `default.nix` file without Nix,
-    but you cannot build or enter the resulting environment unless Nix is
+    Nix installed on your system: you can write a `default.nix` file without 
+    Nix, but you cannot build or enter the resulting environment unless Nix is
     installed [@rodrigues_baumann_2025].
 
 [^7]: We, however, recommend uninstalling your local R and letting Nix manage
@@ -776,8 +779,8 @@ become available.
 
 With the environment built, we run the simulation from inside the Nix shell so
 that it uses exactly the R version and packages declared in
-`default.nix`. This is how the results and plots reported in this manuscript were
-produced. For example, `03_run_simulation.R` begins by loading the required
+`default.nix`. This is how the results and plots reported in this manuscript 
+were produced. For example, `03_run_simulation.R` begins by loading the required
 packages and sourcing the other scripts it needs:
 
 ```{r}
@@ -851,9 +854,10 @@ between scripts implicit in the code rather than explicitly declared.
     <https://docs.ropensci.org/rix/articles/literate-programming.html>
 
 To also build the manuscript, we extend
-the simulation environment (@lst-rix-env-sim) with the literate-programming tools
-it lacks[^11]: Quarto, {knitr}, and a set of LaTeX packages. We add these arguments to
-`gen-env.R` and rebuild. @lst-rix-env-manuscript shows only what is added:
+the simulation environment (@lst-rix-env-sim) with the literate-programming 
+tools it lacks[^11]: Quarto, {knitr}, and a set of LaTeX packages. We add these 
+arguments to `gen-env.R` and rebuild. @lst-rix-env-manuscript shows only what 
+is added:
 
 \small
 
@@ -884,14 +888,14 @@ rix(
 The `system_pkgs` parameter is for software the project needs that is not an R
 package. It accepts any of the programs available through Nix (the same large
 collection mentioned earlier), so beyond Git, Pandoc, and, here, Quarto, it can
-be essentially any command-line tool a project depends on. Not every
-system-level dependency needs listing, though: when an R package itself relies on
-compiled libraries, Nix installs them automatically. The {rvinecopulib} package,
-for example, links against the C++ libraries Boost and Eigen, which we never
-list. The `apaquarto` extension we use for APA formatting is a separate case: it
-is a Quarto extension stored in the project's `_extensions/` directory rather
-than a Nix package [@rodrigues_baumann_2025] (see the {rix} documentation for
-more: <https://docs.ropensci.org/rix/articles/installing-system-tools.html>).
+be essentially any command-line tool a project depends on. Not every 
+system-level dependency needs listing, though: when an R package itself relies 
+on compiled libraries, Nix installs them automatically. The {rvinecopulib} 
+package, for example, links against the C++ libraries Boost and Eigen, which we
+never list. The `apaquarto` extension we use for APA formatting is a separate 
+case: it is a Quarto extension stored in the project's `_extensions/` directory 
+rather than a Nix package [@rodrigues_baumann_2025] (see the {rix} documentation 
+for more: <https://docs.ropensci.org/rix/articles/installing-system-tools.html>).
 
 #### Specifying LaTeX packages
 
@@ -962,7 +966,7 @@ you from your existing system by default. For R
 users, this has a practical implication: packages installed in your regular R
 library (outside of Nix) could potentially be loaded when running R from within
 the Nix environment. 
-The {rix} package addresses this automatically—when you call `rix()`, it also 
+The {rix} package addresses this automatically. When you call `rix()`, it also 
 executes `rix_init()`, which creates a project-specific `.Rprofile`. 
 This file configures R to ignore external package libraries and also disables 
 `install.packages()` within the environment. The rationale is straightforward: 
@@ -987,6 +991,10 @@ nix-shell --pure
 
 Activating the Nix environment with strict isolation \normalsize
 :::
+
+A further, update-related caveat specific to macOS is discussed in the
+Limitations section below; see also the {rix} macOS guide
+(<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
 ## Reproducing the Simulation Study and Manuscript
 
@@ -1443,10 +1451,10 @@ reproducibility depends on controlling that generator. The standard advice is to
 set the seed once and store it, so the same code reproduces the same sequence of
 draws [@morris_etall_2019]. Simulation studies are typically organized as a set
 of conditions, each run for many repetitions, so the unit one wants to reproduce
-is a single repetition within a given condition. Storing the generator's state at
-the start of each condition-repetition cell, rather than only the initial seed,
-additionally allows any single cell to be reproduced in isolation, which is
-convenient for debugging [@morris_etall_2019]. In R, the state lives in the
+is a single repetition within a given condition. Storing the generator's state 
+at the start of each condition-repetition cell, rather than only the initial 
+seed, additionally allows any single cell to be reproduced in isolation, which
+is convenient for debugging [@morris_etall_2019]. In R, the state lives in the
 variable `.Random.seed`, and such a procedure would look as follows
 (@lst-rng-state):
 
@@ -1501,10 +1509,10 @@ solution is to assign separate, non-overlapping random number streams
 [@rcoreteam_parallel; @rstream; @doRNG], and we illustrate the approach with
 {doRNG}, which implements streams for {foreach} through the `%dorng%` operator
 (@lst-run-simulation-code). From a single master seed set before the
-loop, {doRNG} derives one independent stream per iteration in advance, before any
-work is dispatched. Each stream is bound to the iteration index rather than to a
-worker, so iteration seven always draws from stream seven no matter which core
-executes it. The number of cores (`ncore` in our script) changes only how
+loop, {doRNG} derives one independent stream per iteration in advance, before 
+any work is dispatched. Each stream is bound to the iteration index rather than 
+to a worker, so iteration seven always draws from stream seven no matter which 
+core executes it. The number of cores (`ncore` in our script) changes only how
 iterations are scheduled in time, never which stream each one receives. A
 collaborator who reruns the study on four cores therefore reproduces data
 generated on twenty cores exactly. Moreover, because {doRNG} records the stream
@@ -1613,21 +1621,21 @@ function, which reads an `renv.lock` file and generates an equivalent Nix
 expression. This is particularly valuable for projects where {renv} encountered
 system dependency issues or where stricter reproducibility guarantees are
 desired. Unlike {renv}, which captures R package versions but not the R
-interpreter or system-level libraries, Nix manages all layers of the software stack
-(see {rix} documentation:
+interpreter or system-level libraries, Nix manages all layers of the software 
+stack (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/renv2nix.html>).
 
 ### Containerization with Docker
 
 Nix and Docker are not necessarily mutually exclusive
 [@rodrigues_baumann_2026_polyglot]. Researchers already using Docker do not need
-to abandon it to benefit from Nix, as the two can be combined by using Nix inside
-Docker containers to handle environment setup [@rodrigues_baumann_2025]. This is
-particularly useful for deployment to cloud platforms or high-performance
-computing clusters where Docker is standard but Nix may not be available. In that
-case, the environment is built with Nix but shipped inside a Docker image, so it
-can be run with Docker alone on machines where Nix is not installed (see
-{rix} documentation:
+to abandon it to benefit from Nix, as the two can be combined by using Nix 
+inside Docker containers to handle environment setup [@rodrigues_baumann_2025]. 
+This is particularly useful for deployment to cloud platforms or 
+high-performance computing clusters where Docker is standard but Nix may not 
+be available. In that case, the environment is built with Nix but shipped 
+inside a Docker image, so it can be run with Docker alone on machines where Nix 
+is not installed (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
 
 # Discussion
@@ -1651,15 +1659,40 @@ Importantly, adopting environment reproducibility does not require abandoning
 existing analytic practices. Nix is agnostic to programming language, editor,
 workflow structure, and manuscript template, allowing researchers to retain
 familiar tools while strengthening the reliability of their work. In this sense,
-reproducible environments serve as enabling infrastructure—supporting, rather
-than replacing, other best practices such as version control, workflow
+reproducible environments serve as enabling infrastructure, supporting rather
+than replacing other best practices such as version control, workflow
 orchestration, and transparent reporting.
+
+## Limitations
+
+The approach we describe has limitations worth noting, the most relevant of 
+which is specific to macOS. There, some parts of an environment still depend on 
+Apple's own system software, which lies outside the Nix store and is therefore 
+not pinned. As a consequence, an environment pinned to an older date can 
+occasionally stop building or loading after a macOS update. Because reproducing 
+an environment faithfully means keeping its pin unchanged, the reliable solution 
+is not to update the pin but to build and run the original environment through 
+Docker or on Linux (including WSL on Windows), where it no longer depends on 
+the host's macOS [@rodrigues_baumann_2026_polyglot]. This preserves exact 
+reproducibility while working around the platform's constraints 
+(for macOS-specific setup, see
+<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
+
+Finally, a reproducible environment does not, on its own, make the workflow 
+itself transparent. This is particularly relevant for simulation studies, which 
+are often split across several files whose dependencies, and the order in which 
+they should run, are not always clear (for example, which script must run 
+first). Dedicated workflow orchestration tools can formalize these dependencies 
+(see above), but at a minimum, clearly documenting how the files relate and in 
+what order they run already helps others reproduce the study.
+
+## Conclusion
 
 If reproducibility is to function as a cornerstone of cumulative science, then
 the ability to reconstruct computational environments must become a routine part
 of methodological practice. Tools such as Nix and {rix} lower the barrier to
-achieving this goal, making fully reproducible simulation research feasible
-without requiring deep systems expertise. We hope this tutorial helps normalize
+achieving this goal, making fully reproducible simulation research feasible. 
+We hope this tutorial helps normalize
 environment-level reproducibility as a standard component of rigorous
 computational research in psychology and beyond.
 
