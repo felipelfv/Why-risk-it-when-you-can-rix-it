@@ -305,17 +305,17 @@ Nix to coordinate pipelines across R, Python, and Julia.
 | **Containerization** | An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) [@wiebels_moreau_2021]. |
 | **Mutable upstream repositories** | The external sources a build pulls from (e.g., base images or package repositories) can change, or even disappear, over time without the build instructions changing, so the same instructions may later produce a different result or fail to build [@malka2026docker]. |
 | **Functional programming language** | A language built around pure functions, immutability, and explicit inputs, so the same inputs always produce the same output. |
-| **Binary cache** | A server that stores prebuilt packages so Nix can download a finished copy instead of compiling it from source. Because each package is identified by a hash of its inputs, a cached binary is guaranteed to match the requested environment, making rebuilds fast without sacrificing reproducibility. |
+| **Binary cache** | A server that stores prebuilt packages, so Nix can download a finished copy instead of compiling it from source. |
 
 : Glossary of computing terms used in the main text. {#tbl-glossary}
 
 # Setting the Stage: A Simulation Study and Its Reproducibility Risks
 
 Imagine you have just been awarded a grant to conduct a large-scale simulation
-study. The study is designed to evaluate the performance of a statistical
+study, where you want to evaluate the performance of a statistical
 estimator under varying data-generating conditions (see Appendix A for full
 technical details). This tutorial is organized around this example to ground 
-our discussion into a typical methods section, but readers can
+our discussion in a typical methods section, but readers can
 follow the tutorial without engaging deeply with the simulation itself. 
 In practice, simulation studies are typically organized into multiple component
 files. To mimic this practice, our simulation is
@@ -327,21 +327,21 @@ execution (`03_run_simulation.R`), performance metric calculation
 [^4]: We note that, for the sake of simplicity, we included all code directly 
   within this document as executable chunks in a single `.qmd` file. This 
   entails that the simulation runs from start to finish (i.e., generating data, 
-  producing results and figures automatically. This approach would be 
+  producing results and figures automatically). This approach would be 
   impractical for many real-world simulation studies, which are often too 
   computationally intensive. We return to this trade-off later in the tutorial 
   as the solution is quite simple: one may simply run the simulation outside 
   the `.qmd` file and load the results for the analyses in the same file.
 
 Now suppose a researcher attempts to reproduce the simulation run and results 
-reported in the article. What might prevent them from obtaining identical 
+reported in this article. What might prevent them from obtaining identical 
 outcomes, assuming error-free code? The natural first concern is the 
 version of packages. Installing R packages at a
 later time may lead to errors if functions have been renamed or deprecated
 (e.g., `dplyr::cur_data()` changed to `pick()`, or,
 although usually discouraged, internal functions, such as 
 `lavaan:::lav_utils_get_ancestors`, renamed to 
-`lavaan:::lav_graph_get_ancestors`), or to subtly different results 
+`lavaan:::lav_graph_get_ancestors`), or to subtle differences in the results
 due to changes in default settings (e.g., `stringsAsFactors` defaulting to 
 FALSE as of R 4.0). Beyond package versioning, many packages rely on 
 system-level libraries that must be installed separately
@@ -349,16 +349,17 @@ from R. Our simulation illustrates this dependency structure directly:
 the {rvinecopulib} package interfaces with a C++ backend [@rvinecopulib].
 
 The R language version introduces another layer of dependency. Code written for
-R 4.0 may rely on syntax or functionality that is unavailable in earlier
-versions (e.g., the native pipe `|>` introduced in R 4.1). More subtly, changes
-to R’s random number generation across major versions mean that identical code
+a recent version of R may rely on syntax or functionality that is unavailable in
+earlier versions (e.g., the native pipe `|>` introduced in R 4.1). More subtly, changes
+to R’s random number generation across versions mean that identical code
 executed with the same seed can nevertheless produce different random sequences
 [@ottoboni_stark_2018]. This is especially consequential for simulation studies, 
 because the random draws are not incidental to the analysis but constitute the 
-data itself. Therefore, the random number generator is part of the 
-computational environment: reproducing the data requires not only the same seed 
-but the same generator algorithm (e.g., Mersenne-Twister) and R version. 
-Moreover, reproducing every statistical estimate exactly can depend on lower-level
+data itself. Therefore, the random number generator is part of the
+computational environment: reproducing the data requires not only the same seed
+but also the same R version.
+Moreover, generating data and reproducing every statistical estimate *exactly* 
+can depend on lower-level
 components still, such as the system-level libraries R uses for matrix computations
 (e.g., BLAS/LAPACK). With respect to the latter, we do not claim that this 
 exact level of identity must be met. How much reproducibility is required is 
@@ -368,9 +369,9 @@ enough. Regardless, the solution we propose increases the chances of reaching
 such a level of reproducibility, consistent with empirical findings 
 [@malka2026docker].
 
-Finally, analyses embedded in a literate programming workflow (documents that
-combine narrative text and executable code) add further dependencies. Rendering
-R Markdown (`.rmd`) or Quarto (`.qmd`) documents, for example, requires a
+Finally, analyses embedded in a literate programming workflow add further 
+dependencies. Rendering
+R Markdown (`.Rmd`) or Quarto (`.qmd`) documents, for example, requires a
 document conversion tool (such as Pandoc) and a typesetting system (such as
 LaTeX or Typst), each with its own version and installation requirements. 
 
@@ -384,7 +385,7 @@ or Android’s app stores) are imperative: they modify a system’s state as the
 install or update software. Nix instead builds each environment from an explicit
 description and never alters it
 afterward, so the same description produces the same self-contained environment
-on any machine. Researchers state exactly which versions of their language and
+on other machines. Researchers state exactly which versions of their language and
 packages they need, and Nix works out the underlying system-level libraries
 automatically.
 
@@ -406,8 +407,8 @@ Bioconductor. By pinning a specific commit or date, researchers freeze the
 entire software stack (i.e., R itself, R packages, and all system-level 
 libraries). This eliminates the system-dependency problems that tools like 
 {renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of historical nixpkgs
-snapshots report that old environments can still be rebuilt and reproduce their
-original results years later [@rodrigues_baumann_2026_polyglot; @malka2026docker].
+snapshots report that old environments can still be rebuilt years later, and
+largely reproduce their original results [@rodrigues_baumann_2026_polyglot; @malka2026docker].
 Moreover, because prebuilt binaries can be downloaded from a shared binary cache instead of
 compiled from scratch, these environments are often ready in seconds, which keeps Nix
 practical for everyday interactive work [@rodrigues_baumann_2025].
@@ -424,7 +425,7 @@ Python or Julia components when required. Users never need to read or write
 Nix code directly, as {rix} translates automatically. For more on {rix},
 including its integration with rstats-on-nix (a curated fork of the Nix package
 collection whose dated snapshots let users request the exact R and package
-versions available on a chosen day), see @rodrigues_baumann_2025.
+versions available on a chosen day), see @rodrigues_baumann_2025 and @rodrigues_baumann_2026_polyglot.
 
 # A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
@@ -502,18 +503,18 @@ install.packages(
 
 ## Step 2: Specifying the Computational Environment {#sec-specifying-environment}
 
-We then begin with an empty folder for this project (here named
-`Why-risk-it-when-you-can-rix-it`). There are no simulation scripts or
-manuscript inside it yet. The only file we write 
-by hand for now is `generate-env.R` (or similar), which uses the `rix()` 
+We then begin with a folder for this project (here named
+`Why-risk-it-when-you-can-rix-it`) that contains only two empty subfolders,
+`Simulation` and `Manuscript`. We have not written any simulation scripts or the
+manuscript yet. The only file we write
+by hand for now is `gen-env.R` (or similar), which uses the `rix()`
 function from the {rix} package to produce a `default.nix` file: a 
 declarative specification of all software dependencies the project needs.
 
 We establish the full environment the simulation needs up front: the R version,
 an IDE, and the R packages the scripts will use. You can always add more later,
-but doing so means editing `generate-env.R`, rerunning `rix()`, and rebuilding
-`default.nix`. In other words, following the steps we are about to illustrate. 
-The simulation specification is shown in @lst-rix-env-sim (the
+but doing so means editing `gen-env.R` and following the steps we are about to 
+illustrate. The simulation specification is shown in @lst-rix-env-sim (the
 complete version, which also covers the manuscript, is on the GitHub repository,
 <https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>, as `gen-env.R`):
 
@@ -603,7 +604,7 @@ This ensures that exact development versions are obtained
 [@rodrigues_baumann_2025]. For our simulation study, all packages were used with
 their CRAN versions (see {rix} documentation for more details:
 <https://docs.ropensci.org/rix/articles/installing-r-packages.html>). Appendix B
-gives the reasons for adding each package in `r_pkgs` and `tex_pkgs`.
+gives the reasons for adding each package in `r_pkgs`.
 
 #### Configuring the development environment
 
@@ -757,7 +758,7 @@ Activating RStudio \normalsize
 ## Step 5: Developing and Making the Simulation Reproducible
 
 With RStudio open from the Nix environment, we write the five simulation `.R`
-scripts inside the Simulation subfolder. For the sake of clarity, 
+scripts inside the `Simulation` subfolder. For the sake of clarity,
 one does not need to use RStudio, but we
 illustrate it as most readers probably make use of an IDE. Because we
 declared the simulation packages up front (@lst-rix-env-sim), they are already
@@ -765,8 +766,8 @@ available in the shell, and the scripts run against exactly those versions. One
 is rarely aware of every package a project will need in
 advance, but, as highlighted before, packages can be added "on-the-go": as the 
 code takes shape and calls for another package, we add it to `r_pkgs` in 
-`generate-env.R` and rerun `rix()`. It is crucial that, after editing 
-`generate-env.R`, we
+`gen-env.R` and rerun `rix()`. It is crucial that, after editing 
+`gen-env.R`, we
 rebuild with `nix-build` and re-enter with `nix-shell` so the new packages
 become available.
 
@@ -843,16 +844,15 @@ running the scripts in sequence by hand. It therefore guarantees a reproducible
 environment but does not formalize the workflow itself, leaving the dependencies
 between scripts implicit in the code rather than explicitly declared.
 
-## Step 6: Developing and Making the Complete Manuscript Reproducible[^11]
+## Step 6: Developing and Making the Complete Manuscript Reproducible
 
 [^11]: See the {rix} documentation for more:
     <https://docs.ropensci.org/rix/articles/literate-programming.html>
 
-To also build the manuscript, we extend the simulation environment
-(@lst-rix-env-sim) with the literate-programming tools it lacks: Quarto,
-{knitr}, and a set of LaTeX packages. We add these arguments to `generate-env.R`
-and rebuild. @lst-rix-env-manuscript shows only what is added. The complete
-`rix()` call is the `gen-env.R` file in the GitHub repository:
+To also build the manuscript, we extend
+the simulation environment (@lst-rix-env-sim) with the literate-programming tools
+it lacks[^11]: Quarto, {knitr}, and a set of LaTeX packages. We add these arguments to
+`gen-env.R` and rebuild. @lst-rix-env-manuscript shows only what is added:
 
 \small
 
@@ -880,15 +880,17 @@ rix(
 
 #### Including system-level dependencies
 
-The `system_pkgs` parameter lists tools beyond R packages, such as Git, Pandoc,
-or, here, Quarto, which is a command-line tool rather than an R package. Not
-every system-level dependency needs listing. The {rvinecopulib} package, used in
-the simulation, links against C++ libraries such as Boost and
-Eigen, yet Nix pulls these in automatically as dependencies of the package.
-Our manuscript also uses the `apaquarto` extension for APA formatting, stored in
-the project's `_extensions/` directory [@rodrigues_baumann_2025] (see {rix}
-documentation for more:
-<https://docs.ropensci.org/rix/articles/installing-system-tools.html>).
+The `system_pkgs` parameter is for software the project needs that is not an R
+package. It accepts any of the programs available through Nix (the same large
+collection mentioned earlier), so beyond Git, Pandoc, and, here, Quarto, it can
+be essentially any command-line tool a project depends on. Not every
+system-level dependency needs listing, though: when an R package itself relies on
+compiled libraries, Nix installs them automatically. The {rvinecopulib} package,
+for example, links against the C++ libraries Boost and Eigen, which we never
+list. The `apaquarto` extension we use for APA formatting is a separate case: it
+is a Quarto extension stored in the project's `_extensions/` directory rather
+than a Nix package [@rodrigues_baumann_2025] (see the {rix} documentation for
+more: <https://docs.ropensci.org/rix/articles/installing-system-tools.html>).
 
 #### Specifying LaTeX packages
 
@@ -896,10 +898,12 @@ The `tex_pkgs` parameter lists the LaTeX packages needed for PDF compilation.
 When any are listed, Nix includes a minimal TeXLive distribution
 (`scheme-small`) and adds the requested packages on top. Finding the exact set
 often takes some trial and error, since Quarto's error messages during rendering
-indicate which packages are missing.
+indicate which packages are missing. Appendix B gives also the reasons for 
+adding each package in `tex_pkgs`.
 
 After rebuilding with `nix-build` and re-entering with `nix-shell`, Quarto is
-available, and we render the manuscript from the terminal (@lst-quarto-render):
+available. We write the manuscript (`article.qmd`) in a `Manuscript` subfolder,
+and render it from the terminal (@lst-quarto-render):
 
 ::: {#lst-quarto-render}
 \small
@@ -914,12 +918,13 @@ Rendering the manuscript with Quarto \normalsize
 
 This command executes all code chunks in the manuscript 
 (i.e., loads the R packages, runs the data generation and estimation), 
-calculates and incorporates results (e.g., @tbl-results) and figures (e.g., Figure 1),
-and generates a formatted PDF following APA style guidelines via the 
-`apaquarto` extension [@schneider_2024]. This extension is saved in the project 
-directory already. To add it to a project of your own, run the following inside 
-the Nix shell, where Quarto is provided by the environment and therefore 
-needs no separate installation (@lst-apaquarto-install):
+calculates and incorporates results (e.g., @tbl-results) and figures
+(e.g., Figure 1), and generates a formatted PDF following APA style 
+guidelines via the `apaquarto` extension [@schneider_2024]. This extension is 
+saved in the project directory already. To add it to a project of your own, 
+run the following inside the Nix shell, where Quarto is provided by the 
+environment and therefore needs no separate installation 
+(@lst-apaquarto-install):
 
 ::: {#lst-apaquarto-install}
 \small
@@ -932,8 +937,9 @@ needs no separate installation (@lst-apaquarto-install):
 Adding the apaquarto extension \normalsize
 :::
 
-The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project
-folder[^12]. Because Quarto is installed as a system-level package in our Nix
+The final document (which can be saved as a .docx, .pdf, or .html) is 
+saved directly in the project subfolder[^12]. Because Quarto is installed as a 
+system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
 software configurations. If desired, the manuscript can also be reproduced
@@ -999,7 +1005,7 @@ From within that environment, reproduction proceeds on two levels. The
 simulation can be reproduced by running its scripts in order, regenerating the
 results and figures. The complete manuscript (its text together with the
 embedded results, tables, and figures) can be reproduced in the same environment
-with a single `quarto render` of `article.qmd` (@lst-quarto-render), which
+as in @lst-quarto-render, which
 re-executes every code chunk and regenerates the formatted PDF end to end.
 
 ```{r}
