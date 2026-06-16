@@ -126,9 +126,8 @@ sufficient
 Even error-free code depends on a hierarchy of software components, including the
 programming language version, the packages used in the analysis, and the 
 system-level libraries those packages rely on. We define these and related terms 
-used before the tutorial section,
-which may be unfamiliar to some readers, in
-@tbl-glossary. When these differ from the originals, code may
+used before the tutorial section in @tbl-glossary. When these differ from 
+the originals, code may
 fail, behave inconsistently across machines, or yield conflicting numerical
 results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
 @nosek_etall_2022]. These problems are particularly acute for simulation 
@@ -272,7 +271,7 @@ we aim to show what Nix and {rix} are and how they can establish a stable,
 cross-platform environment within which any simulation study—whether organized
 in simple, documented script sequences (e.g., .R files that `source()` others),
 through more formal orchestration tools (e.g., {targets}) or embedded as code
-chunks in `.Rmd` or `.qmd`—can be executed reliably. We illustrate these ideas 
+chunks in `.Rmd` or `.qmd` files—can be executed reliably. We illustrate these ideas 
 through a reproducible simulation study conducted in
 R, culminating in this automated APA-formatted manuscript generated with
 `apaquarto` [@schneider_2024]. Although the example centers on R because of its
@@ -758,14 +757,16 @@ Activating RStudio \normalsize
 ## Step 5: Developing and Making the Simulation Reproducible
 
 With RStudio open from the Nix environment, we write the five simulation `.R`
-scripts. For the sake of clarity, one does not need to use RStudio, but we
-illustrate it because most readers probably make use of an IDE. Because we
+scripts inside the Simulation subfolder. For the sake of clarity, 
+one does not need to use RStudio, but we
+illustrate it as most readers probably make use of an IDE. Because we
 declared the simulation packages up front (@lst-rix-env-sim), they are already
-available in the shell, and the scripts run against exactly those versions. 
-In practice, one is rarely aware of every package a project will need in
-advance. Packages can therefore be added "on-the-go": as the code takes shape
-and calls for another package, we add it to `r_pkgs` in `generate-env.R`, rerun
-`rix()`, and rebuild. It is crucial that, after editing `generate-env.R`, we
+available in the shell, and the scripts run against exactly those versions. One 
+is rarely aware of every package a project will need in
+advance, but, as highlighted before, packages can be added "on-the-go": as the 
+code takes shape and calls for another package, we add it to `r_pkgs` in 
+`generate-env.R` and rerun `rix()`. It is crucial that, after editing 
+`generate-env.R`, we
 rebuild with `nix-build` and re-enter with `nix-shell` so the new packages
 become available.
 
@@ -837,18 +838,10 @@ Generating the visualization plots \normalsize
 :::
 
 Because these results and plots come entirely from running the scripts inside
-the Nix environment, anyone can reproduce them. A researcher interested in
-reproducing the simulation run and results, given access to the project folder,
-already has its `default.nix` and so does not need the authoring steps (Steps 1
-to 3). With Nix installed, they need only build and enter the environment as in
-Step 4 (`nix-build`, then `nix-shell`) and run the scripts in order. 
-The advantage of executing within `nix-shell` is that all dependencies 
-(the R version, packages, and system tools)
-match exactly those specified in `default.nix`. However, this approach does
-rely on running the scripts in sequence by hand. Thus, it guarantees a 
-reproducible environment but does not formalize the workflow itself, 
-leaving the dependencies between scripts implicit in the code rather than 
-explicitly declared.
+the Nix environment, they are reproducible. This approach does, however, rely on
+running the scripts in sequence by hand. It therefore guarantees a reproducible
+environment but does not formalize the workflow itself, leaving the dependencies
+between scripts implicit in the code rather than explicitly declared.
 
 ## Step 6: Developing and Making the Complete Manuscript Reproducible[^11]
 
@@ -858,8 +851,8 @@ explicitly declared.
 To also build the manuscript, we extend the simulation environment
 (@lst-rix-env-sim) with the literate-programming tools it lacks: Quarto,
 {knitr}, and a set of LaTeX packages. We add these arguments to `generate-env.R`
-and rebuild. @lst-rix-env-manuscript shows only what is added; the complete
-`rix()` call is the `gen-env.R` file in the project repository:
+and rebuild. @lst-rix-env-manuscript shows only what is added. The complete
+`rix()` call is the `gen-env.R` file in the GitHub repository:
 
 \small
 
@@ -958,7 +951,7 @@ workflow.
     employed, provided the necessary extensions are installed.
 
 At this point, it is also worth noting that Nix shells do not fully isolate
-you from your existing system by default (as mentioned in footnote 7). For R
+you from your existing system by default. For R
 users, this has a practical implication: packages installed in your regular R
 library (outside of Nix) could potentially be loaded when running R from within
 the Nix environment. 
@@ -987,6 +980,27 @@ nix-shell --pure
 
 Activating the Nix environment with strict isolation \normalsize
 :::
+
+## Reproducing the Simulation Study and Manuscript
+
+Having built the project as its authors, we now switch to the perspective of a
+reader who wants to reproduce it. Because the environment is bundled with the
+project, reproduction requires almost nothing beyond the project folder itself.
+
+A reader can download the entire project from its GitHub repository
+(<https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>). Because the
+folder already contains `default.nix`, they do not need the authoring steps
+(Steps 1 to 3). With Nix installed, they need only build and enter the
+environment as in Step 4 (`nix-build`, then `nix-shell`), which guarantees that
+all dependencies (the R version, packages, and system tools) match exactly those
+specified in `default.nix`.
+
+From within that environment, reproduction proceeds on two levels. The
+simulation can be reproduced by running its scripts in order, regenerating the
+results and figures. The complete manuscript (its text together with the
+embedded results, tables, and figures) can be reproduced in the same environment
+with a single `quarto render` of `article.qmd` (@lst-quarto-render), which
+re-executes every code chunk and regenerates the formatted PDF end to end.
 
 ```{r}
 #| lst-label: lst-data-generation
@@ -1404,7 +1418,7 @@ results_display <- performance_summary %>%
 kable(results_display, align = "lccccc", row.names = FALSE)
 ```
 
-## Additional Considerations for Simulation Studies
+# Additional Considerations for Simulation Studies
 
 In this section, we turn to considerations that matter especially for 
 simulation studies but fall outside this tutorial's scope, since they depend
