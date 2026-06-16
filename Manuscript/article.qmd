@@ -61,9 +61,10 @@ keywords: [reproducibility, Nix, simulation studies, R, computational methods]
 word-count: true
 author-note:
   disclosures:
-    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback 
-    on earlier versions of this manuscript."
-    conflict-of-interest: "The authors have no conflicts of interest to declare."
+    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback
+    on earlier versions of this manuscript. During the first round of revision, Claude Sonnet 4.6
+    (Anthropic) was used to improve the grammar and coherence of the Introduction and Discussion."
+    conflict-of-interest: "Bruno Rodrigues is the author and maintainer of the {rix} package presented in this tutorial. The authors have no other conflicts of interest to declare."
     data-sharing: "Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it."
 format:
   apaquarto-pdf:
@@ -1429,7 +1430,8 @@ kable(results_display, align = "lccccc", row.names = FALSE)
 In this section, we turn to considerations that matter especially for 
 simulation studies but fall outside this tutorial's scope, since they depend
 on the details of each study. The first concerns random draws and 
-reproducibility. The second concerns workflow orchestration and integration
+reproducibility. The second concerns workflow orchestration, environment for 
+multiple programming languages environment, and integration
 with tools researchers may already use. We do not cover these topics in depth.
 Our goal is to clarify how they relate to {rix} and to point readers toward
 resources for more advanced use cases.
@@ -1545,13 +1547,13 @@ rep10 <- run_one_rep(designs$n[3], designs$gamma2[3])
 
 ```
 
-Because R's default generator can change across R versions, by pinning the R
-version {rix} keeps the generator and its algorithm fixed, so the same seed
-reproduces the same draws across machines and over time.
+Because R's random-number generation can change across versions, pinning the R
+version with {rix} keeps it fixed, so the same seed reproduces the same draws
+across machines and over time.
 
 ### Workflow Orchestration: {targets} and {rixpress}
 
-Complex simulation studies often benefit from workflow management systems that
+Complex simulation studies often benefit from workflow orchestration that
 track dependencies between computational steps, cache intermediate results, and
 enable selective re-execution when inputs change. Two complementary approaches
 exist within the Nix ecosystem.
@@ -1619,17 +1621,19 @@ interpreter or system-level libraries, Nix manages all layers of the software st
 
 Nix and Docker are not necessarily mutually exclusive
 [@rodrigues_baumann_2026_polyglot]. Researchers already using Docker do not need
-to abandon it to benefit from Nix—the two can be combined by using Nix inside
+to abandon it to benefit from Nix, as the two can be combined by using Nix inside
 Docker containers to handle environment setup [@rodrigues_baumann_2025]. This is
 particularly useful for deployment to cloud platforms or high-performance
-computing clusters where Docker is standard but Nix may not be available (see
+computing clusters where Docker is standard but Nix may not be available. In that
+case, the environment is built with Nix but shipped inside a Docker image, so it
+can be run with Docker alone on machines where Nix is not installed (see
 {rix} documentation:
 <https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
 
 # Discussion
 
 Reproducibility in computational research is often treated as a matter of
-transparency—making data and code available. This tutorial has argued that
+transparency: making data and code available. This tutorial has argued that
 transparency alone is insufficient without the ability to reliably reconstruct
 the computational environments in which analyses are executed. For simulation
 studies in particular, where results depend critically on software versions,
@@ -1638,10 +1642,10 @@ reproducibility is not optional but essential.
 
 By introducing Nix and the {rix} package, we demonstrated a practical and
 accessible approach to fully specifying and rebuilding computational
-environments for simulation-based research. This approach enables analyses and
-manuscripts to be rerun identically across machines and over time, transforming
-reproducibility from an aspirational goal into a verifiable property of the
-research workflow.
+environments for simulation-based research. This approach greatly increases the
+chances that analyses and manuscripts can be reproduced across machines and over
+time, moving reproducibility from an aspirational goal toward a verifiable
+property of the research workflow.
 
 Importantly, adopting environment reproducibility does not require abandoning
 existing analytic practices. Nix is agnostic to programming language, editor,

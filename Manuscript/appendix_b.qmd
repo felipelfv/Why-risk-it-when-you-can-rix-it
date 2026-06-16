@@ -8,7 +8,7 @@
 
 ### Simulation Study
 
-These packages are used in the `Simulation_Scripts/` folder:
+These packages are used in the `Simulation/` folder:
 
 **rvinecopulib** (used in `01_data_generation.R`): Generates correlated data via copulas using the `rbicop()` function.
 
