@@ -271,7 +271,7 @@ software ecosystem designed to make software installation deterministic, and
 {rix} [@rodrigues_baumann_2025], an R interface that allows researchers to use 
 Nix without needing deep knowledge of its underlying language or infrastructure. 
 Our main objective with the tutorial is not to advocate for specific analytical
-pipeline tool or to prescribe a particular workflow structure[^3].
+pipeline tool or to prescribe a particular workflow structure[^2].
 Instead, we aim to show what Nix and {rix} are and how they can establish a 
 stable environment within which simulation studies—whether 
 organized in simple `.R` files that `source()` others, through formal pipeline 
@@ -293,7 +293,7 @@ as a reproducible project with {rix}, from installing Nix to regenerating
 this manuscript. Last, we turn to additional considerations for ensuring 
 reproducibility of simulation studies and close with a discussion.
 
-[^3]: The analytical pipeline is one part of the broader reproducible workflow.
+[^2]: The analytical pipeline is one part of the broader reproducible workflow.
     We leave it aside for two reasons. First, many tools
     address it, each with its own conventions, and doing them justice would
     require a more tailored treatment. Second, although a formal analytical 
@@ -334,9 +334,9 @@ files. To mimic this practice, our simulation is
 organized into five sequential scripts: data generation
 (`01_data_generation.R`), model specification (`02_models.R`), simulation
 execution (`03_run_simulation.R`), performance metric calculation
-(`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^4].
+(`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^3].
 
-[^4]: We note that for simplicity we included all code directly 
+[^3]: We note that for simplicity we included all code directly 
   within this document as executable chunks in a single `.qmd` file. This 
   entails that the simulation runs from start to finish (i.e., generating data, 
   producing results and figures automatically). This approach would be 
@@ -377,7 +377,7 @@ these libraries, and increases the chances of reaching such a level of
 reproducibility, consistent with empirical findings in other contexts
 [@malka2026docker]. However, it must be noted that reproducing precisely every
 number is hard to guarantee in every case, especially across different
-operating systems and processors[^2]. Although such differences are usually
+operating systems and processors. Although such differences are usually
 negligible, appearing only in the last digits, the finite precision of
 floating-point arithmetic [@goldberg1991; @ahrens2020] and the algorithm a
 specific R package uses to generate data can occasionally amplify them into
@@ -451,17 +451,16 @@ versions available on a chosen day), see @rodrigues_baumann_2025 and
 # A Practical Example: Setting up a Reproducible Simulation Study with {rix}
 
 We take the perspective of a researcher (e.g., on macOS) beginning a simulation 
-study who wants it reproducible from the outset. Rather than writing the 
-analysis first and reproducing it later, we set up the computational environment 
-with {rix} first, then create and run the scripts and manuscript inside it. We 
-then show how another researcher could reproduce it.
+study who wants it reproducible from the outset. Thus, we set up the 
+computational environment with {rix} first, then create and run the scripts, 
+and manuscript inside it. Last, we show how another researcher could 
+reproduce it.
 
 ## Step 1: Installing Nix and {rix}
 
-Before proceeding, both Nix and the {rix} R package need to be installed. The
+Both Nix and the {rix} R package need to be installed. The
 quick start below covers the common case, but the complete, up-to-date 
-instructions for each operating system are maintained in the {rix} 
-documentation: Linux and Windows (WSL2) 
+instructions are maintained in the {rix} documentation: Linux and Windows 
 (<https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html>) and 
 macOS (<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
@@ -469,7 +468,7 @@ The installation is the same across operating systems, with one prerequisite on
 Windows: Nix runs inside the Windows Subsystem for Linux 2 (WSL2), which must be
 installed and configured first (see the {rix} documentation above). On 
 all systems, install Nix by running the Determinate Systems installer in a
-terminal[^5]. To open it, on macOS, go to Applications → Utilities → Terminal.
+terminal[^4]. To open it, on macOS, go to Applications → Utilities → Terminal.
 For Windows, launch your WSL2 (Ubuntu) shell from the Start menu. For Linux, 
 open your distribution's terminal application. Then run (@lst-install-nix):
 
@@ -485,27 +484,26 @@ curl --proto '=https' --tlsv1.2 -sSf \
 Installing Nix \normalsize
 :::
 
-[^5]: A terminal is a text-based way to give your computer instructions. 
+[^4]: A terminal is a text-based way to give your computer instructions. 
     Readers new to the command line may find the following link a useful 
     primer: <https://swcarpentry.github.io/shell-novice/>. This was also 
     suggested in @wiebels_moreau_2021
 
-Once Nix is installed[^6], there are two ways to access {rix}, depending on
+Once Nix is installed[^5], there are two ways to access {rix}, depending on
 whether R is already installed on your system. In this tutorial, we proceed as
-if R was already installed[^7], as that most likely will be the case for 
+if R was already installed[^6], as that most likely will be the case for 
 most readers (@lst-install-rix-cran):
 
-[^6]: It is worth noting that {rix} can generate Nix expressions even without
+[^5]: It is worth noting that {rix} can generate Nix expressions even without
     Nix installed on your system: you can write a `default.nix` file without 
     Nix, but you cannot build or enter the resulting environment unless Nix is
     installed [@rodrigues_baumann_2025].
 
-[^7]: We, however, recommend uninstalling your local R and letting Nix manage
+[^6]: We, however, recommend uninstalling your local R and letting Nix manage
     R, R packages, and other tools entirely. This approach avoids potential
     conflicts between system-installed and Nix-managed software, an issue we
-    will illustrate later in this tutorial. See
-    <https://docs.ropensci.org/rix/articles/setting-up-linux-windows.html#case-1-you-dont-have-r-installed-and-wish-to-install-it-using-nix-as-well>
-    for more details.
+    will illustrate later in this tutorial. See the {rix} documentation for more 
+    details.
 
 ```{r}
 #| lst-label: lst-install-rix-cran
@@ -528,10 +526,10 @@ install.packages(
 We then begin with a folder for this project (here named
 `Why-risk-it-when-you-can-rix-it`) that contains only two empty subfolders,
 `Simulation` and `Manuscript`. We have not written any simulation scripts or the
-manuscript yet. The only file we write
-by hand for now is `gen-env.R` (or similar), which uses the `rix()`
-function from the {rix} package to produce a `default.nix` file: a 
-declarative specification of all software dependencies the project needs.
+manuscript yet. The only file we write by hand for now is `gen-env.R`, 
+which uses the `rix()` function from the {rix} package to produce a 
+`default.nix` file: a declarative specification of all software dependencies 
+the project needs.
 
 We establish the full environment the simulation needs up front: the R version,
 an IDE, and the R packages the scripts will use. You can always add more later,
@@ -570,13 +568,13 @@ rix(
 
 ### Environment Specification
 
-The `rix()` function[^8] constructs the specification through a series of
+The `rix()` function[^7] constructs the specification through a series of
 parameters that collectively describe the computational environment. Each
 parameter serves a distinct purpose in defining the environment's
 characteristics, and we will clarify those throughout this tutorial section. 
 
-[^8]: For an overarching information on the function `rix()`, we suggest the
-    following {rix} documentation:
+[^7]: For an overarching information on the function `rix()` and more details, 
+    we suggest the following {rix} documentation:
     <https://docs.ropensci.org/rix/articles/project-environments.html>
 
 #### Specifying the R version
@@ -590,8 +588,7 @@ the versions available on that date. The date-based approach is generally
 preferable for reproducibility, as it captures a complete snapshot of the R
 ecosystem at a single point in time. For this tutorial, as shown on top, we use
 the `date` parameter to ensure temporal consistency across all software
-components [@rodrigues_baumann_2025] (see {rix} documentation for more:
-<https://docs.ropensci.org/rix/articles/project-environments.html>).
+components [@rodrigues_baumann_2025].
 
 #### Declaring R package dependencies
 
@@ -625,9 +622,8 @@ git_pkgs = list(
 
 This ensures that exact development versions are obtained
 [@rodrigues_baumann_2025]. For our simulation study, all packages were used with
-their CRAN versions (see {rix} documentation for more details:
-<https://docs.ropensci.org/rix/articles/installing-r-packages.html>). Appendix B
-gives the reasons for adding each package in `r_pkgs`.
+their CRAN versions. Appendix B gives the reasons for adding each package 
+in `r_pkgs`.
 
 #### Configuring the development environment
 
@@ -649,13 +645,11 @@ Other supported IDEs include Positron (`ide = "positron"`), Visual Studio Code
 These tools may either be installed directly within the Nix environment using
 the `ide` parameter, or users may rely on an existing system installation by
 setting `ide = "none"` (or `ide = "other"`) and configuring `direnv` to
-automatically load the Nix environment when the project directory is opened[^9].
+automatically load the Nix environment when the project directory is opened[^8].
 All IDEs installed via Nix are project-specific and do not interfere with
-system-wide installations. Detailed configuration instructions are provided in
-the {rix} documentation:
-<https://docs.ropensci.org/rix/articles/configuring-ide.html>
+system-wide installations. 
 
-[^9]: **`direnv`** is a lightweight utility that integrates with the user's
+[^8]: **`direnv`** is a lightweight utility that integrates with the user's
     shell and automatically loads project-specific environment settings when
     navigating into a directory (via a `.envrc` file), and unloads them when
     leaving. This makes environment activation implicit and reduces the risk of
@@ -760,11 +754,11 @@ To verify that R is being provided by Nix rather than a system installation, run
 `which R`. This should return a path within `/nix/store/`. Moreover, from within
 the Nix shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 `positron`), which opens the IDE with the Nix environment active
-(@lst-shell-rs)[^10]:
+(@lst-shell-rs)[^9]:
 
-[^10]: Please note that activating an RStudio instance via Nix does **not**
+[^9]: Please note that activating an RStudio instance via Nix does **not**
     automatically open the specific project directory you are working in. We
-    therefore recommend creating an **RStudio project file (`.Rproj`)** and
+    therefore recommend creating an RStudio project file (`.Rproj`) and
     opening that file when using Nix to ensure that RStudio is correctly
     associated with the intended project and environment.
 
@@ -808,7 +802,6 @@ packages and sourcing the other scripts it needs:
 
 library(marginaleffects)
 ...
-
 # Source helper functions
 source("Simulation/01_data_generation.R")
 ...
@@ -867,12 +860,9 @@ between scripts implicit in the code rather than explicitly declared.
 
 ## Step 6: Developing and Making the Complete Manuscript Reproducible
 
-[^11]: See the {rix} documentation for more:
-    <https://docs.ropensci.org/rix/articles/literate-programming.html>
-
 To also build the manuscript, we extend
 the simulation environment (@lst-rix-env-sim) with the literate programming 
-tools it lacks[^11]: Quarto, {knitr}, and a set of LaTeX packages. We add these 
+tools it lacks: Quarto, {knitr}, and a set of LaTeX packages. We add these 
 arguments to `gen-env.R` and rebuild. @lst-rix-env-manuscript shows only what 
 is added:
 
@@ -960,7 +950,7 @@ Adding the apaquarto extension \normalsize
 :::
 
 The final document (which can be saved as a .docx, .pdf, or .html) is 
-saved directly in the project subfolder[^12]. Because Quarto is installed as a 
+saved directly in the project subfolder[^10]. Because Quarto is installed as a 
 system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
@@ -969,12 +959,12 @@ interactively by opening the project folder in the user’s preferred IDE.
 
 As highlighted before, we included the simulation code as code chunks for this 
 manuscript. This was done simply for illustration purposes. In a real-world 
-simulation study, users could simply run the simulation as in the previous 
+simulation study, users could for example run the simulation as in the previous 
 sections and then load the needed results (produced within the Nix shell) in the 
 manuscript. However, the same remark holds with respect to the formalized 
 workflow.
 
-[^12]: Although we use `apaquarto` in this example, many alternative manuscript
+[^10]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 
@@ -989,10 +979,10 @@ This file configures R to ignore external package libraries and also disables
 `install.packages()` within the environment. The rationale is straightforward: 
 any new packages should be added to `default.nix` and the environment rebuilt, 
 preserving full reproducibility [@rodrigues_baumann_2025]. However, for 
-stricter isolation[^13] that also prevents access to other system programs not 
+stricter isolation[^11] that also prevents access to other system programs not 
 specified in `default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
 
-[^13]: For example, when preparing this manuscript without the `--pure` flag,
+[^11]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
     the build failed. Running `quarto check` from within the Nix shell (i.e.,
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
@@ -1009,19 +999,18 @@ nix-shell --pure
 Activating the Nix environment with strict isolation \normalsize
 :::
 
-A further, update-related caveat specific to macOS is discussed in the
-Limitations section below; see also the {rix} macOS guide
+A related caveat specific to macOS is discussed in the Limitations section
+below; see also the {rix} documentation
 (<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
 ## Reproducing the Simulation Study and Manuscript
 
 Having built the project as its authors, we now switch to the perspective of a
 reader who wants to reproduce it. Because the environment is bundled with the
-project, reproduction requires almost nothing beyond the project folder itself.
-
+project, reproduction requires almost nothing beyond the project folder itself. 
 A reader can download the entire project from its GitHub repository
-(<https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>). Because the
-folder already contains `default.nix`, they do not need the authoring steps
+(<https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it>). The
+folder already contains `default.nix`, thus they do not need the authoring steps
 (Steps 1 to 3). With Nix installed, they need only build and enter the
 environment as in Step 4 (`nix-build`, then `nix-shell`), which guarantees that
 all dependencies (the R version, packages, and system tools) match exactly those
@@ -1654,8 +1643,8 @@ Nix and Docker are not necessarily mutually exclusive
 to abandon it to benefit from Nix, as the two can be combined by using Nix 
 inside Docker containers to handle environment setup [@rodrigues_baumann_2025]. 
 This is particularly useful for deployment to cloud platforms or 
-high-performance computing clusters where Docker is standard but Nix may not 
-be available. In that case, the environment is built with Nix but shipped 
+high-performance computing clusters where Nix may not be installed. 
+In that case, the environment is built with Nix but shipped 
 inside a Docker image, so it can be run with Docker alone on machines where Nix 
 is not installed (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
