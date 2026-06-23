@@ -90,6 +90,6 @@ stopCluster(cl)
 # all conditions into single data frame
 sim_results <- do.call(rbind, all_results)
 
-# save
-#saveRDS(sim_results, "Simulation/sim_results.rds")
-#saveRDS(rng_states, "Simulation/rng_states.rds")
+# save results and the per-repetition RNG stream states
+saveRDS(sim_results, "Simulation/sim_results.rds")
+saveRDS(rng_states, "Simulation/rng_states.rds")

@@ -61,10 +61,15 @@ keywords: [reproducibility, Nix, simulation studies, R, computational methods]
 word-count: true
 author-note:
   disclosures:
-    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their helpful feedback
-    on earlier versions of this manuscript. During the first round of revision, Claude Sonnet 4.6
-    (Anthropic) was used to improve the grammar and coherence of the Introduction and Discussion."
-    conflict-of-interest: "Bruno Rodrigues is the author and maintainer of the {rix} package presented in this tutorial. The authors have no other conflicts of interest to declare."
+    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their 
+    helpful feedback on earlier versions of this manuscript, and Matteo 
+    Quartagno for feedback on seeds and reproducibility. 
+    During the first round of revision, Claude Sonnet 4.6
+    (Anthropic) was used to improve the grammar and coherence solely of the 
+    Introduction and Discussion."
+    conflict-of-interest: "Bruno Rodrigues is one of the authors and maintainers
+     of the {rix} package presented in this tutorial. The authors have no other 
+    conflicts of interest to declare."
     data-sharing: "Data and materials from this study can be accessed at https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it."
 format:
   apaquarto-pdf:
@@ -104,15 +109,14 @@ yet much of that scrutiny has focused on empirical studies. Monte Carlo
 simulation studies (hereafter referred to as simulation studies) have received
 far less [@siepe_etall_2024], even though they are a primary tool for evaluating 
 the statistical methods [@morris_etall_2019] and may suffer from selective 
-reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025]. 
-One aspect of credibility that remains especially underexamined for simulations 
-is reproducibility (i.e., the ability to exactly reproduce the results of a 
-study based on provided data, code, materials, and software/hardware) 
-[@hardwicke2020]. In a simulation study, this involves
+reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025]. One 
+especially underexamined aspect for simulations is reproducibility (i.e.,
+exactly reproducing a study's results from the provided data, code, materials,
+and software) [@hardwicke2020]. In a simulation study, this involves
 more than reanalyzing a fixed dataset, because the code also generates the data.
-Reproducing such a study therefore entails reproducing the data generation 
-process, the analysis, and the summary of results. @montoya_anderson_2026 
-conceptually address each of these stages separately.
+Reproducing such a study therefore involves the data 
+generation process, the analysis, and the summary of results. 
+@montoya_anderson_2026 conceptually address each of these stages separately.
 
 Reproducibility in this sense is not all-or-nothing but occupies a continuum
 [@peng_2011], on which a study is positioned according to the extent of the
@@ -122,35 +126,34 @@ the high end. Reaching that executable end is often treated as *full*
 reproducibility [@peikert_brandmaier_2021; @peikert_etall_2021], and open
 science initiatives have pushed work toward it [@kidwell_etall_2016;
 @levenstein_lyle_2018; @nosek_etall_2015]. Yet code and data are never fully
-sufficient 
-[@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023; @brodeur_etall_2026]. 
-Even error-free code depends on a hierarchy of software components, including 
-the programming language version, the packages used in the analysis, and the 
-system-level libraries those packages rely on. We define these and related terms 
-used in @tbl-glossary. When these differ from the originals, code may
-fail, behave inconsistently across machines, or yield conflicting numerical
-results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
-@nosek_etall_2022]. These problems are particularly acute for simulation 
-studies, which typically rely on a large amount of interconnected code, 
-packages versions, and the underlying system itself to generate their data and 
-produce the results of interest [@luijken_etall_2024; @siepe_etall_2024].
+sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023; 
+@brodeur_etall_2026]. Even error-free code depends on a hierarchy of software 
+components, including the programming language version, the packages used in the 
+analysis, and the system-level libraries those packages rely on. We define these 
+and related terms used in @tbl-glossary. When these differ from the originals, 
+code may fail, behave inconsistently across machines, or yield conflicting 
+numerical results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
+@nosek_etall_2022]. These problems are particularly acute for simulation
+studies, which rely on interconnected code, package versions, and the broader
+software environment to generate their data and results
+[@luijken_etall_2024; @siepe_etall_2024].
 
 To make this concrete, we use the *computational environment* to refer to the
-complete software context required for an analysis to run successfully. This
+complete software context required for a study to run successfully. This
 entails the programming language version, package versions, system-level 
-libraries, and operating system (@fig-environment) 
-[@rodrigues_2023; @rodrigues_baumann_2026_polyglot].
+libraries, and operating system (@fig-environment)
+[@rodrigues_2023; @rodrigues_baumann_2026_polyglot]. 
 We define *computational environment reproducibility* as the ability to
 reconstruct these dependencies on top of whatever operating system a machine
 runs, at any future time, such that executing the same code yields the same
-numerical results[^1]. Empirical assessments show that current practice falls 
-short of this ideal. Indeed, @siepe_etall_2024 report that, among the 100 
-simulation studies they identified in psychology journals in 2021 and 2022, 
-nearly two-thirds provide no accompanying code, and among those that do, 
-documentation of the computational environment is rarely included. This gap is 
-consequential, as simulation studies inform methodological recommendations, 
-meaning that insufficient reproducibility may undermine confidence in those 
-recommendations [@luijken_etall_2024; @white_etall_2024].
+numerical results[^1]. Current practice falls short. Indeed, 
+@siepe_etall_2024 report that, among the 100
+simulation studies they identified in psychology journals in 2021 and 2022,
+nearly two-thirds provide no code, and those that do rarely document the
+computational environment. This gap is 
+consequential: because simulation studies inform methodological recommendations, 
+insufficient reproducibility may undermine confidence in them 
+[@luijken_etall_2024; @white_etall_2024].
 
 [^1]: We note that the definition of computational environment reproducibility
   in this context may be considered rather loose. For the interested reader, 
@@ -173,7 +176,7 @@ env_outer <- data.frame(
   ymax = c(10.0, 8.6),
   label = c(
     "Operating system",
-    "System-level libraries (e.g., Boost, Eigen, BLAS)"
+    "System-level libraries (e.g., BLAS/LAPACK)"
   ),
   fill = c("grey93", "grey86"),
   stringsAsFactors = FALSE
@@ -244,11 +247,12 @@ each addressing only part of the problem.
 Package-level managers such as {renv} [@ushey_2024] and {groundhog}
 [@simonsohn_2020] stabilize R package versions but do not manage the R
 interpreter itself or the system-level libraries those packages depend on. 
-Workflow orchestration tools such as {targets} [@landau_2021] and Make
-[@feldman_1979] support reproducibility in a different sense: they specify the
-structure of an analysis by formalizing the order in which steps should run and
-by tracking dependencies among intermediate results. These tools clarify *how*
-an analysis proceeds, but they assume that the software stack required to run
+Analytical pipeline tools such as {targets} [@landau_2021] and Make
+[@feldman_1979] support reproducibility in a different sense: they specify and 
+automate the structure of an analysis by formalizing the order in which steps 
+should run and by tracking dependencies among intermediate results. 
+These tools clarify *how* an analysis proceeds, but they assume that the 
+software stack required to run
 each step is already stable. Containerization tools such as Docker, including
 R-focused implementations like Rocker [@boettiger_2015;
 @boettiger_eddelbuettel_2017] offer a more comprehensive approach by bundling
@@ -257,8 +261,8 @@ requires familiarity with Linux system administration, and even
 containerization may suffer from temporal drift when Dockerfiles rely on 
 mutable upstream repositories [@malka2026docker]. For a detailed comparison of 
 these tools and their limitations, see @rodrigues_baumann_2026_polyglot. 
-Researchers thus face a difficult choice between solutions that are accessible 
-but incomplete or approaches that are powerful but demand technical expertise.
+Researchers thus face a trade-off between accessible but incomplete solutions
+and powerful but technically demanding ones.
 
 In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
@@ -266,45 +270,52 @@ depend. For that, we introduce Nix [@dolstra_etall_2004], a
 software ecosystem designed to make software installation deterministic, and 
 {rix} [@rodrigues_baumann_2025], an R interface that allows researchers to use 
 Nix without needing deep knowledge of its underlying language or infrastructure. 
-Our main objective with the tutorial is not to introduce a specific workflow
-orchestration system or to prescribe a particular analytic structure[^3]. 
+Our main objective with the tutorial is not to advocate for specific analytical
+pipeline tool or to prescribe a particular workflow structure[^3].
 Instead, we aim to show what Nix and {rix} are and how they can establish a 
-stable, cross-platform environment within which any simulation study—whether 
-organized in simple, documented script sequences (e.g., .R files that 
-`source()` others), through more formal orchestration tools (e.g., {targets}) or 
-embedded as code chunks in `.Rmd` or `.qmd` files—can be executed reliably. We 
+stable environment within which simulation studies—whether 
+organized in simple `.R` files that `source()` others, through formal pipeline 
+tools (e.g., {targets}) or embedded as code chunks in `.Rmd` or `.qmd` 
+files—can be executed reliably. We 
 illustrate these ideas through a reproducible simulation study conducted in
 R, culminating in this automated APA-formatted manuscript generated with
-`apaquarto` [@schneider_2024]. Although the example centers on R because of its
-prominence, the principles underlying environment
+`apaquarto` [@schneider_2024]. Although the example centers on R, the principles 
+underlying environment
 reproducibility with {rix} apply equally to other languages, including Python 
-and Julia, and to different development environments such as RStudio, VS Code, 
-Emacs, or Positron. At the end of the article, we also briefly introduce 
-{rixpress} [@rixpress], a workflow orchestration tool that builds on 
-Nix to coordinate pipelines across R, Python, and Julia.
+and Julia, and to multiple development environments such as RStudio, VS Code, 
+or Positron.
 
-[^3]: We leave workflow orchestration aside for two reasons. First, many tools
+The remainder of this article is structured as follows. We first illustrate a 
+simulation study and the reproducibility risks associated with it. We
+then introduce Nix and {rix}, along with the core principles behind them. This 
+is followed by a step-by-step tutorial that rebuilds the simulation study
+as a fully reproducible project with {rix}, from installing Nix to regenerating
+this manuscript. Last, we turn to additional considerations for ensuring 
+reproducibility of simulation studies and close with a discussion.
+
+[^3]: The analytical pipeline is one part of the broader reproducible workflow.
+    We leave it aside for two reasons. First, many tools
     address it, each with its own conventions, and doing them justice would
-    require a more tailored treatment than a single tutorial allows. Second,
-    although formal orchestration may be necessary for full reproducibility, it
-    rests on a stable computational environment: orchestrating analyses is only
-    meaningful when the software they run on is itself reproducible. Moreover, 
-    arguably, a study whose scripts are well documented, whose file dependencies 
-    are explained, and whose environment is stable therefore already sits high 
+    require a more tailored treatment. Second, although a formal analytical 
+    pipeline may be necessary for full reproducibility, it rests on a stable 
+    computational environment. Arguably, a study whose scripts are well 
+    documented, whose file dependencies are explained, and whose environment 
+    is stable therefore already sits high 
     on the reproducibility spectrum, and that foundation is what we focus on 
-    here. For readers interested in the workflow side, we suggest 
-    @peikert_etall_2021, @vanlissa_etall_2021, and @rodrigues_2023.
+    here. For readers interested in the broader reproducible workflow, we 
+    suggest @peikert_etall_2021, @vanlissa_etall_2021, and @rodrigues_2023.
 
 | Term | Definition |
 |:-----------------------------|:--------------------------------------------------|
-| **Operating system** | The base software (e.g., Windows, macOS, Linux) that manages a computer's hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it. |
 | **System-level libraries** | Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends). These are not installed by `install.packages()`. |
-| **Software stack** | The complete set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top of them. |
+| **Operating system** | The base software (e.g., Windows, macOS, Linux) that manages a computer's hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it. |
 | **R interpreter** | The `R` program that reads and runs your R code [@adler_2012]. Two machines can report the same R version yet have interpreters compiled differently or linked against different system-level libraries [see @rcoreteam_installation, Section A.3]. |
-| **Workflow orchestration** | Automating the order of analysis steps and re-running only those affected by a change. |
-| **Literate programming** | Writing an analysis as a single document that combines narrative text and executable code (e.g., R Markdown or Quarto), so the report and the code that produces it stay together. |
+| **Analytical pipeline** | Automating the order in which analysis steps run and the dependencies among them, re-running only those affected by a change. |
+| **Software stack** | The complete set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top of them. |
 | **Containerization** | An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) [@wiebels_moreau_2021]. |
 | **Mutable upstream repositories** | The external sources a build pulls from (e.g., base images or package repositories) can change, or even disappear, over time without the build instructions changing, so the same instructions may later produce a different result or fail to build [@malka2026docker]. |
+| **Reproducible workflow** | The overall research process that makes a study reproducible end to end, including version control, the analytical pipeline, and a frozen computational environment. |
+| **Literate programming** | Writing an analysis as a single document that combines narrative text and executable code (e.g., R Markdown or Quarto), so the report and the code that produces it stay together. |
 | **Functional programming language** | A language built around pure functions, immutability, and explicit inputs, so the same inputs always produce the same output. |
 | **Binary cache** | A server that stores prebuilt packages, so Nix can download a finished copy instead of compiling it from source. |
 
@@ -325,14 +336,14 @@ organized into five sequential scripts: data generation
 execution (`03_run_simulation.R`), performance metric calculation
 (`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^4].
 
-[^4]: We note that, for the sake of simplicity, we included all code directly 
+[^4]: We note that for simplicity we included all code directly 
   within this document as executable chunks in a single `.qmd` file. This 
   entails that the simulation runs from start to finish (i.e., generating data, 
   producing results and figures automatically). This approach would be 
   impractical for many real-world simulation studies, which are often too 
-  computationally intensive. We return to this trade-off later in the tutorial 
-  as the solution is quite simple: one may simply run the simulation outside 
-  the `.qmd` file and load the results for the analyses in the same file.
+  computationally intensive. The solution, however, is quite simple: simply run 
+  the simulation outside the `.qmd` file and load the results for the analyses 
+  in the same file.
 
 Now suppose a researcher attempts to reproduce the simulation run and results 
 reported in this article. What might prevent them from obtaining identical 
@@ -344,10 +355,10 @@ although usually discouraged, internal functions, such as
 `lavaan:::lav_utils_get_ancestors`, renamed to 
 `lavaan:::lav_graph_get_ancestors`), or to subtle differences in the results
 due to changes in default settings (e.g., `stringsAsFactors` defaulting to 
-FALSE as of R 4.0). Beyond package versioning, many packages rely on 
-system-level libraries that must be installed separately
-from R. Our simulation illustrates this dependency structure directly: 
-the {rvinecopulib} package interfaces with a C++ backend [@rvinecopulib].
+FALSE as of R 4.0). Beyond package versioning, many packages rely on
+system-level software that R does not provide. Our simulation illustrates this
+directly: the {rvinecopulib} package is built on a compiled C++ backend
+[@rvinecopulib].
 
 The R language version introduces another layer of dependency. Code written for
 a recent version of R may rely on syntax or functionality that is unavailable in
@@ -358,16 +369,28 @@ executed with the same seed can nevertheless produce different random sequences
 because the random draws are not incidental to the analysis but constitute the 
 data itself. Therefore, the random number generator is part of the
 computational environment: reproducing the data requires not only the same seed
-but also the same R version.
-Moreover, generating data and reproducing every statistical estimate *exactly* 
-can depend on lower-level components still, such as the system-level libraries 
-R uses for matrix computations (e.g., BLAS/LAPACK). With respect to the latter, 
-we do not claim that this exact level of identity must be met. How much 
-reproducibility is required is ultimately for the scientific community to decide 
-(e.g., through journals and disciplinary norms), and reproducing the broader 
-pattern of results is arguably enough. Regardless, the solution we propose 
-increases the chances of reaching such a level of reproducibility, consistent 
-with empirical findings [@malka2026docker].
+but also the same R version. Moreover, generating data and reproducing every 
+statistical estimate *exactly* can depend on lower-level components still, 
+such as the system-level libraries R uses for matrix computations 
+(e.g., BLAS/LAPACK). The potential solution we propose pins these libraries, 
+and increases the chances of reaching such a level of reproducibility,
+consistent with empirical findings in other contexts [@malka2026docker]. 
+However, it must be
+noted that reproducing precisely every number is hard to guarantee in every
+case. Although the differences involved might be negligible, appearing only
+in the last digits, an intricate combination of differences in the hardware beneath this environment,^[Even
+with the same system-level libraries pinned, they are compiled separately for 
+each operating system and run on different processors, so results can differ 
+slightly across machines.]
+the finite precision of floating-point arithmetic [@goldberg1991; @ahrens2020],
+and the algorithm a specific R package uses to generate data can occasionally
+produce larger discrepancies. With respect to all of this, we
+do not claim that this exact level of identity must be met. How much 
+reproducibility is required 
+is ultimately for the scientific community to decide (e.g., through journals 
+and disciplinary norms), and reproducing the broader pattern of results is
+arguably enough (see @montoya_anderson_2026, for a stage-by-stage approach to
+assessing reproducibility in simulation studies).
 
 Finally, analyses embedded in a literate programming workflow add further 
 dependencies. Rendering
@@ -533,7 +556,8 @@ complete version, which also covers the manuscript, is on the GitHub repository,
 library(rix)
 
 # choose the path to your project
-project_directory <- "." # here, the "Why-risk-it-when-you-can-rix-it" folder (root)
+# here, the "Why-risk-it-when-you-can-rix-it" folder (root)
+project_directory <- "."
 
 rix(
   date = "2026-01-14", # recommendation: pin a date
@@ -762,18 +786,16 @@ Activating RStudio \normalsize
 ## Step 5: Developing and Making the Simulation Reproducible
 
 With RStudio open from the Nix environment, we write the five simulation `.R`
-scripts inside the `Simulation` subfolder. For the sake of clarity,
-one does not need to use RStudio, but we
-illustrate it as most readers probably make use of an IDE. Because we
-declared the simulation packages up front (@lst-rix-env-sim), they are already
-available in the shell, and the scripts run against exactly those versions. One 
-is rarely aware of every package a project will need in
-advance, but, as highlighted before, packages can be added "on-the-go": as the 
-code takes shape and calls for another package, we add it to `r_pkgs` in 
-`gen-env.R` and rerun `rix()`. It is crucial that, after editing 
-`gen-env.R`, we
-rebuild with `nix-build` and re-enter with `nix-shell` so the new packages
-become available.
+scripts inside the `Simulation` subfolder. Note that one does not need to use 
+RStudio, but we illustrate it as most readers probably make use of an IDE. 
+Because we declared the simulation packages up front (@lst-rix-env-sim), 
+they are already available in the shell, and the scripts run against exactly 
+those versions. Researchers are rarely aware of every package a project will 
+need in advance, but, as highlighted before, packages can be added 
+"on-the-go": as the code takes shape and calls for another package, we add it 
+to `r_pkgs` in `gen-env.R` and rerun `rix()`. It is crucial that, after editing 
+`gen-env.R`, we rebuild with `nix-build` and re-enter with `nix-shell` so the 
+new packages become available.
 
 ### Running the Simulation and Results
 
@@ -845,7 +867,7 @@ Generating the visualization plots \normalsize
 Because these results and plots come entirely from running the scripts inside
 the Nix environment, they are reproducible. This approach does, however, rely on
 running the scripts in sequence by hand. It therefore guarantees a reproducible
-environment but does not formalize the workflow itself, leaving the dependencies
+environment but does not formalize the analytical pipeline itself, leaving the dependencies
 between scripts implicit in the code rather than explicitly declared.
 
 ## Step 6: Developing and Making the Complete Manuscript Reproducible
@@ -854,7 +876,7 @@ between scripts implicit in the code rather than explicitly declared.
     <https://docs.ropensci.org/rix/articles/literate-programming.html>
 
 To also build the manuscript, we extend
-the simulation environment (@lst-rix-env-sim) with the literate-programming 
+the simulation environment (@lst-rix-env-sim) with the literate programming 
 tools it lacks[^11]: Quarto, {knitr}, and a set of LaTeX packages. We add these 
 arguments to `gen-env.R` and rebuild. @lst-rix-env-manuscript shows only what 
 is added:
@@ -1154,8 +1176,16 @@ print(true_ACE_values)
 cl <- makeCluster(ncore)
 registerDoParallel(cl)
 
+# fix the master seed so the {doRNG} streams below are reproducible and
+# independent of the number of cores
+set.seed(master_seed)
+
 # run simulation across all conditions
 all_results <- vector("list", nrow(designs))
+
+# per-iteration RNG stream states, so any single repetition within a
+# condition can later be reproduced in isolation (see attr(res_list, "rng"))
+rng_states <- vector("list", nrow(designs))
 
 for (k in seq_len(nrow(designs))) {
   # extract current condition parameters
@@ -1177,6 +1207,9 @@ for (k in seq_len(nrow(designs))) {
       run_one_rep(n_k, gamma2_k)
     }
 
+  # store the stream state {doRNG} assigned to each repetition
+  rng_states[[k]] <- attr(res_list, "rng")
+
   # combine replications into data frame
   res <- do.call(rbind, res_list)
 
@@ -1194,6 +1227,10 @@ stopCluster(cl)
 
 # all conditions into single data frame
 sim_results <- do.call(rbind, all_results)
+
+# save results and the per-repetition RNG stream states
+saveRDS(sim_results, "Simulation/sim_results.rds")
+saveRDS(rng_states, "Simulation/rng_states.rds")
 ```
 
 ```{r}
@@ -1438,7 +1475,7 @@ kable(results_display, align = "lccccc", row.names = FALSE)
 In this section, we turn to considerations that matter especially for 
 simulation studies but fall outside this tutorial's scope, since they depend
 on the details of each study. The first concerns random draws and 
-reproducibility. The second concerns workflow orchestration, environment for 
+reproducibility. The second concerns the analytical pipeline, environment for
 multiple programming languages environment, and integration
 with tools researchers may already use. We do not cover these topics in depth.
 Our goal is to clarify how they relate to {rix} and to point readers toward
@@ -1509,17 +1546,15 @@ solution is to assign separate, non-overlapping random number streams
 [@rcoreteam_parallel; @rstream; @doRNG], and we illustrate the approach with
 {doRNG}, which implements streams for {foreach} through the `%dorng%` operator
 (@lst-run-simulation-code). From a single master seed set before the
-loop, {doRNG} derives one independent stream per iteration in advance, before 
-any work is dispatched. Each stream is bound to the iteration index rather than 
-to a worker, so iteration seven always draws from stream seven no matter which 
-core executes it. The number of cores (`ncore` in our script) changes only how
-iterations are scheduled in time, never which stream each one receives. A
-collaborator who reruns the study on four cores therefore reproduces data
-generated on twenty cores exactly. Moreover, because {doRNG} records the stream
-it assigned to each iteration in the `rng` attribute of the result, these states
-can be stored and later restored to reproduce the data of any single repetition
-within a condition in isolation, which the per-condition seed alone cannot do
-(@lst-rng-streams).
+loop, {doRNG} derives one independent stream per iteration, bound to the
+iteration index rather than to a worker. The number of cores (`ncore` in our
+script) therefore changes only how iterations are scheduled, never which stream
+each receives, so a collaborator who reruns the study on four cores reproduces
+data generated on twenty cores exactly. Because {doRNG} also records each stream
+in the result's `rng` attribute, these states can be stored and later restored to
+reproduce any single repetition in isolation, which the per-condition seed alone
+cannot do (@lst-rng-streams). Researchers should store these states and,
+preferably, make them available alongside the reported estimates.
 
 ```{r}
 #| lst-label: lst-rng-streams
@@ -1555,20 +1590,16 @@ rep10 <- run_one_rep(designs$n[3], designs$gamma2[3])
 
 ```
 
-Because R's random-number generation can change across versions, pinning the R
-version with {rix} keeps it fixed, so the same seed reproduces the same draws
-across machines and over time.
+### Analytical Pipelines: {targets} and {rixpress}
 
-### Workflow Orchestration: {targets} and {rixpress}
-
-Complex simulation studies often benefit from workflow orchestration that
-track dependencies between computational steps, cache intermediate results, and
-enable selective re-execution when inputs change. Two complementary approaches
+Complex simulation studies often benefit from an analytical pipeline that
+tracks dependencies between computational steps, caches intermediate results, and
+enables selective re-execution when inputs change. Two complementary approaches
 exist within the Nix ecosystem.
 
 #### Using {targets} Within Nix
 
-The {targets} package [@landau_2021] provides workflow orchestration for R-based
+The {targets} package [@landau_2021] provides analytical pipeline tooling for R-based
 projects. To integrate {targets} with Nix, include `targets` in the `r_pkgs`
 parameter of `rix()` and execute the pipeline within `nix-shell` using
 `Rscript -e 'targets::tar_make()'`. A shell hook can also be added via the
@@ -1660,8 +1691,8 @@ existing analytic practices. Nix is agnostic to programming language, editor,
 workflow structure, and manuscript template, allowing researchers to retain
 familiar tools while strengthening the reliability of their work. In this sense,
 reproducible environments serve as enabling infrastructure, supporting rather
-than replacing other best practices such as version control, workflow
-orchestration, and transparent reporting.
+than replacing other best practices such as version control, analytical
+pipelines, and transparent reporting.
 
 ## Limitations
 
@@ -1682,7 +1713,7 @@ Finally, a reproducible environment does not, on its own, make the workflow
 itself transparent. This is particularly relevant for simulation studies, which 
 are often split across several files whose dependencies, and the order in which 
 they should run, are not always clear (for example, which script must run 
-first). Dedicated workflow orchestration tools can formalize these dependencies 
+first). Dedicated analytical pipeline tools can formalize these dependencies
 (see above), but at a minimum, clearly documenting how the files relate and in 
 what order they run already helps others reproduce the study.
 
