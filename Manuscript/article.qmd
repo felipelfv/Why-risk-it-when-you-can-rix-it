@@ -129,11 +129,11 @@ science initiatives have pushed work toward it [@kidwell_etall_2016;
 sufficient [@epskamp_2019; @wiebels_moreau_2021; @ziemann_etall_2023; 
 @brodeur_etall_2026]. Even error-free code depends on a hierarchy of software 
 components, including the programming language version, the packages used in the 
-analysis, and the system-level libraries those packages rely on. We define these 
-and related terms used in @tbl-glossary. When these differ from the originals, 
-code may fail, behave inconsistently across machines, or yield conflicting 
+analysis, and the system-level libraries those packages rely on. We define these
+and related terms in @tbl-glossary. When they differ from the originals,
+code may fail, behave inconsistently across machines, or yield conflicting
 numerical results [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015;
-@nosek_etall_2022]. These problems are particularly acute for simulation
+@nosek_etall_2022]. Such problems are particularly acute for simulation
 studies, which rely on interconnected code, package versions, and the broader
 software environment to generate their data and results
 [@luijken_etall_2024; @siepe_etall_2024].
@@ -155,9 +155,9 @@ consequential: because simulation studies inform methodological recommendations,
 insufficient reproducibility may undermine confidence in them 
 [@luijken_etall_2024; @white_etall_2024].
 
-[^1]: We note that the definition of computational environment reproducibility
-  in this context may be considered rather loose. For the interested reader, 
-  we refer to @malka2026docker (p. 3) and @lamb_zacchiroli_2022.
+[^1]: We note our characterization of computational environment reproducibility
+    is not the most rigorous one. For stricter definitions, we refer the
+    interested reader to @malka2026docker (p. 3) and @lamb_zacchiroli_2022.
 
 ```{r}
 #| label: fig-environment
@@ -289,7 +289,7 @@ The remainder of this article is structured as follows. We first illustrate a
 simulation study and the reproducibility risks associated with it. We
 then introduce Nix and {rix}, along with the core principles behind them. This 
 is followed by a step-by-step tutorial that rebuilds the simulation study
-as a fully reproducible project with {rix}, from installing Nix to regenerating
+as a reproducible project with {rix}, from installing Nix to regenerating
 this manuscript. Last, we turn to additional considerations for ensuring 
 reproducibility of simulation studies and close with a discussion.
 
@@ -369,27 +369,23 @@ executed with the same seed can nevertheless produce different random sequences
 because the random draws are not incidental to the analysis but constitute the 
 data itself. Therefore, the random number generator is part of the
 computational environment: reproducing the data requires not only the same seed
-but also the same R version. Moreover, generating data and reproducing every 
-statistical estimate *exactly* can depend on lower-level components still, 
-such as the system-level libraries R uses for matrix computations 
-(e.g., BLAS/LAPACK). The potential solution we propose pins these libraries, 
-and increases the chances of reaching such a level of reproducibility,
-consistent with empirical findings in other contexts [@malka2026docker]. 
-However, it must be
-noted that reproducing precisely every number is hard to guarantee in every
-case. Although the differences involved might be negligible, appearing only
-in the last digits, an intricate combination of differences in the hardware beneath this environment,^[Even
-with the same system-level libraries pinned, they are compiled separately for 
-each operating system and run on different processors, so results can differ 
-slightly across machines.]
-the finite precision of floating-point arithmetic [@goldberg1991; @ahrens2020],
-and the algorithm a specific R package uses to generate data can occasionally
-produce larger discrepancies. With respect to all of this, we
-do not claim that this exact level of identity must be met. How much 
-reproducibility is required 
-is ultimately for the scientific community to decide (e.g., through journals 
-and disciplinary norms), and reproducing the broader pattern of results is
-arguably enough (see @montoya_anderson_2026, for a stage-by-stage approach to
+but also the same R version. Moreover, generating data and reproducing every
+statistical estimate *exactly* (down to the certain digits) can depend on
+lower-level components still, such as the system-level libraries R uses for
+matrix computations (e.g., BLAS/LAPACK). The potential solution we propose pins
+these libraries, and increases the chances of reaching such a level of
+reproducibility, consistent with empirical findings in other contexts
+[@malka2026docker]. However, it must be noted that reproducing precisely every
+number is hard to guarantee in every case, especially across different
+operating systems and processors[^2]. Although such differences are usually
+negligible, appearing only in the last digits, the finite precision of
+floating-point arithmetic [@goldberg1991; @ahrens2020] and the algorithm a
+specific R package uses to generate data can occasionally amplify them into
+larger discrepancies. With respect to all of this, we do not claim that this
+exact level of identity must be met. How much reproducibility is required is
+ultimately for the scientific community to decide (e.g., through journals and
+disciplinary norms), and reproducing the broader pattern of results is arguably
+enough (see also @montoya_anderson_2026, for a stage-by-stage approach to 
 assessing reproducibility in simulation studies).
 
 Finally, analyses embedded in a literate programming workflow add further 
@@ -1712,6 +1708,13 @@ they should run, are not always clear (for example, which script must run
 first). Dedicated analytical pipeline tools can formalize these dependencies
 (see above), but at a minimum, clearly documenting how the files relate and in 
 what order they run already helps others reproduce the study.
+
+Moreover, as highlighted, there may be components on simulation studies that might 
+be hard to reproduce by others researchers such as very computationally intensive studies 
+that demand a huge amount of computer power. The data generation also might not yield 
+identifical numerical results due to the interplay of multiple things. However, making availble 
+the obtained estimates, together with the pinned enrivonment, would at least allow the reproducibility
+of the analyses etc.
 
 ## Conclusion
 
