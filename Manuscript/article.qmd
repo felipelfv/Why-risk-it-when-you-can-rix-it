@@ -404,8 +404,8 @@ or Android’s app stores) are imperative: they modify a system’s state as the
 install or update software. Nix instead builds each environment from an explicit
 description and never alters it
 afterward, so the same description produces the same self-contained environment
-on other machines. Researchers state exactly which versions of their language 
-and packages they need, and Nix works out the underlying system-level libraries
+on other machines. Researchers state which version of R and which packages 
+they need, and Nix works out the underlying system-level libraries 
 automatically.
 
 ## Core Principles
@@ -415,7 +415,7 @@ Nix gives every package its own folder under `/nix/store`. The folder's name
 includes a short fingerprint (a *cryptographic hash*) computed from everything
 that went into the package, its source code, dependencies, and build
 instructions, so any change to those inputs yields a different folder. Because
-each package is identified by its exact contents this way, several versions of
+each package is identified by its exact inputs this way, several versions of
 the same software can sit side by side without conflict: a researcher can, for
 example, keep R 4.1.0 and R 4.3.3 on the same machine, or use different package
 versions across analyses [@rodrigues_baumann_2025].
@@ -425,10 +425,9 @@ comprising more than 120,000 packages, including nearly all of CRAN and
 Bioconductor. By pinning a specific commit or date, researchers freeze the
 entire software stack (i.e., R itself, R packages, and all system-level 
 libraries). This eliminates the system-dependency problems that tools like 
-{renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of 
-historical nixpkgs snapshots report that old environments can still be rebuilt 
-years later, and largely reproduce their original results 
-[@rodrigues_baumann_2026_polyglot; @malka2026docker].
+{renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of
+historical nixpkgs snapshots report that old environments can still be rebuilt
+years later [@Malka_2024; @rodrigues_baumann_2026_polyglot].
 Moreover, because prebuilt binaries can be downloaded from a shared binary 
 cache instead of compiled from scratch, these environments are often ready in 
 seconds, which keeps Nix practical for everyday interactive work 
