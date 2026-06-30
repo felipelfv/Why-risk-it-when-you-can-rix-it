@@ -1,0 +1,6 @@
+project:
+  output-dir: docs
+  render:
+    - Manuscript/article.qmd
+    - Manuscript/appendix_a.qmd
+    - Manuscript/appendix_b.qmd
