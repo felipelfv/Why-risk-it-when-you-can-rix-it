@@ -1,4 +1,4 @@
-# Clarifying the packages used
+# Packages Clarification
 
 ## R Packages
 
@@ -52,8 +52,6 @@ These are loaded in apaquarto's `header.tex` or `apatemplate.tex`:
 
 **newtx**: Times-like fonts (default when no custom `mainfont`).
 
-**geometry**: Page margins.
-
 ### Dependencies of apaquarto Packages
 
 **environ**: Dependency of tcolorbox.
@@ -64,7 +62,7 @@ These are loaded in apaquarto's `header.tex` or `apatemplate.tex`:
 
 **fontaxes**: Dependency of newtx.
 
-**xstring**: Template conditionals.
+**xstring**: Dependency of newtx.
 
 **scalerel**: Dependency of apa7 class.
 
@@ -75,6 +73,8 @@ These are loaded in apaquarto's `header.tex` or `apatemplate.tex`:
 **endfloat**: Moves floats to end of document in manuscript mode.
 
 **threeparttable**: Dependency for threeparttablex.
+
+**geometry**: Page margins.
 
 ### Required by Quarto PDF Rendering
 
