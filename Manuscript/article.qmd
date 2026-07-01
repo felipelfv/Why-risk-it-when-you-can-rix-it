@@ -70,7 +70,7 @@ author-note:
     conflict-of-interest: "Bruno Rodrigues is one of the authors and maintainers
      of the {rix} package presented in this tutorial. The authors have no other 
     conflicts of interest to declare."
-    data-sharing: "Data and materials from this study can be accessed at https://doi.org/10.5281/zenodo.21098114."
+    data-sharing: "Data and materials from this study can be accessed at <https://doi.org/10.5281/zenodo.21098114>."
 format:
   apaquarto-pdf:
     document-mode: man
