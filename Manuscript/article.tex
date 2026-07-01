@@ -253,17 +253,16 @@ Geller}{0000-0002-7459-4505}}\par{\addORCIDlink{Bruno
 Rodrigues}{0000-0002-3211-3689}} 
 
 \par{ Data and materials from this study can be accessed at
-https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it.  Bruno
-Rodrigues is one of the authors and maintainers of the \{rix\} package
-presented in this tutorial. The authors have no other conflicts of
-interest to declare.  We would like to thank Julia Rohrer and Ole
-Schacht for their helpful feedback on earlier versions of this
-manuscript, and Matteo Quartagno for feedback on seeds and
-reproducibility. During the first round of revision, Claude Sonnet 4.6
-(Anthropic) was used to improve the grammar and coherence solely of the
-Introduction and Discussion.  Author roles were classified using the
-Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as
-follows:  Felipe Fontana
+\url{https://doi.org/10.5281/zenodo.21098114}.  Bruno Rodrigues is one
+of the authors and maintainers of the \{rix\} package presented in this
+tutorial. The authors have no other conflicts of interest to
+declare.  We would like to thank Julia Rohrer and Ole Schacht for their
+helpful feedback on earlier versions of this manuscript, and Matteo
+Quartagno for feedback on seeds and reproducibility. During the first
+round of revision, Claude Sonnet 4.6 (Anthropic) was used to improve the
+grammar and coherence solely of the Introduction and Discussion.  Author
+roles were classified using the Contributor Role Taxonomy (CRediT;
+https://credit.niso.org/) as follows:  Felipe Fontana
 Vieira:   Conceptualization, Methodology, Software, Data
 curation, Formal analysis, Visualization, Writing - original
 draft, Writing - review \& editing; Jason
@@ -675,7 +674,19 @@ is required is ultimately for the scientific community to decide (e.g.,
 through journals and disciplinary norms), and reproducing the broader
 pattern of results is arguably enough (see also Montoya and Anderson
 (\citeproc{ref-montoya_anderson_2026}{2026}), for a stage-by-stage
-approach to assessing reproducibility in simulation studies).
+approach to assessing reproducibility in simulation studies)\footnote{The
+  following illustration originated from Danielle Navarro. With the same
+  seed and covariance matrix, \texttt{MASS::mvrnorm()} can return
+  different values on macOS than on Linux or Windows, whereas
+  \texttt{mvtnorm::rmvnorm()} stays consistent. The difference traces to
+  a sign flip in an eigenvector computed through the system's
+  BLAS/LAPACK libraries, to which \texttt{mvtnorm} is invariant but
+  \texttt{MASS} is not. The draws still come from the same distribution,
+  so conclusions would generally be unchanged in simulation with
+  multiple repetitions, but from a reproducibility standpoint this is
+  concerning. Pinning the numerical library with Nix (here, OpenBLAS)
+  removes the discrepancy for \texttt{MASS::mvrnorm()}. For the full
+  demonstration, see the repository.}.
 
 Finally, analyses embedded in a literate programming workflow add
 further dependencies. Rendering R Markdown (\texttt{.Rmd}) or Quarto
@@ -859,9 +870,8 @@ version, an IDE, and the R packages the scripts will use. You can always
 add more later, but doing so means editing \texttt{gen-env.R} and
 following the steps we are about to illustrate. The simulation
 specification is shown in Listing~\ref{lst-rix-env-sim} (the complete
-version, which also covers the manuscript, is on the GitHub repository,
-\url{https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it}, as
-\texttt{gen-env.R}):
+version, which also covers the manuscript, is in the project repository,
+\url{https://doi.org/10.5281/zenodo.21098114}, as \texttt{gen-env.R}):
 
 \small
 
@@ -1500,14 +1510,13 @@ Having built the project as its authors, we now switch to the
 perspective of a reader who wants to reproduce it. Because the
 environment is bundled with the project, reproduction requires almost
 nothing beyond the project folder itself. A reader can download the
-entire project from its GitHub repository
-(\url{https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it}).
-The folder already contains \texttt{default.nix}, thus they do not need
-the authoring steps (Steps 1 to 3). With Nix installed, they need only
-build and enter the environment as in Step 4 (\texttt{nix-build}, then
-\texttt{nix-shell}), which guarantees that all dependencies (the R
-version, packages, and system tools) match exactly those specified in
-\texttt{default.nix}.
+entire project from its repository
+(\url{https://doi.org/10.5281/zenodo.21098114}). The folder already
+contains \texttt{default.nix}, thus they do not need the authoring steps
+(Steps 1 to 3). With Nix installed, they need only build and enter the
+environment as in Step 4 (\texttt{nix-build}, then \texttt{nix-shell}),
+which guarantees that all dependencies (the R version, packages, and
+system tools) match exactly those specified in \texttt{default.nix}.
 
 From within that environment, reproduction proceeds on two levels. The
 simulation can be reproduced by running its scripts in order,
