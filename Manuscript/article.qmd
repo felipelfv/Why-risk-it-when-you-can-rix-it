@@ -381,12 +381,24 @@ operating systems and processors. Although such differences are usually
 negligible, appearing only in the last digits, the finite precision of
 floating-point arithmetic [@goldberg1991; @ahrens2020] and the algorithm a
 specific R package uses to generate data can occasionally amplify them into
-larger discrepancies. With respect to all of this, we do not claim that this
+larger discrepancies. With
+respect to all of this, we do not claim that this
 exact level of identity must be met. How much reproducibility is required is
 ultimately for the scientific community to decide (e.g., through journals and
 disciplinary norms), and reproducing the broader pattern of results is arguably
-enough (see also @montoya_anderson_2026, for a stage-by-stage approach to 
-assessing reproducibility in simulation studies).
+enough (see also @montoya_anderson_2026, for a stage-by-stage approach to
+assessing reproducibility in simulation studies)[^4].
+
+[^4]: The follow illustration originated from Danielle Navarro. With the same 
+seed and covariance matrix, `MASS::mvrnorm()` can return different values 
+on macOS than on Linux or Windows, whereas `mvtnorm::rmvnorm()` stays 
+consistent. The difference traces to a sign flip in an eigenvector computed 
+through the system's BLAS/LAPACK libraries, to which `mvtnorm` is invariant but 
+`MASS` is not. The draws still come from the same distribution, so conclusions 
+would generally be unchanged in simulation with multiple repetitions, but from 
+a reproducibility standpoint this is concerning. Pinning the numerical library 
+with Nix (here, OpenBLAS) removes the discrepancy for `MASS::mvrnorm()`. For the
+full demonstration, we direct readers in the repository.
 
 Finally, analyses embedded in a literate programming workflow add further 
 dependencies. Rendering
@@ -468,7 +480,7 @@ The installation is the same across operating systems, with one prerequisite on
 Windows: Nix runs inside the Windows Subsystem for Linux 2 (WSL2), which must be
 installed and configured first (see the {rix} documentation above). On 
 all systems, install Nix by running the Determinate Systems installer in a
-terminal[^4]. To open it, on macOS, go to Applications → Utilities → Terminal.
+terminal[^5]. To open it, on macOS, go to Applications → Utilities → Terminal.
 For Windows, launch your WSL2 (Ubuntu) shell from the Start menu. For Linux, 
 open your distribution's terminal application. Then run (@lst-install-nix):
 
@@ -484,22 +496,22 @@ curl --proto '=https' --tlsv1.2 -sSf \
 Installing Nix \normalsize
 :::
 
-[^4]: A terminal is a text-based way to give your computer instructions. 
+[^5]: A terminal is a text-based way to give your computer instructions. 
     Readers new to the command line may find the following link a useful 
     primer: <https://swcarpentry.github.io/shell-novice/>. This was also 
     suggested in @wiebels_moreau_2021
 
-Once Nix is installed[^5], there are two ways to access {rix}, depending on
+Once Nix is installed[^6], there are two ways to access {rix}, depending on
 whether R is already installed on your system. In this tutorial, we proceed as
-if R was already installed[^6], as that most likely will be the case for 
+if R was already installed[^7], as that most likely will be the case for 
 most readers (@lst-install-rix-cran):
 
-[^5]: It is worth noting that {rix} can generate Nix expressions even without
+[^6]: It is worth noting that {rix} can generate Nix expressions even without
     Nix installed on your system: you can write a `default.nix` file without 
     Nix, but you cannot build or enter the resulting environment unless Nix is
     installed [@rodrigues_baumann_2025].
 
-[^6]: We, however, recommend uninstalling your local R and letting Nix manage
+[^7]: We, however, recommend uninstalling your local R and letting Nix manage
     R, R packages, and other tools entirely. This approach avoids potential
     conflicts between system-installed and Nix-managed software, an issue we
     will illustrate later in this tutorial. See the {rix} documentation for more 
@@ -568,12 +580,12 @@ rix(
 
 ### Environment Specification
 
-The `rix()` function[^7] constructs the specification through a series of
+The `rix()` function[^8] constructs the specification through a series of
 parameters that collectively describe the computational environment. Each
 parameter serves a distinct purpose in defining the environment's
 characteristics, and we will clarify those throughout this tutorial section. 
 
-[^7]: For an overarching information on the function `rix()` and more details, 
+[^8]: For an overarching information on the function `rix()` and more details, 
     we suggest the following {rix} documentation:
     <https://docs.ropensci.org/rix/articles/project-environments.html>
 
@@ -645,11 +657,11 @@ Other supported IDEs include Positron (`ide = "positron"`), Visual Studio Code
 These tools may either be installed directly within the Nix environment using
 the `ide` parameter, or users may rely on an existing system installation by
 setting `ide = "none"` (or `ide = "other"`) and configuring `direnv` to
-automatically load the Nix environment when the project directory is opened[^8].
+automatically load the Nix environment when the project directory is opened[^9].
 All IDEs installed via Nix are project-specific and do not interfere with
 system-wide installations. 
 
-[^8]: **`direnv`** is a lightweight utility that integrates with the user's
+[^9]: **`direnv`** is a lightweight utility that integrates with the user's
     shell and automatically loads project-specific environment settings when
     navigating into a directory (via a `.envrc` file), and unloads them when
     leaving. This makes environment activation implicit and reduces the risk of
@@ -754,9 +766,9 @@ To verify that R is being provided by Nix rather than a system installation, run
 `which R`. This should return a path within `/nix/store/`. Moreover, from within
 the Nix shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 `positron`), which opens the IDE with the Nix environment active
-(@lst-shell-rs)[^9]:
+(@lst-shell-rs)[^10]:
 
-[^9]: Please note that activating an RStudio instance via Nix does **not**
+[^10]: Please note that activating an RStudio instance via Nix does **not**
     automatically open the specific project directory you are working in. We
     therefore recommend creating an RStudio project file (`.Rproj`) and
     opening that file when using Nix to ensure that RStudio is correctly
@@ -950,7 +962,7 @@ Adding the apaquarto extension \normalsize
 :::
 
 The final document (which can be saved as a .docx, .pdf, or .html) is 
-saved directly in the project subfolder[^10]. Because Quarto is installed as a 
+saved directly in the project subfolder[^11]. Because Quarto is installed as a 
 system-level package in our Nix
 specification, the rendering occurs entirely within a fully reproducible
 environment, ensuring consistent output across machines regardless of local
@@ -964,7 +976,7 @@ sections and then load the needed results (produced within the Nix shell) in the
 manuscript. However, the same remark holds with respect to the formalized 
 workflow.
 
-[^10]: Although we use `apaquarto` in this example, many alternative manuscript
+[^11]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 
@@ -979,10 +991,10 @@ This file configures R to ignore external package libraries and also disables
 `install.packages()` within the environment. The rationale is straightforward: 
 any new packages should be added to `default.nix` and the environment rebuilt, 
 preserving full reproducibility [@rodrigues_baumann_2025]. However, for 
-stricter isolation[^11] that also prevents access to other system programs not 
+stricter isolation[^12] that also prevents access to other system programs not 
 specified in `default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
 
-[^11]: For example, when preparing this manuscript without the `--pure` flag,
+[^12]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
     the build failed. Running `quarto check` from within the Nix shell (i.e.,
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
