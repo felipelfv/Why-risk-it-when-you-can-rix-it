@@ -156,7 +156,7 @@ insufficient reproducibility may undermine confidence in them
 [@luijken_etall_2024; @white_etall_2024].
 
 [^1]: We note our characterization of computational environment reproducibility
-    is not the most rigorous one. For stricter definitions, we refer the
+    is not the most rigorous. For stricter definitions, we refer the
     interested reader to @malka2026docker (p. 3) and @lamb_zacchiroli_2022.
 
 ```{r}
@@ -339,11 +339,11 @@ execution (`03_run_simulation.R`), performance metric calculation
 [^3]: We note that for simplicity we included all code directly 
   within this document as executable chunks in a single `.qmd` file. This 
   entails that the simulation runs from start to finish (i.e., generating data, 
-  producing results and figures automatically). This approach would be 
+  producing results and figures). This approach would be 
   impractical for many real-world simulation studies, which are often too 
-  computationally intensive. The solution, however, is quite simple: simply run 
+  computationally intensive. The solution, however, is quite simple: run 
   the simulation outside the `.qmd` file and load the results for the analyses 
-  in the same file.
+  in the same file, as we will illustrate.
 
 Now suppose a researcher attempts to reproduce the simulation run and results 
 reported in this article. What might prevent them from obtaining identical 
