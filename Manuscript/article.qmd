@@ -591,6 +591,19 @@ characteristics, and we will clarify those throughout this tutorial section.
 
 #### Specifying the R version
 
+\small
+
+```{r}
+#| lst-label: lst-date-example
+#| lst-cap: "Example for the date argument"
+#| eval: false
+#| echo: true
+
+date = "2026-01-14"
+```
+
+\normalsize
+
 Researchers must first determine which version of R to use. This can be
 accomplished in two ways: The `r_ver` argument accepts an exact version string
 (e.g., "4.3.3") or special designations such as "latest-upstream" for the most
@@ -603,6 +616,22 @@ the `date` parameter to ensure temporal consistency across all software
 components [@rodrigues_baumann_2025].
 
 #### Declaring R package dependencies
+
+\small
+
+```{r}
+#| lst-label: lst-r-pkgs-example
+#| lst-cap: "Example for the r_pkgs argument"
+#| eval: false
+#| echo: true
+
+r_pkgs = c(
+  "rix", "marginaleffects", "simhelpers", "rvinecopulib",
+  "doParallel", "doRNG", "ggplot2", "cowplot", "dplyr", "svglite"
+)
+```
+
+\normalsize
 
 The `r_pkgs` argument accepts a character vector listing all required R packages
 by their CRAN names. These packages will be installed from the version
@@ -639,6 +668,19 @@ in `r_pkgs`.
 
 #### Configuring the development environment
 
+\small
+
+```{r}
+#| lst-label: lst-ide-example
+#| lst-cap: "Example for the ide argument"
+#| eval: false
+#| echo: true
+
+ide = "rstudio"
+```
+
+\normalsize
+
 The `ide` parameter controls whether an integrated development environment (IDE)
 is included in the Nix environment, allowing users to interactively develop and
 run code within their editor of choice. When `ide` is specified, the project can
@@ -668,6 +710,20 @@ system-wide installations.
     running analyses in the wrong software context.
 
 #### Setting file output parameters
+
+\small
+
+```{r}
+#| lst-label: lst-file-output-example
+#| lst-cap: "Example for the project_path and overwrite arguments"
+#| eval: false
+#| echo: true
+
+project_path = ".",
+overwrite = TRUE
+```
+
+\normalsize
 
 The `project_path` parameter indicates where the `default.nix` file should be
 written ("." denotes the current directory), while `overwrite` controls whether
