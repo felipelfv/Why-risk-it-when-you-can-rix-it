@@ -389,7 +389,7 @@ disciplinary norms), and reproducing the broader pattern of results is arguably
 enough (see also @montoya_anderson_2026, for a stage-by-stage approach to
 assessing reproducibility in simulation studies)[^4].
 
-[^4]: The follow illustration originated from Danielle Navarro. With the same 
+[^4]: The following illustration originated from Danielle Navarro. With the same
 seed and covariance matrix, `MASS::mvrnorm()` can return different values 
 on macOS than on Linux or Windows, whereas `mvtnorm::rmvnorm()` stays 
 consistent. The difference traces to a sign flip in an eigenvector computed 
@@ -398,7 +398,7 @@ through the system's BLAS/LAPACK libraries, to which `mvtnorm` is invariant but
 would generally be unchanged in simulation with multiple repetitions, but from 
 a reproducibility standpoint this is concerning. Pinning the numerical library 
 with Nix (here, OpenBLAS) removes the discrepancy for `MASS::mvrnorm()`. For the
-full demonstration, we direct readers in the repository.
+full demonstration, see the repository.
 
 Finally, analyses embedded in a literate programming workflow add further 
 dependencies. Rendering
