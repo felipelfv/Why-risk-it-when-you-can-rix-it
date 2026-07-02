@@ -1572,13 +1572,13 @@ A simulation regenerates its data from a pseudo-random number generator, so its
 reproducibility depends on controlling that generator. The standard advice is to
 set the seed once and store it, so the same code reproduces the same sequence of
 draws [@morris_etall_2019]. Simulation studies are typically organized as a set
-of conditions, each run for many repetitions, so the unit one wants to reproduce
-is a single repetition within a given condition. Storing the generator's state
-at the start of each condition-repetition cell, rather than only the initial
-seed, additionally allows any single cell to be reproduced in isolation, which
-is convenient for debugging [@morris_etall_2019]. In R, the state lives in the
-variable `.Random.seed`, and such a procedure would look as follows
-(@lst-rng-state):
+of conditions, each run for many repetitions. Hence, the unit one wants to 
+reproduce is a single repetition within a given condition. Storing the 
+generator's state at the start of each condition-repetition cell, rather 
+than only the initial seed, additionally allows any single cell to be reproduced 
+in isolation, which is convenient for debugging [@morris_etall_2019]. In R, the 
+state lives in the variable `.Random.seed`, and such a procedure would look
+as follows (@lst-rng-state):
 
 ```{r}
 #| lst-label: lst-rng-state
@@ -1632,8 +1632,8 @@ approach with {doRNG}, which implements streams for {foreach} through the
 before the loop, {doRNG} derives one independent stream per iteration, bound to
 the iteration index rather than to a worker. The number of cores (`ncore` in our
 script) therefore changes only how iterations are scheduled, never which stream
-each receives, so a collaborator who reruns the study on four cores reproduces
-data generated on twenty cores exactly. Because {doRNG} also records each stream
+each receives. Thus, a researcher who reruns the study on four cores reproduces
+data generated on twenty cores. Because {doRNG} also records each stream
 in the result's `rng` attribute, these states can be stored and later restored
 to reproduce any single repetition in isolation, which the per-condition seed
 alone cannot do (@lst-rng-streams). Researchers should store these states and,
@@ -1747,8 +1747,8 @@ inside Docker containers to handle environment setup [@rodrigues_baumann_2025].
 This is particularly useful for deployment to cloud platforms or
 high-performance computing clusters where Nix may not be installed. In that
 case, the environment is built with Nix but shipped inside a Docker image, so it
-can be run with Docker alone on machines where Nix is not installed (see {rix}
-documentation: <https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
+can be run with Docker alone (see {rix} documentation: 
+<https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
 
 # Discussion
 
@@ -1802,18 +1802,18 @@ Moreover, as highlighted, there may be components on simulation studies that
 might be hard to reproduce by others researchers such as very computationally
 intensive studies that demand a huge amount of computer power. The data
 generation also might not yield identifical numerical results due to the
-interplay of multiple things. However, making availble the obtained estimates,
-together with the pinned enrivonment, would at least allow the reproducibility
-of the analyses etc.
+interplay of multiple factors. However, making available the obtained results,
+together with the pinned environment, would at least allow the reproducibility
+of the analyses and manuscript, as illustrated in this article. 
 
 ## Conclusion
 
 If reproducibility is to function as a cornerstone of cumulative science, then
 the ability to reconstruct computational environments must become a routine part
-of methodological practice. Tools such as Nix and {rix} lower the barrier to
-achieving this goal, making fully reproducible simulation research feasible. We
-hope this tutorial helps normalize environment-level reproducibility as a
-standard component of rigorous computational research in psychology and beyond.
+of methodological practice. Nix leveraged by tools like {rix} lowers the 
+barrier to achieving this goal. We hope this tutorial helps normalize 
+environment-level reproducibility as a standard component of rigorous 
+computational research in psychology and beyond.
 
 {{< pagebreak >}}
 
