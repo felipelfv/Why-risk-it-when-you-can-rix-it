@@ -546,7 +546,7 @@ We first begin by creating a folder for this project (here named
 `Simulation` and `Manuscript`. We have not written any simulation scripts or the
 manuscript yet. The only file we write by hand for now is `gen-env.R`, which
 uses the `rix()` function from the {rix} package to produce a `default.nix`
-file: a declarative specification of all software dependencies the project
+file, a declarative specification of all software dependencies the project
 needs.
 
 We establish the full environment the simulation needs up front: the R version,
@@ -723,11 +723,6 @@ are project-specific and do not interfere with system-wide installations.
     leaving. This makes environment activation implicit and reduces the risk of
     running analyses in the wrong software context.
 
-::: callout-warning
-Here I think we need to bring up the fact that typing rstudio does not open the
-project in RStudio. The project path must be specified (see below)
-:::
-
 #### Setting file output parameters
 
 \small
@@ -845,13 +840,7 @@ R is being provided by Nix rather than a system installation, run `which R`.
 This should return a path within `/nix/store/`. Moreover, from within the Nix
 shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 `positron`), which opens the IDE with the Nix environment active
-(@lst-shell-rs)[^10]:
-
-[^10]: Please note that activating an RStudio instance via Nix does **not**
-    automatically open the specific project directory you are working in. We
-    therefore recommend creating an RStudio project file (`.Rproj`) and opening
-    that file when using Nix to ensure that RStudio is correctly associated with
-    the intended project and environment.
+(@lst-shell-rs):
 
 ::: {#lst-shell-rs}
 \small
@@ -862,6 +851,11 @@ shell, users can launch their IDE by typing its name (e.g., `rstudio` or
 
 Activating RStudio \normalsize
 :::
+
+Note that launching RStudio this way does not automatically open the specific
+project you are working in. We therefore recommend creating an RStudio project
+file (`.Rproj`) and opening that file when using Nix, so that RStudio is
+correctly associated with the intended project and environment.
 
 ## Step 5: Developing and Making the Simulation Reproducible
 
@@ -1067,14 +1061,14 @@ Adding the apaquarto extension \normalsize
 :::
 
 The final document (which can be saved as a .docx, .pdf, or .html) is saved
-directly in the project subfolder[^11]. Because Quarto is installed as a
+directly in the project subfolder[^10]. Because Quarto is installed as a
 system-level package in our Nix specification, the rendering occurs entirely
 within a fully reproducible environment, ensuring consistent output across
 machines regardless of local software configurations. If desired, the manuscript
 can also be reproduced interactively by opening the project folder in the user’s
 preferred IDE.
 
-[^11]: Although we use `apaquarto` in this example, many alternative manuscript
+[^10]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 
@@ -1094,11 +1088,11 @@ package addresses this automatically. When you call `rix()`, it also executes
 R to ignore external package libraries and also disables `install.packages()`
 within the environment. The rationale is straightforward: any new packages
 should be added to `default.nix` and the environment rebuilt, preserving full
-reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^12]
+reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^11]
 that also prevents access to other system programs not specified in
 `default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
 
-[^12]: For example, when preparing this manuscript without the `--pure` flag,
+[^11]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
     the build failed. Running `quarto check` from within the Nix shell (i.e.,
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
