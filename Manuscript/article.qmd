@@ -595,14 +595,11 @@ rix(
 
 ### Environment Specification
 
-The `rix()` function[^8] constructs the specification through a series of
+The `rix()` function constructs the specification through a series of
 parameters that collectively describe the computational environment. Each
 parameter serves a distinct purpose in defining the environment's
-characteristics, and we will clarify those throughout this tutorial section.
-
-[^8]: For an overarching information on the function `rix()` and more details,
-    we suggest the following {rix} documentation:
-    <https://docs.ropensci.org/rix/articles/project-environments.html>
+characteristics, and we will clarify those throughout this tutorial section. For
+a broader overview of the function, see the {rix} documentation.
 
 #### Specifying the R version
 
@@ -703,10 +700,10 @@ interfaces such as Radian (`ide = "radian"`). These tools may either be
 installed directly within the Nix environment using the `ide` parameter, or
 users may rely on an existing system installation by setting `ide = "none"` (or
 `ide = "other"`) and configuring `direnv` to automatically load the Nix
-environment when the project directory is opened[^9]. All IDEs installed via Nix
+environment when the project directory is opened[^8]. All IDEs installed via Nix
 are project-specific and do not interfere with system-wide installations.
 
-[^9]: **`direnv`** is a lightweight utility that integrates with the user's
+[^8]: **`direnv`** is a lightweight utility that integrates with the user's
     shell and automatically loads project-specific environment settings when
     navigating into a directory (via a `.envrc` file), and unloads them when
     leaving. This makes environment activation implicit and reduces the risk of
@@ -1063,14 +1060,14 @@ Adding the apaquarto extension \normalsize
 :::
 
 The final document (which can be saved as a .docx, .pdf, or .html) is saved
-directly in the project subfolder[^10]. Because Quarto is installed as a
+directly in the project subfolder[^9]. Because Quarto is installed as a
 command-line tool in our Nix specification, the rendering occurs entirely
 within a fully reproducible environment, ensuring consistent output across
 machines regardless of local software configurations. If desired, the manuscript
 can also be reproduced interactively by opening the project folder in the user’s
 preferred IDE.
 
-[^10]: Although we use `apaquarto` in this example, many alternative manuscript
+[^9]: Although we use `apaquarto` in this example, many alternative manuscript
     templates are available, and Nix is agnostic to the specific template
     employed, provided the necessary extensions are installed.
 
@@ -1090,11 +1087,11 @@ package addresses this automatically. When you call `rix()`, it also executes
 R to ignore external package libraries and also disables `install.packages()`
 within the environment. The rationale is straightforward: any new packages
 should be added to `default.nix` and the environment rebuilt, preserving full
-reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^11]
+reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^10]
 that also prevents access to other system programs not specified in
 `default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
 
-[^11]: For example, when preparing this manuscript without the `--pure` flag,
+[^10]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
     the build failed. Running `quarto check` from within the Nix shell (i.e.,
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
