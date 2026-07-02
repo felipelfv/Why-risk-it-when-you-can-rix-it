@@ -492,7 +492,7 @@ open your distribution's terminal application. Then run (@lst-install-nix):
 
 [^5]: A terminal is a text-based way to give your computer instructions. Readers
     new to the command line may find the following link a useful primer:
-    <https://swcarpentry.github.io/shell-novice/>. This was also suggested in
+    <https://swcarpentry.github.io/shell-novice/>, as also suggested in
     @wiebels_moreau_2021
 
 ::: {#lst-install-nix}
@@ -696,18 +696,17 @@ macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or
 environments dated 2025-02-28 or later). For earlier R versions, alternative
 editors must be used. Other supported IDEs include Positron
 (`ide = "positron"`), Visual Studio Code (`ide = "code"`), and command-line
-interfaces such as Radian (`ide = "radian"`). These tools may either be
-installed directly within the Nix environment using the `ide` parameter, or
-users may rely on an existing system installation by setting `ide = "none"` (or
-`ide = "other"`) and configuring `direnv` to automatically load the Nix
-environment when the project directory is opened[^8]. All IDEs installed via Nix
-are project-specific and do not interfere with system-wide installations.
+interfaces such as Radian (`ide = "radian"`). These tools are installed directly
+within the Nix environment using the `ide` parameter in this tutorial[^8]. 
+All IDEs installed via Nix are project-specific and do not interfere with 
+system-wide installations.
 
-[^8]: **`direnv`** is a lightweight utility that integrates with the user's
-    shell and automatically loads project-specific environment settings when
-    navigating into a directory (via a `.envrc` file), and unloads them when
-    leaving. This makes environment activation implicit and reduces the risk of
-    running analyses in the wrong software context.
+[^8]: Alternatively, users may rely on an editor already installed on their
+    system by setting `ide = "none"` (or `ide = "other"`) and using `direnv`, a
+    lightweight utility that automatically activates the project's Nix
+    environment, and thus its R version and packages, when navigating into the
+    project directory (via a `.envrc` file), so an existing editor runs against
+    it.
 
 \small
 
@@ -868,18 +867,11 @@ become available.
 
 ### Running the Simulation and Results
 
-::: callout-warning
-hmm. We dont say download the R scripts. Maybe in the beginning say create a
-folder with two subfolders and download the R scripts for simulation and put
-them in there? I see no where in the ms where these scripts can be run and
-created which means it is not a self contained tutorial.
-:::
-
 With the environment built, we run the simulation from inside the Nix shell so
 that it uses exactly the R version and packages declared in `default.nix`. This
-is how the results and plots reported in this manuscript were produced. For
-example, `03_run_simulation.R` begins by loading the required packages and
-sourcing the other scripts it needs:
+is how the data generation, results, and plots reported in this manuscript 
+were produced. For example, `03_run_simulation.R` begins by loading the 
+required packages and sourcing the other scripts it needs:
 
 ```{r}
 #| lst-label: lst-run-simulation-code
@@ -1004,21 +996,20 @@ be listed. The {rvinecopulib} package, for example, links against the C++
 libraries Boost and Eigen, which we never list. Anything else the project needs
 is requested explicitly through `system_pkgs`: most often command-line tools
 such as Git, Pandoc, and Quarto, though in principle any package available
-through Nix, including additional system libraries. The `apaquarto` extension we
-use for APA formatting is a separate
-case: it is a Quarto extension stored in the project's `_extensions/` directory
-rather than a Nix package [@rodrigues_baumann_2025] (see the {rix} documentation
-for more:
-<https://docs.ropensci.org/rix/articles/installing-system-tools.html>).
+through Nix (searchable at <https://search.nixos.org/packages>), including
+additional system libraries. Note the `apaquarto` extension we
+use for APA formatting is a separate case: it is a Quarto extension stored in 
+the project's `_extensions/` directory rather than a Nix package 
+[@rodrigues_baumann_2025].
 
 #### Specifying LaTeX packages
 
 The `tex_pkgs` parameter lists the LaTeX packages needed for PDF compilation.
 When any are listed, Nix includes a minimal TeXLive distribution
 (`scheme-small`) and adds the requested packages on top. Finding the exact set
-often takes some trial and error, since Quarto's error messages during rendering
-indicate which packages are missing. Appendix B gives also the reasons for
-adding each package in `tex_pkgs`.
+may take some trial and error, but Quarto's error messages during rendering
+help by indicating which packages are missing. Appendix B gives also the 
+reasons for adding each package in `tex_pkgs`.
 
 After rebuilding with `nix-build` and re-entering with `nix-shell`, Quarto is
 available. We write the manuscript (`article.qmd`) in a `Manuscript` subfolder,
@@ -1126,7 +1117,7 @@ simulation can be reproduced by running its scripts in order, regenerating the
 results and figures. The complete manuscript (its text together with the
 embedded results, tables, and figures) can be reproduced in the same environment
 as in @lst-quarto-render, which re-executes every code chunk and regenerates the
-formatted PDF end to end.
+formatted manuscript end to end.
 
 ```{r}
 #| lst-label: lst-data-generation
