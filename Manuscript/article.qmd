@@ -803,10 +803,6 @@ documentation: <https://docs.ropensci.org/rix/articles/binary-cache.html>.
 
 To activate the environment, run (@lst-nix-shell):
 
-::: callout-warning
-Do we want to nix-shell —pure?
-:::
-
 ::: {#lst-nix-shell}
 \small
 
@@ -862,7 +858,7 @@ With RStudio open from the Nix environment, we write the five simulation `.R`
 scripts inside the `Simulation` subfolder. Note that one does not need to use
 RStudio, but we illustrate it as most readers probably make use of an IDE.
 Because we declared the simulation packages up front (@lst-rix-env-sim), they
-are already available in the shell, and the scripts run against exactly those
+are already available, and the scripts run against exactly those
 versions. Researchers are rarely aware of every package a project will need in
 advance, but, as highlighted before, packages can be added "on-the-go": as the
 code takes shape and calls for another package, we add it to `r_pkgs` in
