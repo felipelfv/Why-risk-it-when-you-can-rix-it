@@ -2462,7 +2462,7 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 8138</p>
+<p><em>Word Count</em>: 8128</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -2491,7 +2491,7 @@ border-bottom: none;
 </section>
 <section id="the-rix-package-r-interface-to-nix" class="level2">
 <h2 data-anchor-id="the-rix-package-r-interface-to-nix">The {rix} Package: R Interface to Nix</h2>
-<p>Because the Nix package manager is declarative, installing software requires writing expressions in its language. Since this language is unfamiliar to most researchers, we recommend and focus on using {rix} to lower this barrier. The {rix} package provides an R-native interface: a single call to <code>rix()</code> generates complete Nix configurations from standard R syntax, specifying R versions, CRAN packages, system-level libraries, and even Python or Julia components when required. Users never need to read or write Nix code directly, as {rix} translates automatically. For more on {rix}, including its integration with rstats-on-nix (a curated fork of the Nix package collection whose dated snapshots let users request the exact R and package versions available on a chosen day), see <span class="citation" data-cites="rodrigues_baumann_2025">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">2025</a>)</span> and <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>.</p>
+<p>Because the Nix package manager is declarative, installing software requires writing expressions in its language. Since this language is unfamiliar to most researchers, we recommend and focus on using {rix} to lower this barrier. The {rix} package provides an R-native interface: a single call to <code>rix()</code> generates complete Nix configurations from standard R syntax, specifying R versions, CRAN packages, system-level software, and even Python or Julia components when required. Users never need to read or write Nix code directly, as {rix} translates automatically. For more on {rix}, including its integration with rstats-on-nix (a curated fork of the Nix package collection whose dated snapshots let users request the exact R and package versions available on a chosen day), see <span class="citation" data-cites="rodrigues_baumann_2025">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">2025</a>)</span> and <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">Rodrigues and Baumann (<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">2026</a>)</span>.</p>
 </section>
 </section>
 <section id="a-practical-example-setting-up-a-reproducible-simulation-study-with-rix" class="level1">
@@ -2872,9 +2872,9 @@ Listing 18: Manuscript tools added to the simulation environment
 </figure>
 </div>
 </div>
-<section id="including-system-level-dependencies" class="level4">
-<h4 data-anchor-id="including-system-level-dependencies">Including system-level dependencies.</h4>
-<p>The <code>system_pkgs</code> parameter is for software the project needs that is not an R package. It accepts any of the programs available through Nix (the same large collection mentioned earlier), so beyond Git, Pandoc, and, here, Quarto, it can be essentially any command-line tool a project depends on. Not every system-level dependency needs listing, though: when an R package itself relies on compiled libraries, Nix installs them automatically. The {rvinecopulib} package, for example, links against the C++ libraries Boost and Eigen, which we never list. The <code>apaquarto</code> extension we use for APA formatting is a separate case: it is a Quarto extension stored in the project’s <code>_extensions/</code> directory rather than a Nix package <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see the {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-system-tools.html" class="uri">https://docs.ropensci.org/rix/articles/installing-system-tools.html</a>).</p>
+<section id="including-system-level-software" class="level4">
+<h4 data-anchor-id="including-system-level-software">Including system-level software.</h4>
+<p>Nix handles non-R software in two ways. The system-level libraries your R packages depend on, such as BLAS/LAPACK, are resolved automatically and need not be listed. The {rvinecopulib} package, for example, links against the C++ libraries Boost and Eigen, which we never list. Anything else the project needs is requested explicitly through <code>system_pkgs</code>: most often command-line tools such as Git, Pandoc, and Quarto, though in principle any package available through Nix, including additional system libraries. The <code>apaquarto</code> extension we use for APA formatting is a separate case: it is a Quarto extension stored in the project’s <code>_extensions/</code> directory rather than a Nix package <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span> (see the {rix} documentation for more: <a href="https://docs.ropensci.org/rix/articles/installing-system-tools.html" class="uri">https://docs.ropensci.org/rix/articles/installing-system-tools.html</a>).</p>
 </section>
 <section id="specifying-latex-packages" class="level4">
 <h4 data-anchor-id="specifying-latex-packages">Specifying LaTeX packages.</h4>
@@ -2903,7 +2903,7 @@ Listing 20: Adding the apaquarto extension
 </div>
 </figure>
 </div>
-<p>The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project subfolder<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
+<p>The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project subfolder<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Because Quarto is installed as a command-line tool in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
 <p>As highlighted before, we included the simulation code as code chunks for this manuscript. This was done simply for illustration purposes. In a real-world simulation study, users could for example run the simulation as in the previous sections and then load the needed results (produced within the Nix shell) in the manuscript. However, the same remark holds with respect to the formalized workflow.</p>
 <p>At this point, it is also worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically. When you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing 21</a>):</p>
 <div id="lst-nix-shell-pure" class="listing quarto-float quarto-figure quarto-figure-left">
@@ -3232,7 +3232,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computational reproducibility: Bioinformatics and beyond. <em>Briefings in Bioinformatics</em>, <em>24</em>(6), bbad375. <a href="https://doi.org/10.1093/bib/bbad375">https://doi.org/10.1093/bib/bbad375</a>
 </div>
 </div>
-<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" data-tblnum="1" prefix data-custom-style="FigureWithoutNote">
+<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glossary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3309,7 +3309,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </figure>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="2" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="2" prefix>
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="2">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3422,7 +3422,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3441,7 +3441,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
