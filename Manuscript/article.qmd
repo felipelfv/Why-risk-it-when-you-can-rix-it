@@ -122,7 +122,7 @@ and software) [@hardwicke2020]. In a simulation study, this involves more than
 reanalyzing a fixed dataset, because the code also generates the data.
 Reproducing such a study therefore involves the data generation process, the
 analysis, and the summary of results. @montoya_anderson_2026 conceptually
-address each of these stages separately.
+address each of these stages.
 
 Reproducibility in this sense is not all-or-nothing but occupies a continuum
 [@peng_2011], on which a study is positioned according to the extent of the
@@ -312,11 +312,11 @@ such as RStudio, VS Code, or Positron.
 
 The remainder of this article is structured as follows. We first illustrate a
 simulation study and the reproducibility risks associated with it. We then
-introduce Nix and {rix}, along with the core principles behind them. This is
-followed by a step-by-step tutorial that rebuilds the simulation study as a
-reproducible project with {rix}, from installing Nix to regenerating this
-manuscript. Last, we turn to additional considerations for ensuring
-reproducibility of simulation studies and close with a discussion.
+introduce Nix and {rix}, along with their core principles. This is
+followed by a step-by-step tutorial that (re)builds the simulation study as a
+reproducible project with {rix}, from installing Nix to (re)generating this
+manuscript. Last, we turn to additional considerations for reproducibility of 
+simulation studies and close with a discussion.
 
 | Term | Definition |
 |:-----------------------------|:-------------------------------------------------|
