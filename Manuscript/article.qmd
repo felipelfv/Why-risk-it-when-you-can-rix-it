@@ -606,6 +606,17 @@ characteristics, and we will clarify those throughout this tutorial section.
 
 #### Specifying the R version
 
+Researchers must first determine which version of R to use. This can be
+accomplished in two ways: The `r_ver` argument accepts an exact version string
+(e.g., "4.3.3") or special designations such as "latest-upstream" for the most
+recent stable release. Alternatively, the `date` argument specifies a particular
+date (e.g., "2024-11-15"), which ensures that R and all packages correspond to
+the versions available on that date. The date-based approach is generally
+preferable for reproducibility, as it captures a complete snapshot of the R
+ecosystem at a single point in time. For this tutorial, as shown on top, we use
+the `date` parameter to ensure temporal consistency across all software
+components [@rodrigues_baumann_2025].
+
 \small
 
 ```{r}
@@ -619,18 +630,13 @@ date = "2026-01-14"
 
 \normalsize
 
-Researchers must first determine which version of R to use. This can be
-accomplished in two ways: The `r_ver` argument accepts an exact version string
-(e.g., "4.3.3") or special designations such as "latest-upstream" for the most
-recent stable release. Alternatively, the `date` argument specifies a particular
-date (e.g., "2024-11-15"), which ensures that R and all packages correspond to
-the versions available on that date. The date-based approach is generally
-preferable for reproducibility, as it captures a complete snapshot of the R
-ecosystem at a single point in time. For this tutorial, as shown on top, we use
-the `date` parameter to ensure temporal consistency across all software
-components [@rodrigues_baumann_2025].
-
 #### Declaring R package dependencies
+
+The `r_pkgs` argument accepts a character vector listing all required R packages
+by their CRAN names. These packages will be installed from the version
+repository corresponding to the specified date or R version. It is important to
+list all packages that the analysis will load directly; dependencies of these
+packages are automatically resolved by Nix.
 
 \small
 
@@ -648,11 +654,7 @@ r_pkgs = c(
 
 \normalsize
 
-The `r_pkgs` argument accepts a character vector listing all required R packages
-by their CRAN names. These packages will be installed from the version
-repository corresponding to the specified date or R version. It is important to
-list all packages that the analysis will load directly; dependencies of these
-packages are automatically resolved by Nix. For packages requiring specific
+For packages requiring specific
 versions not corresponding to the chosen date, researchers can specify exact
 versions using the syntax `"packagename@version"` (e.g., `"ggplot2@2.2.1"`). For
 packages available only on GitHub or other Git repositories, the `git_pkgs`
@@ -683,19 +685,6 @@ their CRAN versions. Appendix B gives the reasons for adding each package in
 
 #### Configuring the development environment
 
-\small
-
-```{r}
-#| lst-label: lst-ide-example
-#| lst-cap: "Example for the ide argument"
-#| eval: false
-#| echo: true
-
-ide = "rstudio"
-```
-
-\normalsize
-
 The `ide` parameter controls whether an integrated development environment (IDE)
 is included in the Nix environment, allowing users to interactively develop and
 run code within their editor of choice. When `ide` is specified, the project can
@@ -723,7 +712,26 @@ are project-specific and do not interfere with system-wide installations.
     leaving. This makes environment activation implicit and reduces the risk of
     running analyses in the wrong software context.
 
+\small
+
+```{r}
+#| lst-label: lst-ide-example
+#| lst-cap: "Example for the ide argument"
+#| eval: false
+#| echo: true
+
+ide = "rstudio"
+```
+
+\normalsize
+
 #### Setting file output parameters
+
+The `project_path` parameter indicates where the `default.nix` file should be
+written ("." denotes the current directory), while `overwrite` controls whether
+an existing file should be replaced. Adding to this, setting `print = TRUE`,
+which is another argument, displays the generated specification in the console
+for immediate verification [@rodrigues_baumann_2025].
 
 \small
 
@@ -738,12 +746,6 @@ overwrite = TRUE
 ```
 
 \normalsize
-
-The `project_path` parameter indicates where the `default.nix` file should be
-written ("." denotes the current directory), while `overwrite` controls whether
-an existing file should be replaced. Adding to this, setting `print = TRUE`,
-which is another argument, displays the generated specification in the console
-for immediate verification [@rodrigues_baumann_2025].
 
 ## Step 3: Generating the Environment Specification
 
