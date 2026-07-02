@@ -2580,6 +2580,7 @@ Listing 3: Simulation environment: R, RStudio, and the packages the scripts nee
 <p>The <code>rix()</code> function<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> constructs the specification through a series of parameters that collectively describe the computational environment. Each parameter serves a distinct purpose in defining the environment’s characteristics, and we will clarify those throughout this tutorial section.</p>
 <section id="specifying-the-r-version" class="level4">
 <h4 data-anchor-id="specifying-the-r-version">Specifying the R version.</h4>
+<p>Researchers must first determine which version of R to use. This can be accomplished in two ways: The <code>r_ver</code> argument accepts an exact version string (e.g., “4.3.3”) or special designations such as “latest-upstream” for the most recent stable release. Alternatively, the <code>date</code> argument specifies a particular date (e.g., “2024-11-15”), which ensures that R and all packages correspond to the versions available on that date. The date-based approach is generally preferable for reproducibility, as it captures a complete snapshot of the R ecosystem at a single point in time. For this tutorial, as shown on top, we use the <code>date</code> parameter to ensure temporal consistency across all software components <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 <div class="cell">
 <div id="lst-date-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -2592,10 +2593,10 @@ Listing 4: Example for the date argument
 </figure>
 </div>
 </div>
-<p>Researchers must first determine which version of R to use. This can be accomplished in two ways: The <code>r_ver</code> argument accepts an exact version string (e.g., “4.3.3”) or special designations such as “latest-upstream” for the most recent stable release. Alternatively, the <code>date</code> argument specifies a particular date (e.g., “2024-11-15”), which ensures that R and all packages correspond to the versions available on that date. The date-based approach is generally preferable for reproducibility, as it captures a complete snapshot of the R ecosystem at a single point in time. For this tutorial, as shown on top, we use the <code>date</code> parameter to ensure temporal consistency across all software components <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 </section>
 <section id="declaring-r-package-dependencies" class="level4">
 <h4 data-anchor-id="declaring-r-package-dependencies">Declaring R package dependencies.</h4>
+<p>The <code>r_pkgs</code> argument accepts a character vector listing all required R packages by their CRAN names. These packages will be installed from the version repository corresponding to the specified date or R version. It is important to list all packages that the analysis will load directly; dependencies of these packages are automatically resolved by Nix.</p>
 <div class="cell">
 <div id="lst-r-pkgs-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -2611,7 +2612,7 @@ Listing 5: Example for the r_pkgs argument
 </figure>
 </div>
 </div>
-<p>The <code>r_pkgs</code> argument accepts a character vector listing all required R packages by their CRAN names. These packages will be installed from the version repository corresponding to the specified date or R version. It is important to list all packages that the analysis will load directly; dependencies of these packages are automatically resolved by Nix. For packages requiring specific versions not corresponding to the chosen date, researchers can specify exact versions using the syntax <code>&quot;packagename@version&quot;</code> (e.g., <code>&quot;ggplot2@2.2.1&quot;</code>). For packages available only on GitHub or other Git repositories, the <code>git_pkgs</code> argument accepts a list structure containing repository URLs and specific commit hashes. For example:</p>
+<p>For packages requiring specific versions not corresponding to the chosen date, researchers can specify exact versions using the syntax <code>&quot;packagename@version&quot;</code> (e.g., <code>&quot;ggplot2@2.2.1&quot;</code>). For packages available only on GitHub or other Git repositories, the <code>git_pkgs</code> argument accepts a list structure containing repository URLs and specific commit hashes. For example:</p>
 <div class="cell">
 <div id="lst-git-pkgs-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -2632,6 +2633,7 @@ Listing 6: Example for the git_pkgs argument
 </section>
 <section id="configuring-the-development-environment" class="level4">
 <h4 data-anchor-id="configuring-the-development-environment">Configuring the development environment.</h4>
+<p>The <code>ide</code> parameter controls whether an integrated development environment (IDE) is included in the Nix environment, allowing users to interactively develop and run code within their editor of choice. When <code>ide</code> is specified, the project can be opened directly in the corresponding IDE, with all dependencies provided by the Nix environment. Most readers likely already have an IDE installed locally. Here we instead show how to open RStudio from the rix specification, which does not require RStudio to be installed on your system. For example, setting <code>ide = &quot;rstudio&quot;</code> installs a project-specific version of RStudio inside the Nix environment. This is required for RStudio because, unlike most other editors, it cannot attach to an external Nix shell unless it is itself installed via Nix. On macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or environments dated 2025-02-28 or later). For earlier R versions, alternative editors must be used. Other supported IDEs include Positron (<code>ide = &quot;positron&quot;</code>), Visual Studio Code (<code>ide = &quot;code&quot;</code>), and command-line interfaces such as Radian (<code>ide = &quot;radian&quot;</code>). These tools may either be installed directly within the Nix environment using the <code>ide</code> parameter, or users may rely on an existing system installation by setting <code>ide = &quot;none&quot;</code> (or <code>ide = &quot;other&quot;</code>) and configuring <code>direnv</code> to automatically load the Nix environment when the project directory is opened<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. All IDEs installed via Nix are project-specific and do not interfere with system-wide installations.</p>
 <div class="cell">
 <div id="lst-ide-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -2644,10 +2646,10 @@ Listing 7: Example for the ide argument
 </figure>
 </div>
 </div>
-<p>The <code>ide</code> parameter controls whether an integrated development environment (IDE) is included in the Nix environment, allowing users to interactively develop and run code within their editor of choice. When <code>ide</code> is specified, the project can be opened directly in the corresponding IDE, with all dependencies provided by the Nix environment. Most readers likely already have an IDE installed locally. Here we instead show how to open RStudio from the rix specification, which does not require RStudio to be installed on your system. For example, setting <code>ide = &quot;rstudio&quot;</code> installs a project-specific version of RStudio inside the Nix environment. This is required for RStudio because, unlike most other editors, it cannot attach to an external Nix shell unless it is itself installed via Nix. On macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or environments dated 2025-02-28 or later). For earlier R versions, alternative editors must be used. Other supported IDEs include Positron (<code>ide = &quot;positron&quot;</code>), Visual Studio Code (<code>ide = &quot;code&quot;</code>), and command-line interfaces such as Radian (<code>ide = &quot;radian&quot;</code>). These tools may either be installed directly within the Nix environment using the <code>ide</code> parameter, or users may rely on an existing system installation by setting <code>ide = &quot;none&quot;</code> (or <code>ide = &quot;other&quot;</code>) and configuring <code>direnv</code> to automatically load the Nix environment when the project directory is opened<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. All IDEs installed via Nix are project-specific and do not interfere with system-wide installations.</p>
 </section>
 <section id="setting-file-output-parameters" class="level4">
 <h4 data-anchor-id="setting-file-output-parameters">Setting file output parameters.</h4>
+<p>The <code>project_path</code> parameter indicates where the <code>default.nix</code> file should be written (“.” denotes the current directory), while <code>overwrite</code> controls whether an existing file should be replaced. Adding to this, setting <code>print = TRUE</code>, which is another argument, displays the generated specification in the console for immediate verification <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 <div class="cell">
 <div id="lst-file-output-example" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
@@ -2661,7 +2663,6 @@ Listing 8: Example for the project_path and overwrite arguments
 </figure>
 </div>
 </div>
-<p>The <code>project_path</code> parameter indicates where the <code>default.nix</code> file should be written (“.” denotes the current directory), while <code>overwrite</code> controls whether an existing file should be replaced. Adding to this, setting <code>print = TRUE</code>, which is another argument, displays the generated specification in the console for immediate verification <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>.</p>
 </section>
 </section>
 </section>
@@ -3231,7 +3232,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computational reproducibility: Bioinformatics and beyond. <em>Briefings in Bioinformatics</em>, <em>24</em>(6), bbad375. <a href="https://doi.org/10.1093/bib/bbad375">https://doi.org/10.1093/bib/bbad375</a>
 </div>
 </div>
-<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
+<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" data-tblnum="1" prefix data-custom-style="FigureWithoutNote">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glossary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3308,7 +3309,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </figure>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="2" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="2">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="2" prefix>
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3421,7 +3422,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3440,7 +3441,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
