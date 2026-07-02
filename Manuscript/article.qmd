@@ -179,7 +179,7 @@ env_outer <- data.frame(
   ymax = c(10.0, 8.6),
   label = c(
     "Operating system",
-    "System-level libraries (e.g., BLAS/LAPACK)"
+    "System-level libraries (e.g., LAPACK)"
   ),
   fill = c("grey93", "grey86"),
   stringsAsFactors = FALSE
@@ -207,7 +207,7 @@ env_pkg <- data.frame(
   xmax = 9.1,
   ymin = 2.2,
   ymax = 6.2,
-  label = "R packages\n(e.g., ggplot2, rvinecopulib)",
+  label = "R packages\n(e.g., ggplot2)",
   fill = "grey68",
   stringsAsFactors = FALSE
 )
@@ -353,7 +353,7 @@ simulation execution (`03_run_simulation.R`), performance metric calculation
     `.qmd` file. This entails that the simulation runs from start to finish
     (i.e., generating data, producing results and figures). This is impractical
     for many real-world simulation studies, which are often too computationally
-    intensive. A possible solution, which we illustrate, is to run the 
+    intensive. One possible solution, which we illustrate, is to run the 
     simulation outside the `.qmd` file and load the results for the analyses 
     in the same file.
 
@@ -378,8 +378,7 @@ executed with the same seed can nevertheless produce different random sequences
 [@ottoboni_stark_2018]. This is especially consequential for simulation studies,
 because the random draws are not incidental to the analysis but constitute the
 data itself. Therefore, the random number generator is part of the computational
-environment: reproducing the data requires not only the same seed but also the
-same R version. Moreover, generating data and reproducing every statistical
+environment. Moreover, generating data and reproducing every statistical
 estimate *exactly* (down to the certain digits) can depend on lower-level
 components still, such as the system-level libraries R uses for matrix
 computations (e.g., BLAS/LAPACK). The potential solution we propose pins these
@@ -387,7 +386,8 @@ libraries, and increases the chances of reaching such a level of
 reproducibility, consistent with empirical findings in other contexts
 [@malka2026docker]. However, it must be noted that reproducing precisely every
 number is hard to guarantee in every case, especially across different operating
-systems and processors [@stan_reproducibility]. Although such differences are usually negligible,
+systems and processors [e.g., @stan_reproducibility]. Although such differences 
+are usually negligible,
 appearing only in the last digits, the finite precision of floating-point
 arithmetic [@goldberg1991; @ahrens2020] and the algorithm a specific R package
 uses to generate data can occasionally amplify them into larger discrepancies.
@@ -405,7 +405,7 @@ reproducibility in simulation studies)[^4].
     through the system's BLAS/LAPACK libraries, to which `mvtnorm` is invariant
     but `MASS` is not. The draws still come from the same distribution, so
     conclusions would generally be unchanged in simulation with multiple
-    repetitions, but from a reproducibility standpoint this is concerning.
+    repetitions, but from a *pure* reproducibility standpoint this is concerning.
     Pinning the numerical library with Nix (here, OpenBLAS) removes the
     discrepancy for `MASS::mvrnorm()`. For the full demonstration, see the
     repository.
