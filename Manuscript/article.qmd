@@ -61,16 +61,17 @@ keywords: [reproducibility, Nix, simulation studies, R, computational methods]
 word-count: true
 author-note:
   disclosures:
-    gratitude: "We would like to thank Julia Rohrer and Ole Schacht for their 
-    helpful feedback on earlier versions of this manuscript, and Matteo 
-    Quartagno for feedback on seeds and reproducibility. 
+    gratitude: "We would like to thank Julia Rohrer, Ole Schacht and Dries 
+    Debeer for their helpful feedback on earlier versions of this manuscript, 
+    and Matteo Quartagno for feedback on seeds and reproducibility. 
     During the first round of revision, Claude Sonnet 4.6
     (Anthropic) was used to improve the grammar and coherence solely of the 
     Introduction and Discussion."
     conflict-of-interest: "Bruno Rodrigues is one of the authors and maintainers
      of the {rix} package presented in this tutorial. The authors have no other 
     conflicts of interest to declare."
-    data-sharing: "Data and materials from this study can be accessed at <https://doi.org/10.5281/zenodo.21098114>."
+    data-sharing: "Data and materials from this study can be accessed at 
+    <https://doi.org/10.5281/zenodo.21098114>."
 format:
   apaquarto-pdf:
     document-mode: man
@@ -115,7 +116,7 @@ Carlo simulation studies (hereafter referred to as simulation studies) have
 received far less [@siepe_etall_2024], even though they are a primary tool for
 evaluating the statistical methods [@morris_etall_2019] and may suffer from
 selective reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025].
-One especially underexamined aspect for simulations is reproducibility (i.e.,
+One underexamined aspect for simulations is reproducibility (i.e.,
 exactly reproducing a study's results from the provided data, code, materials,
 and software) [@hardwicke2020]. In a simulation study, this involves more than
 reanalyzing a fixed dataset, because the code also generates the data.
@@ -267,11 +268,11 @@ specify and automate the structure of an analysis by formalizing the order in
 which steps should run and by tracking dependencies among intermediate results.
 These tools clarify *how* an analysis proceeds, but they assume that the
 software stack required to run each step is already stable. Containerization
-tools such as Docker, as well as container-based reproducibility platforms such
-as Code Ocean, offer a more comprehensive approach by bundling nearly the entire
-computational environment into a single executable image. R-focused
-implementations such as Rocker [@boettiger_2015; @boettiger_eddelbuettel_2017]
-provide preconfigured Docker images tailored to common R workflows. Yet their
+tools such as Docker, including R-focused implementations like Rocker
+[@boettiger_2015; @boettiger_eddelbuettel_2017] that provide preconfigured
+Docker images tailored to common R workflows, offer a more comprehensive
+approach by bundling nearly the entire environment into a single executable
+image. Yet their
 use requires familiarity with Linux system administration, and even
 containerization may suffer from temporal drift when Dockerfiles rely on mutable
 upstream repositories [@malka2026docker]. For a detailed comparison of these
