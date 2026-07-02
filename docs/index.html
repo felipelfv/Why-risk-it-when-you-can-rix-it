@@ -2462,7 +2462,7 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 8171</p>
+<p><em>Word Count</em>: 8138</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -2537,7 +2537,7 @@ Listing 2: Installing {rix} from CRAN or developmental version
 </section>
 <section id="sec-specifying-environment" class="level2">
 <h2 data-anchor-id="sec-specifying-environment">Step 2: Specifying the Computational Environment With <code>rix()</code></h2>
-<p>We first begin by creating a folder for this project (here named <code>Why-risk-it-when-you-can-rix-it</code>) that contains only two empty subfolders, <code>Simulation</code> and <code>Manuscript</code>. We have not written any simulation scripts or the manuscript yet. The only file we write by hand for now is <code>gen-env.R</code>, which uses the <code>rix()</code> function from the {rix} package to produce a <code>default.nix</code> file: a declarative specification of all software dependencies the project needs.</p>
+<p>We first begin by creating a folder for this project (here named <code>Why-risk-it-when-you-can-rix-it</code>) that contains only two empty subfolders, <code>Simulation</code> and <code>Manuscript</code>. We have not written any simulation scripts or the manuscript yet. The only file we write by hand for now is <code>gen-env.R</code>, which uses the <code>rix()</code> function from the {rix} package to produce a <code>default.nix</code> file, a declarative specification of all software dependencies the project needs.</p>
 <p>We establish the full environment the simulation needs up front: the R version, an IDE, and the R packages the scripts will use. You can always add more later, but doing so means editing <code>gen-env.R</code> and following the steps we are about to illustrate. The simulation specification is shown in <a href="#lst-rix-env-sim" class="quarto-xref">Listing 3</a> (the complete version, which also covers the manuscript, is in the project repository, <a href="https://doi.org/10.5281/zenodo.21098114" class="uri">https://doi.org/10.5281/zenodo.21098114</a>, as <code>gen-env.R</code>):</p>
 <div class="cell">
 <div id="lst-rix-env-sim" class="r cell-code listing quarto-float quarto-figure quarto-figure-left">
@@ -2645,19 +2645,6 @@ Listing 7: Example for the ide argument
 </div>
 </div>
 <p>The <code>ide</code> parameter controls whether an integrated development environment (IDE) is included in the Nix environment, allowing users to interactively develop and run code within their editor of choice. When <code>ide</code> is specified, the project can be opened directly in the corresponding IDE, with all dependencies provided by the Nix environment. Most readers likely already have an IDE installed locally. Here we instead show how to open RStudio from the rix specification, which does not require RStudio to be installed on your system. For example, setting <code>ide = &quot;rstudio&quot;</code> installs a project-specific version of RStudio inside the Nix environment. This is required for RStudio because, unlike most other editors, it cannot attach to an external Nix shell unless it is itself installed via Nix. On macOS, RStudio is only available through Nix for R versions 4.4.3 or later (or environments dated 2025-02-28 or later). For earlier R versions, alternative editors must be used. Other supported IDEs include Positron (<code>ide = &quot;positron&quot;</code>), Visual Studio Code (<code>ide = &quot;code&quot;</code>), and command-line interfaces such as Radian (<code>ide = &quot;radian&quot;</code>). These tools may either be installed directly within the Nix environment using the <code>ide</code> parameter, or users may rely on an existing system installation by setting <code>ide = &quot;none&quot;</code> (or <code>ide = &quot;other&quot;</code>) and configuring <code>direnv</code> to automatically load the Nix environment when the project directory is opened<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. All IDEs installed via Nix are project-specific and do not interfere with system-wide installations.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Here I think we need to bring up the fact that typing rstudio does not open the project in RStudio. The project path must be specified (see below)</p>
-</div>
-</div>
 </section>
 <section id="setting-file-output-parameters" class="level4">
 <h4 data-anchor-id="setting-file-output-parameters">Setting file output parameters.</h4>
@@ -2751,7 +2738,7 @@ Listing 12: Expected output from <code>nix-shell</code>
 </div>
 </figure>
 </div>
-<p>This command drops the user into a shell where all specified packages and tools are available. The shell prompt changes to indicate that a Nix environment is active (here, <code>[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</code>). To verify that R is being provided by Nix rather than a system installation, run <code>which R</code>. This should return a path within <code>/nix/store/</code>. Moreover, from within the Nix shell, users can launch their IDE by typing its name (e.g., <code>rstudio</code> or <code>positron</code>), which opens the IDE with the Nix environment active (<a href="#lst-shell-rs" class="quarto-xref">Listing 13</a>)<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>:</p>
+<p>This command drops the user into a shell where all specified packages and tools are available. The shell prompt changes to indicate that a Nix environment is active (here, <code>[nix-shell:~/Why-risk-it-when-you-can-rix-it]$</code>). To verify that R is being provided by Nix rather than a system installation, run <code>which R</code>. This should return a path within <code>/nix/store/</code>. Moreover, from within the Nix shell, users can launch their IDE by typing its name (e.g., <code>rstudio</code> or <code>positron</code>), which opens the IDE with the Nix environment active (<a href="#lst-shell-rs" class="quarto-xref">Listing 13</a>):</p>
 <div id="lst-shell-rs" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-shell-rs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2762,6 +2749,7 @@ Listing 13: Activating RStudio
 </div>
 </figure>
 </div>
+<p>Note that launching RStudio this way does not automatically open the specific project you are working in. We therefore recommend creating an RStudio project file (<code>.Rproj</code>) and opening that file when using Nix, so that RStudio is correctly associated with the intended project and environment.</p>
 </section>
 <section id="step-5-developing-and-making-the-simulation-reproducible" class="level2">
 <h2 data-anchor-id="step-5-developing-and-making-the-simulation-reproducible">Step 5: Developing and Making the Simulation Reproducible</h2>
@@ -2914,9 +2902,9 @@ Listing 20: Adding the apaquarto extension
 </div>
 </figure>
 </div>
-<p>The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project subfolder<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
+<p>The final document (which can be saved as a .docx, .pdf, or .html) is saved directly in the project subfolder<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Because Quarto is installed as a system-level package in our Nix specification, the rendering occurs entirely within a fully reproducible environment, ensuring consistent output across machines regardless of local software configurations. If desired, the manuscript can also be reproduced interactively by opening the project folder in the user’s preferred IDE.</p>
 <p>As highlighted before, we included the simulation code as code chunks for this manuscript. This was done simply for illustration purposes. In a real-world simulation study, users could for example run the simulation as in the previous sections and then load the needed results (produced within the Nix shell) in the manuscript. However, the same remark holds with respect to the formalized workflow.</p>
-<p>At this point, it is also worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically. When you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing 21</a>):</p>
+<p>At this point, it is also worth noting that Nix shells do not fully isolate you from your existing system by default. For R users, this has a practical implication: packages installed in your regular R library (outside of Nix) could potentially be loaded when running R from within the Nix environment. The {rix} package addresses this automatically. When you call <code>rix()</code>, it also executes <code>rix_init()</code>, which creates a project-specific <code>.Rprofile</code>. This file configures R to ignore external package libraries and also disables <code>install.packages()</code> within the environment. The rationale is straightforward: any new packages should be added to <code>default.nix</code> and the environment rebuilt, preserving full reproducibility <span class="citation" data-cites="rodrigues_baumann_2025">(<a href="#ref-rodrigues_baumann_2025" role="doc-biblioref">Rodrigues &amp; Baumann, 2025</a>)</span>. However, for stricter isolation<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> that also prevents access to other system programs not specified in <code>default.nix</code>, use the <code>--pure</code> flag (<a href="#lst-nix-shell-pure" class="quarto-xref">Listing 21</a>):</p>
 <div id="lst-nix-shell-pure" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-pure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3637,9 +3625,8 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 <li id="fn7"><p>We, however, recommend uninstalling your local R and letting Nix manage R, R packages, and other tools entirely. This approach avoids potential conflicts between system-installed and Nix-managed software, an issue we will illustrate later in this tutorial. See the {rix} documentation for more details.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>For an overarching information on the function <code>rix()</code> and more details, we suggest the following {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/project-environments.html" class="uri">https://docs.ropensci.org/rix/articles/project-environments.html</a><a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p><strong><code>direnv</code></strong> is a lightweight utility that integrates with the user’s shell and automatically loads project-specific environment settings when navigating into a directory (via a <code>.envrc</code> file), and unloads them when leaving. This makes environment activation implicit and reduces the risk of running analyses in the wrong software context.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>Please note that activating an RStudio instance via Nix does <strong>not</strong> automatically open the specific project directory you are working in. We therefore recommend creating an RStudio project file (<code>.Rproj</code>) and opening that file when using Nix to ensure that RStudio is correctly associated with the intended project and environment.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>Although we use <code>apaquarto</code> in this example, many alternative manuscript templates are available, and Nix is agnostic to the specific template employed, provided the necessary extensions are installed.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12"><p>For example, when preparing this manuscript without the <code>--pure</code> flag, <code>quarto render</code> worked successfully. However, when using the <code>--pure</code> flag, the build failed. Running <code>quarto check</code> from within the Nix shell (i.e., <code>nix-shell --run &quot;quarto check&quot;</code>) revealed that Quarto was still accessing the system’s LaTeX installation (<code>/Library/TeX/texbin</code>) rather than being restricted to only what was specified in <code>default.nix</code>.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Although we use <code>apaquarto</code> in this example, many alternative manuscript templates are available, and Nix is agnostic to the specific template employed, provided the necessary extensions are installed.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>For example, when preparing this manuscript without the <code>--pure</code> flag, <code>quarto render</code> worked successfully. However, when using the <code>--pure</code> flag, the build failed. Running <code>quarto check</code> from within the Nix shell (i.e., <code>nix-shell --run &quot;quarto check&quot;</code>) revealed that Quarto was still accessing the system’s LaTeX installation (<code>/Library/TeX/texbin</code>) rather than being restricted to only what was specified in <code>default.nix</code>.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
