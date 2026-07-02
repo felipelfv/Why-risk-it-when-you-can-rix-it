@@ -460,7 +460,7 @@ writing expressions in its language. Since this language is unfamiliar to most
 researchers, we recommend and focus on using {rix} to lower this barrier. The
 {rix} package provides an R-native interface: a single call to `rix()` generates
 complete Nix configurations from standard R syntax, specifying R versions, CRAN
-packages, system-level libraries, and even Python or Julia components when
+packages, system-level software, and even Python or Julia components when
 required. Users never need to read or write Nix code directly, as {rix}
 translates automatically. For more on {rix}, including its integration with
 rstats-on-nix (a curated fork of the Nix package collection whose dated
@@ -1003,16 +1003,16 @@ rix(
 
 \normalsize
 
-#### Including system-level dependencies
+#### Including system-level software
 
-The `system_pkgs` parameter is for software the project needs that is not an R
-package. It accepts any of the programs available through Nix (the same large
-collection mentioned earlier), so beyond Git, Pandoc, and, here, Quarto, it can
-be essentially any command-line tool a project depends on. Not every
-system-level dependency needs listing, though: when an R package itself relies
-on compiled libraries, Nix installs them automatically. The {rvinecopulib}
-package, for example, links against the C++ libraries Boost and Eigen, which we
-never list. The `apaquarto` extension we use for APA formatting is a separate
+Nix handles non-R software in two ways. The system-level libraries your R
+packages depend on, such as BLAS/LAPACK, are resolved automatically and need not
+be listed. The {rvinecopulib} package, for example, links against the C++
+libraries Boost and Eigen, which we never list. Anything else the project needs
+is requested explicitly through `system_pkgs`: most often command-line tools
+such as Git, Pandoc, and Quarto, though in principle any package available
+through Nix, including additional system libraries. The `apaquarto` extension we
+use for APA formatting is a separate
 case: it is a Quarto extension stored in the project's `_extensions/` directory
 rather than a Nix package [@rodrigues_baumann_2025] (see the {rix} documentation
 for more:
@@ -1064,7 +1064,7 @@ Adding the apaquarto extension \normalsize
 
 The final document (which can be saved as a .docx, .pdf, or .html) is saved
 directly in the project subfolder[^10]. Because Quarto is installed as a
-system-level package in our Nix specification, the rendering occurs entirely
+command-line tool in our Nix specification, the rendering occurs entirely
 within a fully reproducible environment, ensuring consistent output across
 machines regardless of local software configurations. If desired, the manuscript
 can also be reproduced interactively by opening the project folder in the user’s
