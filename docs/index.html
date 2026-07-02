@@ -2462,7 +2462,7 @@ border-bottom: none;
 <section id="abstract" class="level1 unnumbered unlisted AuthorNote">
 <h1 class="unnumbered unlisted AuthorNote">Abstract</h1>
 <p><em>Keywords</em>: reproducibility, Nix, simulation studies, R, computational methods</p>
-<p><em>Word Count</em>: 8121</p>
+<p><em>Word Count</em>: 8112</p>
 <br>
 </section>
 <section id="firstheader" class="level1 title unnumbered unlisted">
@@ -2702,19 +2702,6 @@ Listing 10: Expected output from <code>nix-build</code>
 <p>This command builds the environment according to the specification. The first execution will download and install all required packages, which may take a few minutes depending on network speed and system resources. Subsequent builds use cached packages and complete in seconds. Upon successful completion, a path to the constructed environment in the Nix store is printed (here, <code>/nix/store/qa7fq20m2f94szsnqzciwv8h4n81w43v-nix-shell</code>), and a symbolic link named <code>result</code> appears in the project directory pointing to this location. In our illustration, this build already includes the R packages declared for the simulation (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 3</a>).</p>
 <p>Note that the warnings indicate that you are not configured as a trusted user, so Nix cannot use the rstats-on-nix binary cache and will instead compile packages from source, which is slower. To enable binary caching, see the {rix} documentation: <a href="https://docs.ropensci.org/rix/articles/binary-cache.html" class="uri">https://docs.ropensci.org/rix/articles/binary-cache.html</a>.</p>
 <p>To activate the environment, run (<a href="#lst-nix-shell" class="quarto-xref">Listing 11</a>):</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Do we want to nix-shell —pure?</p>
-</div>
-</div>
 <div id="lst-nix-shell" class="listing quarto-float quarto-figure quarto-figure-left">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-nix-shell-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2754,7 +2741,7 @@ Listing 13: Activating RStudio
 </section>
 <section id="step-5-developing-and-making-the-simulation-reproducible" class="level2">
 <h2 data-anchor-id="step-5-developing-and-making-the-simulation-reproducible">Step 5: Developing and Making the Simulation Reproducible</h2>
-<p>With RStudio open from the Nix environment, we write the five simulation <code>.R</code> scripts inside the <code>Simulation</code> subfolder. Note that one does not need to use RStudio, but we illustrate it as most readers probably make use of an IDE. Because we declared the simulation packages up front (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 3</a>), they are already available in the shell, and the scripts run against exactly those versions. Researchers are rarely aware of every package a project will need in advance, but, as highlighted before, packages can be added “on-the-go”: as the code takes shape and calls for another package, we add it to <code>r_pkgs</code> in <code>gen-env.R</code> and rerun <code>rix()</code>. It is crucial that, after editing <code>gen-env.R</code>, we rebuild with <code>nix-build</code> and re-enter with <code>nix-shell</code> so the new packages become available.</p>
+<p>With RStudio open from the Nix environment, we write the five simulation <code>.R</code> scripts inside the <code>Simulation</code> subfolder. Note that one does not need to use RStudio, but we illustrate it as most readers probably make use of an IDE. Because we declared the simulation packages up front (<a href="#lst-rix-env-sim" class="quarto-xref">Listing 3</a>), they are already available, and the scripts run against exactly those versions. Researchers are rarely aware of every package a project will need in advance, but, as highlighted before, packages can be added “on-the-go”: as the code takes shape and calls for another package, we add it to <code>r_pkgs</code> in <code>gen-env.R</code> and rerun <code>rix()</code>. It is crucial that, after editing <code>gen-env.R</code>, we rebuild with <code>nix-build</code> and re-enter with <code>nix-shell</code> so the new packages become available.</p>
 <section id="running-the-simulation-and-results" class="level3">
 <h3 data-anchor-id="running-the-simulation-and-results">Running the Simulation and Results</h3>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -3232,7 +3219,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computational reproducibility: Bioinformatics and beyond. <em>Briefings in Bioinformatics</em>, <em>24</em>(6), bbad375. <a href="https://doi.org/10.1093/bib/bbad375">https://doi.org/10.1093/bib/bbad375</a>
 </div>
 </div>
-<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
+<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" data-tblnum="1" prefix data-custom-style="FigureWithoutNote">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glossary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3309,7 +3296,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </figure>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="2" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="2">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="2" prefix>
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3422,7 +3409,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3441,7 +3428,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
