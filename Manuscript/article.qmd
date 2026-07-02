@@ -289,7 +289,7 @@ without needing deep knowledge of its underlying language or infrastructure. Our
 main objective with the tutorial is not to advocate for specific analytical
 pipeline tool or to prescribe a particular workflow structure[^2]. Instead, we
 aim to show what Nix and {rix} are and how they can establish a stable
-environment within which simulation studies—whether organized in simple `.R`
+environment within which simulation studies—whether organized in `.R`
 files that `source()` others, through formal pipeline tools (e.g., {targets}) or
 embedded as code chunks in `.Rmd` or `.qmd` files—can be executed reliably. We
 illustrate these ideas through a reproducible simulation study conducted in R,
