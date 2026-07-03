@@ -3230,23 +3230,31 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 <tbody>
 <tr class="odd">
 <td style="text-align: left;"><strong>System-level libraries</strong></td>
-<td style="text-align: left;">Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends). These are not installed by <code>install.packages()</code>.</td>
+<td style="text-align: left;">Software libraries provided by the operating system (not R) that certain R packages rely on to function.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Operating system</strong></td>
-<td style="text-align: left;">The base software (e.g., Windows, macOS, Linux) that manages a computer’s hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it.</td>
+<td style="text-align: left;">The core software (e.g., Windows, macOS, Linux) that manages a computer’s hardware and provides a platform on which all other programs run. R, its packages, and system-level libraries operate on top of it.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>R interpreter</strong></td>
-<td style="text-align: left;">The <code>R</code> program that reads and runs your R code <span class="citation" data-cites="adler_2012">(<a href="#ref-adler_2012" role="doc-biblioref">Adler, 2012</a>)</span>. Two machines can report the same R version yet have interpreters compiled differently or linked against different system-level libraries <span class="citation" data-cites="rcoreteam_installation">(see <a href="#ref-rcoreteam_installation" role="doc-biblioref">R Core Team, 2025, Section A.3</a>)</span>.</td>
+<td style="text-align: left;">The R program that reads and executes your R code <span class="citation" data-cites="adler_2012">(<a href="#ref-adler_2012" role="doc-biblioref">Adler, 2012</a>)</span>. Two machines may report the same R version but use interpreters compiled differently or linked against different system-level libraries <span class="citation" data-cites="rcoreteam_installation">(see <a href="#ref-rcoreteam_installation" role="doc-biblioref">R Core Team, 2025, Section A.3</a>)</span>.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"><strong>Compiled</strong></td>
+<td style="text-align: left;">Converted from human-readable source code into machine code by a compiler so the computer can run it directly.</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><strong>Analytical pipeline</strong></td>
 <td style="text-align: left;">Automating the order in which analysis steps run and the dependencies among them, re-running only those affected by a change.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><strong>Software stack</strong></td>
-<td style="text-align: left;">The complete set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top of them.</td>
+<td style="text-align: left;">The full set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top. Note that this stack itself depends on the underlying hardware.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Hardware</strong></td>
+<td style="text-align: left;">The physical components of a computer (e.g., CPU, memory, and storage) that execute instructions and support the operation of software.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Containerization</strong></td>
@@ -3267,6 +3275,14 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 <tr class="even">
 <td style="text-align: left;"><strong>Functional programming language</strong></td>
 <td style="text-align: left;">A language built around pure functions, immutability, and explicit inputs, so the same inputs always produce the same output.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Pure function</strong></td>
+<td style="text-align: left;">A function that always returns the same output for the same inputs and has no side effects (it does not modify external state or rely on changing external state).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Immutability</strong></td>
+<td style="text-align: left;">A property where data cannot be changed after it is created; instead of modifying existing data, new data is created.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Binary cache</strong></td>
