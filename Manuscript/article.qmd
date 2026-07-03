@@ -394,9 +394,9 @@ uses to generate data can occasionally amplify them into larger discrepancies.
 With respect to all of this, we do not claim that this exact level of identity
 must be met. How much reproducibility is required is ultimately for the
 scientific community to decide (e.g., through journals and disciplinary norms),
-and reproducing the broader pattern of results is arguably enough (see also
-@montoya_anderson_2026, for a stage-by-stage approach to assessing
-reproducibility in simulation studies)[^4].
+and reproducing the broader pattern of data generation and results is arguably 
+enough (see also @montoya_anderson_2026, for a stage-by-stage approach to 
+assessing reproducibility in simulation studies)[^4].
 
 [^4]: The following illustration originated from Danielle Navarro. With the same
     seed and covariance matrix, `MASS::mvrnorm()` can return different values on
@@ -405,10 +405,10 @@ reproducibility in simulation studies)[^4].
     through the system's BLAS/LAPACK libraries, to which `mvtnorm` is invariant
     but `MASS` is not. The draws still come from the same distribution, so
     conclusions would generally be unchanged in simulation with multiple
-    repetitions, but from a *pure* reproducibility standpoint this is concerning.
-    Pinning the numerical library with Nix (here, OpenBLAS) removes the
-    discrepancy for `MASS::mvrnorm()`. For the full demonstration, see the
-    repository.
+    repetitions, but from a *pure* reproducibility standpoint this may be
+    concerning. Pinning the numerical library with Nix (here, OpenBLAS) removes, 
+    for this example, the discrepancy for `MASS::mvrnorm()`. For the full 
+    demonstration, see the repository.
 
 Finally, analyses embedded in a literate programming workflow add further
 dependencies. Rendering R Markdown (`.Rmd`) or Quarto (`.qmd`) documents, for
