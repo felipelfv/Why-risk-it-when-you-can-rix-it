@@ -116,9 +116,9 @@ Carlo simulation studies (hereafter referred to as simulation studies) have
 received far less [@siepe_etall_2024], even though they are a primary tool for
 evaluating the statistical methods [@morris_etall_2019] and may suffer from
 selective reporting [@pawel_etall_2024; @bouma_etall_2026; @pawel_etall_2025].
-One underexamined aspect for simulations is reproducibility (i.e.,
-exactly reproducing a study's results from the provided data, code, materials,
-and software) [@hardwicke2020]. In a simulation study, this involves more than
+One underexamined aspect for simulations is reproducibility (i.e., exactly
+reproducing a study's results from the provided data, code, materials, and
+software) [@hardwicke2020]. In a simulation study, this involves more than
 reanalyzing a fixed dataset, because the code also generates the data.
 Reproducing such a study therefore involves the data generation process, the
 analysis, and the summary of results. @montoya_anderson_2026 conceptually
@@ -272,13 +272,12 @@ tools such as Docker, including R-focused implementations like Rocker
 [@boettiger_2015; @boettiger_eddelbuettel_2017] that provide preconfigured
 Docker images tailored to common R workflows, offer a more comprehensive
 approach by bundling nearly the entire environment into a single executable
-image. Yet their
-use requires familiarity with Linux system administration, and even
-containerization may suffer from temporal drift when Dockerfiles rely on mutable
-upstream repositories [@malka2026docker]. For a detailed comparison of these
-tools and their limitations, see @rodrigues_baumann_2026_polyglot. Researchers
-thus face a trade-off between accessible but incomplete solutions and powerful
-but technically demanding ones.
+image. Yet their use requires familiarity with Linux system administration, and
+even containerization may suffer from temporal drift when Dockerfiles rely on
+mutable upstream repositories [@malka2026docker]. For a detailed comparison of
+these tools and their limitations, see @rodrigues_baumann_2026_polyglot.
+Researchers thus face a trade-off between accessible but incomplete solutions
+and powerful but technically demanding ones.
 
 In this article, we focus specifically on computational environment
 reproducibility as the foundation upon which other reproducibility practices
@@ -289,15 +288,15 @@ without needing deep knowledge of its underlying language or infrastructure. Our
 main objective with the tutorial is not to advocate for specific analytical
 pipeline tool or to prescribe a particular workflow structure[^2]. Instead, we
 aim to show what Nix and {rix} are and how they can establish a stable
-environment within which simulation studies—whether organized in `.R`
-files that `source()` others, through formal pipeline tools (e.g., {targets}) or
-embedded as code chunks in `.Rmd` or `.qmd` files—can be executed reliably. We
-illustrate these ideas through a reproducible simulation study conducted in R,
-culminating in this automated APA-formatted manuscript generated with
-`apaquarto` [@schneider_2024]. Although the example centers on R, the principles
-underlying environment reproducibility with {rix} apply equally to other
-languages, including Python and Julia, and to multiple development environments
-such as RStudio, VS Code, or Positron.
+environment within which simulation studies—whether organized in `.R` files that
+`source()` others, through formal pipeline tools (e.g., {targets}) or embedded
+as code chunks in `.Rmd` or `.qmd` files—can be executed reliably. We illustrate
+these ideas through a reproducible simulation study conducted in R, culminating
+in this automated APA-formatted manuscript generated with `apaquarto`
+[@schneider_2024]. Although the example centers on R, the principles underlying
+environment reproducibility with {rix} apply equally to other languages,
+including Python and Julia, and to multiple development environments such as
+RStudio, VS Code, or Positron.
 
 [^2]: The analytical pipeline is one part of the broader reproducible workflow.
     We leave it aside for two reasons. First, many tools address it, each with
@@ -312,11 +311,11 @@ such as RStudio, VS Code, or Positron.
 
 The remainder of this article is structured as follows. We first illustrate a
 simulation study and the reproducibility risks associated with it. We then
-introduce Nix and {rix}, along with their core principles. This is
-followed by a step-by-step tutorial that (re)builds the simulation study as a
-reproducible project with {rix}, from installing Nix to (re)generating this
-manuscript. Last, we turn to additional considerations for reproducibility of 
-simulation studies and close with a discussion.
+introduce Nix and {rix}, along with their core principles. This is followed by a
+step-by-step tutorial that (re)builds the simulation study as a reproducible
+project with {rix}, from installing Nix to (re)generating this manuscript. Last,
+we turn to additional considerations for reproducibility of simulation studies
+and close with a discussion.
 
 | Term | Definition |
 |:-----------------------------|:-------------------------------------------------|
@@ -347,15 +346,15 @@ studies are typically organized into multiple component files. To mimic this
 practice, our simulation is organized into five sequential scripts: data
 generation (`01_data_generation.R`), model specification (`02_models.R`),
 simulation execution (`03_run_simulation.R`), performance metric calculation
-(`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^3].
+(`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^3]. These scripts can be obtained here: https://github.com/felipelfv/Why-risk-it-when-you-can-rix-it/tree/main/Simulation. 
 
 [^3]: For simplicity, we included all code as executable chunks in a single
     `.qmd` file. This entails that the simulation runs from start to finish
     (i.e., generating data, producing results and figures). This is impractical
     for many real-world simulation studies, which are often too computationally
-    intensive. One possible solution, which we illustrate, is to run the 
-    simulation outside the `.qmd` file and load the results for the analyses 
-    in the same file.
+    intensive. One possible solution, which we illustrate, is to run the
+    simulation outside the `.qmd` file and load the results for the analyses in
+    the same file.
 
 Now suppose a researcher attempts to reproduce the simulation run and results
 reported in this article. What might prevent them from obtaining identical
@@ -386,17 +385,16 @@ libraries, and increases the chances of reaching such a level of
 reproducibility, consistent with empirical findings in other contexts
 [@malka2026docker]. However, it must be noted that reproducing precisely every
 number is hard to guarantee in every case, especially across different operating
-systems and processors [e.g., @stan_reproducibility]. Although such differences 
-are usually negligible,
-appearing only in the last digits, the finite precision of floating-point
-arithmetic [@goldberg1991; @ahrens2020] and the algorithm a specific R package
-uses to generate data can occasionally amplify them into larger discrepancies.
-With respect to all of this, we do not claim that this exact level of identity
-must be met. How much reproducibility is required is ultimately for the
-scientific community to decide (e.g., through journals and disciplinary norms),
-and reproducing the broader pattern of results is arguably enough (see also
-@montoya_anderson_2026, for a stage-by-stage approach to assessing
-reproducibility in simulation studies)[^4].
+systems and processors [e.g., @stan_reproducibility]. Although such differences
+are usually negligible, appearing only in the last digits, the finite precision
+of floating-point arithmetic [@goldberg1991; @ahrens2020] and the algorithm a
+specific R package uses to generate data can occasionally amplify them into
+larger discrepancies. With respect to all of this, we do not claim that this
+exact level of identity must be met. How much reproducibility is required is
+ultimately for the scientific community to decide (e.g., through journals and
+disciplinary norms), and reproducing the broader pattern of results is arguably
+enough (see also @montoya_anderson_2026, for a stage-by-stage approach to
+assessing reproducibility in simulation studies)[^4].
 
 [^4]: The following illustration originated from Danielle Navarro. With the same
     seed and covariance matrix, `MASS::mvrnorm()` can return different values on
@@ -405,9 +403,9 @@ reproducibility in simulation studies)[^4].
     through the system's BLAS/LAPACK libraries, to which `mvtnorm` is invariant
     but `MASS` is not. The draws still come from the same distribution, so
     conclusions would generally be unchanged in simulation with multiple
-    repetitions, but from a *pure* reproducibility standpoint this is concerning.
-    Pinning the numerical library with Nix (here, OpenBLAS) removes the
-    discrepancy for `MASS::mvrnorm()`. For the full demonstration, see the
+    repetitions, but from a *pure* reproducibility standpoint this is
+    concerning. Pinning the numerical library with Nix (here, OpenBLAS) removes
+    the discrepancy for `MASS::mvrnorm()`. For the full demonstration, see the
     repository.
 
 Finally, analyses embedded in a literate programming workflow add further
@@ -595,11 +593,11 @@ rix(
 
 ### Environment Specification
 
-The `rix()` function constructs the specification through a series of
-parameters that collectively describe the computational environment. Each
-parameter serves a distinct purpose in defining the environment's
-characteristics, and we will clarify those throughout this tutorial section. For
-a broader overview of the function, see the {rix} documentation.
+The `rix()` function constructs the specification through a series of parameters
+that collectively describe the computational environment. Each parameter serves
+a distinct purpose in defining the environment's characteristics, and we will
+clarify those throughout this tutorial section. For a broader overview of the
+function, see the {rix} documentation.
 
 #### Specifying the R version
 
@@ -622,7 +620,7 @@ components [@rodrigues_baumann_2025].
 #| eval: false
 #| echo: true
 
-date = "2026-01-14"
+date <- "2026-01-14"
 ```
 
 \normalsize
@@ -643,20 +641,27 @@ packages are automatically resolved by Nix.
 #| eval: false
 #| echo: true
 
-r_pkgs = c(
-  "rix", "marginaleffects", "simhelpers", "rvinecopulib",
-  "doParallel", "doRNG", "ggplot2", "cowplot", "dplyr", "svglite"
+r_pkgs <- c(
+  "rix",
+  "marginaleffects",
+  "simhelpers",
+  "rvinecopulib",
+  "doParallel",
+  "doRNG",
+  "ggplot2",
+  "cowplot",
+  "dplyr",
+  "svglite"
 )
 ```
 
 \normalsize
 
-For packages requiring specific
-versions not corresponding to the chosen date, researchers can specify exact
-versions using the syntax `"packagename@version"` (e.g., `"ggplot2@2.2.1"`). For
-packages available only on GitHub or other Git repositories, the `git_pkgs`
-argument accepts a list structure containing repository URLs and specific commit
-hashes. For example:
+For packages requiring specific versions not corresponding to the chosen date,
+researchers can specify exact versions using the syntax `"packagename@version"`
+(e.g., `"ggplot2@2.2.1"`). For packages available only on GitHub or other Git
+repositories, the `git_pkgs` argument accepts a list structure containing
+repository URLs and specific commit hashes. For example:
 
 \small
 
@@ -666,7 +671,7 @@ hashes. For example:
 #| eval: false
 #| echo: true
 
-git_pkgs = list(
+git_pkgs <- list(
   package_name = "marginaleffects",
   repo_url = "https://github.com/vincentarelbundock/marginaleffects",
   commit = "304bff91dc31ae28b227a8485bfa4f7bdc86d625"
@@ -697,17 +702,16 @@ environments dated 2025-02-28 or later). For earlier R versions, alternative
 editors must be used. Other supported IDEs include Positron
 (`ide = "positron"`), Visual Studio Code (`ide = "code"`), and command-line
 interfaces such as Radian (`ide = "radian"`). These tools are installed directly
-within the Nix environment using the `ide` parameter in this tutorial[^8]. 
-All IDEs installed via Nix are project-specific and do not interfere with 
+within the Nix environment using the `ide` parameter in this tutorial[^8]. All
+IDEs installed via Nix are project-specific and do not interfere with
 system-wide installations.
 
 [^8]: Alternatively, users may rely on an editor already installed on their
-    system by setting `ide = "none"` and using `direnv`, a
-    lightweight utility that automatically activates the project's Nix
-    environment, and thus its R version and packages, when navigating into the
-    project directory (via a `.envrc` file), so an existing editor runs against
-    it. As explained previously, in the specific case of RStudio, it must be installed
-    using Nix.
+    system by setting `ide = "none"` and using `direnv`, a lightweight utility
+    that automatically activates the project's Nix environment, and thus its R
+    version and packages, when navigating into the project directory (via a
+    `.envrc` file), so an existing editor runs against it. As explained
+    previously, in the specific case of RStudio, it must be installed using Nix.
 
 \small
 
@@ -717,7 +721,7 @@ system-wide installations.
 #| eval: false
 #| echo: true
 
-ide = "rstudio"
+ide <- "rstudio"
 ```
 
 \normalsize
@@ -854,25 +858,22 @@ correctly associated with the intended project and environment.
 
 ## Step 5: Developing and Making the Simulation Reproducible
 
-With RStudio open from the Nix environment, we write the five simulation `.R`
-scripts inside the `Simulation` subfolder. Note that one does not need to use
-RStudio, but we illustrate it as most readers probably make use of an IDE.
+With RStudio open from the Nix environment, we next write the five simulation .R scripts inside the Simulation subfolder. To conserve space, the code for these scripts is included in the .qmd manuscript file but is not printed in the rendered manuscript. The scripts are also available in the GitHub repository in the Simulation folder. Note that one does not need to use RStudio, but we illustrate it as most readers probably make use of an IDE.
 Because we declared the simulation packages up front (@lst-rix-env-sim), they
-are already available, and the scripts run against exactly those
-versions. Researchers are rarely aware of every package a project will need in
-advance, but, as highlighted before, packages can be added "on-the-go": as the
-code takes shape and calls for another package, we add it to `r_pkgs` in
-`gen-env.R` and rerun `rix()`. It is crucial that, after editing `gen-env.R`, we
-rebuild with `nix-build` and re-enter with `nix-shell` so the new packages
-become available.
+are already available, and the scripts run against exactly those versions.
+Researchers are rarely aware of every package a project will need in advance,
+but, as highlighted before, packages can be added "on-the-go": as the code takes
+shape and calls for another package, we add it to `r_pkgs` in `gen-env.R` and
+rerun `rix()`. It is crucial that, after editing `gen-env.R`, we rebuild with
+`nix-build` and re-enter with `nix-shell` so the new packages become available.
 
 ### Running the Simulation and Results
 
 With the environment built, we run the simulation from inside the Nix shell so
 that it uses exactly the R version and packages declared in `default.nix`. This
-is how the data generation, results, and plots reported in this manuscript 
-were produced. For example, `03_run_simulation.R` begins by loading the 
-required packages and sourcing the other scripts it needs:
+is how the data generation, results, and plots reported in this manuscript were
+produced. For example, `03_run_simulation.R (@) begins by loading the required
+packages and sourcing the other scripts it needs:
 
 ```{r}
 #| lst-label: lst-run-simulation-code
@@ -998,19 +999,18 @@ libraries Boost and Eigen, which we never list. Anything else the project needs
 is requested explicitly through `system_pkgs`: most often command-line tools
 such as Git, Pandoc, and Quarto, though in principle any package available
 through Nix (searchable at <https://search.nixos.org/packages>), including
-additional system libraries. Note the `apaquarto` extension we
-use for APA formatting is a separate case: it is a Quarto extension stored in 
-the project's `_extensions/` directory rather than a Nix package 
-[@rodrigues_baumann_2025].
+additional system libraries. Note the `apaquarto` extension we use for APA
+formatting is a separate case: it is a Quarto extension stored in the project's
+`_extensions/` directory rather than a Nix package [@rodrigues_baumann_2025].
 
 #### Specifying LaTeX packages
 
 The `tex_pkgs` parameter lists the LaTeX packages needed for PDF compilation.
 When any are listed, Nix includes a minimal TeXLive distribution
 (`scheme-small`) and adds the requested packages on top. Finding the exact set
-may take some trial and error, but Quarto's error messages during rendering
-help by indicating which packages are missing. Appendix B gives also the 
-reasons for adding each package in `tex_pkgs`.
+may take some trial and error, but Quarto's error messages during rendering help
+by indicating which packages are missing. Appendix B gives also the reasons for
+adding each package in `tex_pkgs`.
 
 After rebuilding with `nix-build` and re-entering with `nix-shell`, Quarto is
 available. We write the manuscript (`article.qmd`) in a `Manuscript` subfolder,
@@ -1049,10 +1049,10 @@ Adding the apaquarto extension \normalsize
 
 The final document (which can be saved as a .docx, .pdf, or .html) is saved
 directly in the project subfolder[^9]. Because Quarto is installed as a
-command-line tool in our Nix specification, the rendering occurs entirely
-within a fully reproducible environment, ensuring consistent output across
-machines regardless of local software configurations. If desired, the manuscript
-can also be reproduced interactively by opening the project folder in the user’s
+command-line tool in our Nix specification, the rendering occurs entirely within
+a fully reproducible environment, ensuring consistent output across machines
+regardless of local software configurations. If desired, the manuscript can also
+be reproduced interactively by opening the project folder in the user’s
 preferred IDE.
 
 [^9]: Although we use `apaquarto` in this example, many alternative manuscript
@@ -1573,13 +1573,13 @@ A simulation regenerates its data from a pseudo-random number generator, so its
 reproducibility depends on controlling that generator. The standard advice is to
 set the seed once and store it, so the same code reproduces the same sequence of
 draws [@morris_etall_2019]. Simulation studies are typically organized as a set
-of conditions, each run for many repetitions. Hence, the unit one wants to 
-reproduce is a single repetition within a given condition. Storing the 
-generator's state at the start of each condition-repetition cell, rather 
-than only the initial seed, additionally allows any single cell to be reproduced 
-in isolation, which is convenient for debugging [@morris_etall_2019]. In R, the 
-state lives in the variable `.Random.seed`, and such a procedure would look
-as follows (@lst-rng-state):
+of conditions, each run for many repetitions. Hence, the unit one wants to
+reproduce is a single repetition within a given condition. Storing the
+generator's state at the start of each condition-repetition cell, rather than
+only the initial seed, additionally allows any single cell to be reproduced in
+isolation, which is convenient for debugging [@morris_etall_2019]. In R, the
+state lives in the variable `.Random.seed`, and such a procedure would look as
+follows (@lst-rng-state):
 
 ```{r}
 #| lst-label: lst-rng-state
@@ -1634,10 +1634,10 @@ before the loop, {doRNG} derives one independent stream per iteration, bound to
 the iteration index rather than to a worker. The number of cores (`ncore` in our
 script) therefore changes only how iterations are scheduled, never which stream
 each receives. Thus, a researcher who reruns the study on four cores reproduces
-data generated on twenty cores. Because {doRNG} also records each stream
-in the result's `rng` attribute, these states can be stored and later restored
-to reproduce any single repetition in isolation, which the per-condition seed
-alone cannot do (@lst-rng-streams). Researchers should store these states and,
+data generated on twenty cores. Because {doRNG} also records each stream in the
+result's `rng` attribute, these states can be stored and later restored to
+reproduce any single repetition in isolation, which the per-condition seed alone
+cannot do (@lst-rng-streams). Researchers should store these states and,
 preferably, make them available alongside the reported estimates.
 
 ```{r}
@@ -1725,7 +1725,7 @@ documentation for more:
 #| eval: false
 #| echo: true
 
-py_conf = list(py_version = "3.12", py_pkgs = c("polars", "pandas"))
+py_conf <- list(py_version = "3.12", py_pkgs = c("polars", "pandas"))
 ```
 
 ### Converting Existing {renv} Projects
@@ -1748,7 +1748,7 @@ inside Docker containers to handle environment setup [@rodrigues_baumann_2025].
 This is particularly useful for deployment to cloud platforms or
 high-performance computing clusters where Nix may not be installed. In that
 case, the environment is built with Nix but shipped inside a Docker image, so it
-can be run with Docker alone (see {rix} documentation: 
+can be run with Docker alone (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/nix-inside-docker.html>).
 
 # Discussion
@@ -1805,16 +1805,16 @@ intensive studies that demand a huge amount of computer power. The data
 generation also might not yield identifical numerical results due to the
 interplay of multiple factors. However, making available the obtained results,
 together with the pinned environment, would at least allow the reproducibility
-of the analyses and manuscript, as illustrated in this article. 
+of the analyses and manuscript, as illustrated in this article.
 
 ## Conclusion
 
 If reproducibility is to function as a cornerstone of cumulative science, then
 the ability to reconstruct computational environments must become a routine part
-of methodological practice. Nix leveraged by tools like {rix} lowers the 
-barrier to achieving this goal. We hope this tutorial helps normalize 
-environment-level reproducibility as a standard component of rigorous 
-computational research in psychology and beyond.
+of methodological practice. Nix leveraged by tools like {rix} lowers the barrier
+to achieving this goal. We hope this tutorial helps normalize environment-level
+reproducibility as a standard component of rigorous computational research in
+psychology and beyond.
 
 {{< pagebreak >}}
 
