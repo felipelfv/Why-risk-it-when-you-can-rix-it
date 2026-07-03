@@ -492,7 +492,7 @@ open your distribution's terminal application. Then run (@lst-install-nix):
 
 [^5]: A terminal is a text-based way to give your computer instructions. Readers
     new to the command line may find the following link a useful primer:
-    <https://swcarpentry.github.io/shell-novice/>, as also suggested in
+    <https://swcarpentry.github.io/shell-novice/>, as suggested in
     @wiebels_moreau_2021
 
 ::: {#lst-install-nix}
@@ -525,7 +525,7 @@ readers (@lst-install-rix-cran):
 
 ```{r}
 #| lst-label: lst-install-rix-cran
-#| lst-cap: "Installing {rix} from CRAN or developmental version"
+#| lst-cap: "Installing {rix} From CRAN or Development Version"
 #| eval: false
 #| echo: true
 # CRAN version
@@ -560,7 +560,7 @@ repository, <https://doi.org/10.5281/zenodo.21098114>, as `gen-env.R`):
 
 ```{r}
 #| lst-label: lst-rix-env-sim
-#| lst-cap: "Simulation environment: R, RStudio, and the packages the scripts need"
+#| lst-cap: "Simulation Environment: R, RStudio, and the R Packages"
 #| eval: false
 #| echo: true
 
@@ -582,8 +582,7 @@ rix(
     "doRNG",
     "ggplot2",
     "cowplot",
-    "dplyr",
-    "svglite"
+    "dplyr"
   ),
   ide = "rstudio", # editor to include
   project_path = project_directory,
@@ -601,7 +600,7 @@ parameter serves a distinct purpose in defining the environment's
 characteristics, and we will clarify those throughout this tutorial section. For
 a broader overview of the function, see the {rix} documentation.
 
-#### Specifying the R version
+#### Specifying the R Version
 
 Researchers must first determine which version of R to use. This can be
 accomplished in two ways: The `r_ver` argument accepts an exact version string
@@ -618,7 +617,7 @@ components [@rodrigues_baumann_2025].
 
 ```{r}
 #| lst-label: lst-date-example
-#| lst-cap: "Example for the date argument"
+#| lst-cap: "Example for the Date Argument"
 #| eval: false
 #| echo: true
 
@@ -627,7 +626,7 @@ date = "2026-01-14"
 
 \normalsize
 
-#### Declaring R package dependencies
+#### Declaring R Package Dependencies
 
 The `r_pkgs` argument accepts a character vector listing all required R packages
 by their CRAN names. These packages will be installed from the version
@@ -639,13 +638,13 @@ packages are automatically resolved by Nix.
 
 ```{r}
 #| lst-label: lst-r-pkgs-example
-#| lst-cap: "Example for the r_pkgs argument"
+#| lst-cap: "Example for the r_pkgs Argument"
 #| eval: false
 #| echo: true
 
 r_pkgs = c(
   "rix", "marginaleffects", "simhelpers", "rvinecopulib",
-  "doParallel", "doRNG", "ggplot2", "cowplot", "dplyr", "svglite"
+  "doParallel", "doRNG", "ggplot2", "cowplot", "dplyr"
 )
 ```
 
@@ -662,7 +661,7 @@ hashes. For example:
 
 ```{r}
 #| lst-label: lst-git-pkgs-example
-#| lst-cap: "Example for the git_pkgs argument"
+#| lst-cap: "Example for the git_pkgs Argument"
 #| eval: false
 #| echo: true
 
@@ -680,7 +679,7 @@ This ensures that exact development versions are obtained
 their CRAN versions. Appendix B gives the reasons for adding each package in
 `r_pkgs`.
 
-#### Configuring the development environment
+#### Configuring the Development Environment
 
 The `ide` parameter controls whether an integrated development environment (IDE)
 is included in the Nix environment, allowing users to interactively develop and
@@ -713,7 +712,7 @@ system-wide installations.
 
 ```{r}
 #| lst-label: lst-ide-example
-#| lst-cap: "Example for the ide argument"
+#| lst-cap: "Example for the ide Argument"
 #| eval: false
 #| echo: true
 
@@ -722,7 +721,7 @@ ide = "rstudio"
 
 \normalsize
 
-#### Setting file output parameters
+#### Setting File Output Parameters
 
 The `project_path` parameter indicates where the `default.nix` file should be
 written ("." denotes the current directory), while `overwrite` controls whether
@@ -734,7 +733,7 @@ for immediate verification [@rodrigues_baumann_2025].
 
 ```{r}
 #| lst-label: lst-file-output-example
-#| lst-cap: "Example for the project_path and overwrite arguments"
+#| lst-cap: "Example for the project_path and Overwrite Arguments"
 #| eval: false
 #| echo: true
 
@@ -876,7 +875,7 @@ required packages and sourcing the other scripts it needs:
 
 ```{r}
 #| lst-label: lst-run-simulation-code
-#| lst-cap: "Code for running the simulation"
+#| lst-cap: "Code for Running the Simulation"
 #| eval: false
 #| echo: true
 
@@ -949,13 +948,13 @@ rebuild. @lst-rix-env-manuscript shows only what is added:
 
 ```{r}
 #| lst-label: lst-rix-env-manuscript
-#| lst-cap: "Manuscript tools added to the simulation environment"
+#| lst-cap: "Manuscript Tools Added to the Simulation Environment"
 #| eval: false
 #| echo: true
 
 rix(
   # ...all simulation arguments from @lst-rix-env-sim, plus:
-  r_pkgs = c(..., "quarto", "knitr"), # add to the existing vector
+  r_pkgs = c(..., "quarto", "knitr", "svglite"), # add to the existing vector
   system_pkgs = c("quarto"), # command-line Quarto
   tex_pkgs = c(
     "amsmath",
@@ -989,7 +988,7 @@ rix(
 
 \normalsize
 
-#### Including system-level software
+#### Including System-level Software
 
 Nix handles non-R software in two ways. The system-level libraries your R
 packages depend on, such as BLAS/LAPACK, are resolved automatically and need not
@@ -1003,7 +1002,7 @@ use for APA formatting is a separate case: it is a Quarto extension stored in
 the project's `_extensions/` directory rather than a Nix package 
 [@rodrigues_baumann_2025].
 
-#### Specifying LaTeX packages
+#### Specifying LaTeX Packages
 
 The `tex_pkgs` parameter lists the LaTeX packages needed for PDF compilation.
 When any are listed, Nix includes a minimal TeXLive distribution
@@ -1583,8 +1582,7 @@ as follows (@lst-rng-state):
 
 ```{r}
 #| lst-label: lst-rng-state
-#| lst-cap: "Storing and restoring the generator state to reproduce
-#| one condition-repetition cell"
+#| lst-cap: "Storing and Restoring the Generator State"
 #| eval: false
 #| echo: true
 
@@ -1642,7 +1640,7 @@ preferably, make them available alongside the reported estimates.
 
 ```{r}
 #| lst-label: lst-rng-streams
-#| lst-cap: "Reproducible parallel streams with {doRNG}"
+#| lst-cap: "Reproducible Parallel Streams with {doRNG}"
 #| eval: false
 #| echo: true
 
