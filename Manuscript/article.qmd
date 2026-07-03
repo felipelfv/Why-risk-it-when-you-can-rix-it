@@ -702,11 +702,12 @@ All IDEs installed via Nix are project-specific and do not interfere with
 system-wide installations.
 
 [^8]: Alternatively, users may rely on an editor already installed on their
-    system by setting `ide = "none"` (or `ide = "other"`) and using `direnv`, a
+    system by setting `ide = "none"` and using `direnv`, a
     lightweight utility that automatically activates the project's Nix
     environment, and thus its R version and packages, when navigating into the
     project directory (via a `.envrc` file), so an existing editor runs against
-    it.
+    it. As explained previously, in the specific case of RStudio, it must be installed
+    using Nix.
 
 \small
 
