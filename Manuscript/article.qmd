@@ -320,16 +320,20 @@ simulation studies and close with a discussion.
 
 | Term | Definition |
 |:-----------------------------|:-------------------------------------------------|
-| **System-level libraries** | Shared operating-system software that R packages depend on (e.g., BLAS/LAPACK, C++ backends). These are not installed by `install.packages()`. |
-| **Operating system** | The base software (e.g., Windows, macOS, Linux) that manages a computer's hardware and on which every other program runs. R, its packages, and system-level libraries all sit on top of it. |
-| **R interpreter** | The `R` program that reads and runs your R code [@adler_2012]. Two machines can report the same R version yet have interpreters compiled differently or linked against different system-level libraries [see @rcoreteam_installation, Section A.3]. |
+| **System-level libraries** | Software libraries provided by the operating system (not R) that certain R packages rely on to function. |
+| **Operating system** | The core software (e.g., Windows, macOS, Linux) that manages a computer's hardware and provides a platform on which all other programs run. R, its packages, and system-level libraries operate on top of it. |
+| **R interpreter** | The R program that reads and executes your R code [@adler_2012]. Two machines may report the same R version but use interpreters compiled differently or linked against different system-level libraries [see @rcoreteam_installation, Section A.3]. |
+| **Compiled** | Converted from human-readable source code into machine code by a compiler so the computer can run it directly. |
 | **Analytical pipeline** | Automating the order in which analysis steps run and the dependencies among them, re-running only those affected by a change. |
-| **Software stack** | The complete set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top of them. |
+| **Software stack** | The full set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top. Note that this stack itself depends on the underlying hardware. |
+| **Hardware** | The physical components of a computer (e.g., CPU, memory, and storage) that execute instructions and support the operation of software. |
 | **Containerization** | An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) [@wiebels_moreau_2021]. |
 | **Mutable upstream repositories** | The external sources a build pulls from (e.g., base images or package repositories) can change, or even disappear, over time without the build instructions changing, so the same instructions may later produce a different result or fail to build [@malka2026docker]. |
 | **Reproducible workflow** | The overall research process that makes a study reproducible end to end, including version control, the analytical pipeline, and a frozen computational environment. |
 | **Literate programming** | Writing an analysis as a single document that combines narrative text and executable code (e.g., R Markdown or Quarto), so the report and the code that produces it stay together. |
 | **Functional programming language** | A language built around pure functions, immutability, and explicit inputs, so the same inputs always produce the same output. |
+| **Pure function** | A function that always returns the same output for the same inputs and has no side effects (it does not modify external state or rely on changing external state). |
+| **Immutability** | A property where data cannot be changed after it is created; instead of modifying existing data, new data is created. |
 | **Binary cache** | A server that stores prebuilt packages, so Nix can download a finished copy instead of compiling it from source. |
 | **cryptographic hash** | define |
 
