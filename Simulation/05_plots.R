@@ -1,7 +1,7 @@
 library(ggplot2); library(cowplot)
 
 # load
-#performance_summary <- readRDS("Simulation/performance_summary.rds")
+performance_summary <- readRDS("Simulation/performance_summary.rds")
 
 # panel A: absolute bias plot (not used in final figure)
 # shows raw difference between estimated and true ACE
