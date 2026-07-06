@@ -3195,7 +3195,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computational reproducibility: Bioinformatics and beyond. <em>Briefings in Bioinformatics</em>, <em>24</em>(6), bbad375. <a href="https://doi.org/10.1093/bib/bbad375">https://doi.org/10.1093/bib/bbad375</a>
 </div>
 </div>
-<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" data-tblnum="1" prefix data-custom-style="FigureWithoutNote">
+<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glossary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3236,7 +3236,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Analytical pipeline</strong></td>
-<td style="text-align: left;">Automating the order in which analysis steps run and the dependencies among them, re-running only those affected by a change.</td>
+<td style="text-align: left;">The sequence of analysis steps and the dependencies among them. Pipeline tools formalize this sequence, automate its execution, and re-run only the steps affected by a change.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Software stack</strong></td>
@@ -3248,7 +3248,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Containerization</strong></td>
-<td style="text-align: left;">An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) <span class="citation" data-cites="wiebels_moreau_2021">(<a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>)</span>.</td>
+<td style="text-align: left;">Packaging software and its dependencies into an isolated, lightweight, shareable unit (a container), using tools such as Docker <span class="citation" data-cites="wiebels_moreau_2021">(<a href="#ref-wiebels_moreau_2021" role="doc-biblioref">Wiebels &amp; Moreau, 2021</a>)</span>.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Mutable upstream repositories</strong></td>
@@ -3267,20 +3267,12 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 <td style="text-align: left;">A language built around pure functions, immutability, and explicit inputs, so the same inputs always produce the same output.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Pure function</strong></td>
-<td style="text-align: left;">A function that always returns the same output for the same inputs and has no side effects (it does not modify external state or rely on changing external state).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Immutability</strong></td>
-<td style="text-align: left;">A property where data cannot be changed after it is created; instead of modifying existing data, new data is created.</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;"><strong>Binary cache</strong></td>
 <td style="text-align: left;">A server that stores prebuilt packages, so Nix can download a finished copy instead of compiling it from source.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>cryptographic hash</strong></td>
-<td style="text-align: left;">define</td>
+<td style="text-align: left;"><strong>Cryptographic hash</strong></td>
+<td style="text-align: left;">A fixed-length string of letters and digits computed from digital content, acting as its fingerprint. The same content always yields the same string, whereas any change to the content, however small, yields a different one.</td>
 </tr>
 </tbody>
 </table>
@@ -3288,7 +3280,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </figure>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="2" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="2" prefix>
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="2">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3401,7 +3393,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3420,7 +3412,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
