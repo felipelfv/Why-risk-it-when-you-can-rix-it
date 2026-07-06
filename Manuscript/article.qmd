@@ -1810,8 +1810,8 @@ how the files relate and in what order they run already helps others
 reproduce the study. Thus, we strongly advise that at least such a description is
 provided.
 
-Last, as highlighted, there may be components on simulation studies that
-might be hard to reproduce by others researchers such as very computationally
+Last, as highlighted, there may be components of simulation studies that
+might be hard to reproduce by other researchers such as very computationally
 intensive studies that demand a huge amount of computer power. The data
 generation also might not yield identical numerical results due to the
 interplay of multiple factors. However, making available the obtained results,
