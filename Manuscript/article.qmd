@@ -434,8 +434,8 @@ programming language, a build tool, and a package manager wrapped in one. This
 article focuses on the latter. Most package managers (think of Apple’s or
 Android’s app stores) are imperative: they modify a system’s state as they
 install or update software. Nix instead builds each environment from an explicit
-description and never alters it afterward, so the same description produces the
-same self-contained environment on other machines. Researchers state which
+description and never alters it afterward. Hence, the same description produces 
+the same self-contained environment on other machines. Researchers state which
 version of R and which packages they need, and Nix works out the underlying
 system-level dependencies automatically.
 
@@ -1044,7 +1044,7 @@ Rendering the manuscript with Quarto \normalsize
 This command executes all code chunks in the manuscript (i.e., loads the R
 packages, runs the data generation and estimation), calculates and incorporates
 results (e.g., @tbl-results) and figures (e.g., Figure 1), and generates a
-formatted PDF following APA style guidelines via the `apaquarto` extension
+formatted manuscript following APA style guidelines via the `apaquarto` extension
 [@schneider_2024]. This extension is saved in the project directory already. To
 add it to a project of your own, run the following inside the Nix shell, where
 Quarto is provided by the environment and therefore needs no separate
@@ -1065,7 +1065,7 @@ The final document (which can be saved as a .docx, .pdf, or .html) is saved
 directly in the project subfolder[^9]. Because Quarto is installed as a
 command-line tool in our Nix specification, the rendering occurs entirely
 within a fully reproducible environment, ensuring consistent output across
-machines regardless of local software configurations. If desired, the manuscript
+machines. If desired, the manuscript
 can also be reproduced interactively by opening the project folder in the user’s
 preferred IDE.
 
@@ -1779,6 +1779,13 @@ reproducible environments serve as enabling infrastructure, supporting rather
 than replacing other best practices such as version control, analytical
 pipelines, and transparent reporting.
 
+Therefore, if reproducibility is to function as a cornerstone of cumulative 
+science, then the ability to reconstruct computational environments must 
+become a routine part of methodological practice. Nix leveraged by tools 
+like {rix} lowers the barrier to achieving this goal. We hope this tutorial will 
+help to normalize environment-level reproducibility as a standard component 
+of rigorous computational research in psychological science and beyond.
+
 ## Limitations
 
 The approach we describe has limitations worth noting, the most relevant of
@@ -1794,30 +1801,24 @@ reproducibility while working around the platform's constraints (for
 macOS-specific setup, see
 <https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
-Finally, a reproducible environment does not, on its own, make the workflow
+Moreover, a reproducible environment does not, on its own, make the workflow
 itself transparent. This is particularly relevant for simulation studies, which
 are often split across several files whose dependencies, and the order in which
-they should run, are not always clear (for example, which script must run
-first). Dedicated analytical pipeline tools can formalize these dependencies
-(see above), but at a minimum, clearly documenting how the files relate and in
-what order they run already helps others reproduce the study.
+they should run, are not always clear. Dedicated analytical pipeline tools can 
+formalize these dependencies (see above), but at a minimum, clearly documenting 
+how the files relate and in what order they run already helps others 
+reproduce the study. Thus, we strongly advise that at least such a description is
+provided.
 
-Moreover, as highlighted, there may be components on simulation studies that
+Last, as highlighted, there may be components on simulation studies that
 might be hard to reproduce by others researchers such as very computationally
 intensive studies that demand a huge amount of computer power. The data
-generation also might not yield identifical numerical results due to the
+generation also might not yield identical numerical results due to the
 interplay of multiple factors. However, making available the obtained results,
 together with the pinned environment, would at least allow the reproducibility
-of the analyses and manuscript, as illustrated in this article. 
-
-## Conclusion
-
-If reproducibility is to function as a cornerstone of cumulative science, then
-the ability to reconstruct computational environments must become a routine part
-of methodological practice. Nix leveraged by tools like {rix} lowers the 
-barrier to achieving this goal. We hope this tutorial helps normalize 
-environment-level reproducibility as a standard component of rigorous 
-computational research in psychology and beyond.
+of the analyses and manuscript, as illustrated in this article. This distinction
+in itself is relevant because it avoids coarse statements about the 
+reproducibility of simulation studies [@montoya_anderson_2026].
 
 {{< pagebreak >}}
 
