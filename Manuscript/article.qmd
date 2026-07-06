@@ -352,6 +352,8 @@ practice, our simulation is organized into five sequential scripts: data
 generation (`01_data_generation.R`), model specification (`02_models.R`),
 simulation execution (`03_run_simulation.R`), performance metric calculation
 (`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^3].
+The scripts are available in the repository:
+<https://doi.org/10.5281/zenodo.21098114> (inside the Simulation folder).
 
 [^3]: For simplicity, we included all code as executable chunks in a single
     `.qmd` file. This entails that the simulation runs from start to finish
@@ -811,7 +813,7 @@ To activate the environment, run (@lst-nix-shell):
 
 ``` bash
 # in the terminal, from the project directory:
-nix-shell
+nix-shell --pure
 ```
 
 Activating the Nix environment \normalsize
@@ -832,7 +834,9 @@ Expected output from `nix-shell`
 :::
 
 This command drops the user into a shell where all specified packages and tools
-are available. The shell prompt changes to indicate that a Nix environment is
+are available. The `--pure` flag restricts the shell to what is declared in
+`default.nix`; we return to this flag later in the tutorial. The shell prompt
+changes to indicate that a Nix environment is
 active (here, `[nix-shell:~/Why-risk-it-when-you-can-rix-it]$`). To verify that
 R is being provided by Nix rather than a system installation, run `which R`.
 This should return a path within `/nix/store/`. Moreover, from within the Nix
@@ -857,17 +861,18 @@ correctly associated with the intended project and environment.
 
 ## Step 5: Developing and Making the Simulation Reproducible
 
-With RStudio open from the Nix environment, we write the five simulation `.R`
-scripts inside the `Simulation` subfolder. Note that one does not need to use
+With RStudio open from the Nix environment, we next write the five simulation 
+`.R` scripts inside the Simulation subfolder. Note that one does not need to use 
 RStudio, but we illustrate it as most readers probably make use of an IDE.
-Because we declared the simulation packages up front (@lst-rix-env-sim), they
-are already available, and the scripts run against exactly those
-versions. Researchers are rarely aware of every package a project will need in
-advance, but, as highlighted before, packages can be added "on-the-go": as the
-code takes shape and calls for another package, we add it to `r_pkgs` in
-`gen-env.R` and rerun `rix()`. It is crucial that, after editing `gen-env.R`, we
-rebuild with `nix-build` and re-enter with `nix-shell` so the new packages
-become available.
+Because we declared the simulation packages up front
+(@lst-rix-env-sim), they are already available, and the scripts run against 
+exactly those versions. Researchers are rarely aware of every package a project 
+will need in advance, but, as highlighted before, packages can be added 
+"on-the-go": as the code takes shape and calls for another package, we add it 
+to `r_pkgs` in `gen-env.R` and rerun `rix()`. It is crucial that, after 
+editing `gen-env.R`, we
+rebuild with `nix-build` and re-enter with `nix-shell --pure` so the new
+packages become available.
 
 ### Running the Simulation and Results
 
@@ -1015,7 +1020,8 @@ may take some trial and error, but Quarto's error messages during rendering
 help by indicating which packages are missing. Appendix B gives also the 
 reasons for adding each package in `tex_pkgs`.
 
-After rebuilding with `nix-build` and re-entering with `nix-shell`, Quarto is
+After rebuilding with `nix-build` and re-entering with `nix-shell --pure`,
+Quarto is
 available. We write the manuscript (`article.qmd`) in a `Manuscript` subfolder,
 and render it from the terminal (@lst-quarto-render):
 
@@ -1078,9 +1084,10 @@ package addresses this automatically. When you call `rix()`, it also executes
 R to ignore external package libraries and also disables `install.packages()`
 within the environment. The rationale is straightforward: any new packages
 should be added to `default.nix` and the environment rebuilt, preserving full
-reproducibility [@rodrigues_baumann_2025]. However, for stricter isolation[^10]
-that also prevents access to other system programs not specified in
-`default.nix`, use the `--pure` flag (@lst-nix-shell-pure):
+reproducibility [@rodrigues_baumann_2025]. In addition, for stricter
+isolation[^10] that also prevents access to other system programs not specified
+in `default.nix`, we activated the environment with the `--pure` flag from the
+start (@lst-nix-shell).
 
 [^10]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
@@ -1088,16 +1095,6 @@ that also prevents access to other system programs not specified in
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
     the system's LaTeX installation (`/Library/TeX/texbin`) rather than being
     restricted to only what was specified in `default.nix`.
-
-::: {#lst-nix-shell-pure}
-\small
-
-``` bash
-nix-shell --pure
-```
-
-Activating the Nix environment with strict isolation \normalsize
-:::
 
 A related caveat specific to macOS is discussed in the Limitations section
 below; see also the {rix} documentation
@@ -1112,7 +1109,8 @@ A reader can download the entire project from its repository
 (<https://doi.org/10.5281/zenodo.21098114>). The folder already contains
 `default.nix`, thus they do not need the authoring steps (Steps 1 to 3). With
 Nix installed, they need only build and enter the environment as in Step 4
-(`nix-build`, then `nix-shell`), which guarantees that all dependencies (the R
+(`nix-build`, then `nix-shell --pure`), which guarantees that all dependencies
+(the R
 version, packages, and system tools) match exactly those specified in
 `default.nix`.
 
