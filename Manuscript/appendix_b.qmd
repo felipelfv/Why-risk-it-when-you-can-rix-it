@@ -16,9 +16,9 @@ These packages are used in the `Simulation/` folder:
 
 **doParallel** (used in `03_run_simulation.R`): Enables parallel `foreach` loops across CPU cores.
 
-**doRNG** (used in `03_run_simulation.R`): Makes parallel RNG reproducible.
+**doRNG** (used in `03_run_simulation.R`): Makes parallel random number generation reproducible.
 
-**simhelpers** (used in `04_performance_metrics.R`): Calculates bias, RMSE, and coverage metrics.
+**simhelpers** (used in `04_performance_metrics.R`): Calculates bias, root mean squared error (RMSE), and coverage metrics.
 
 **ggplot2** (used in `05_plots.R`): Creates simulation result visualizations.
 

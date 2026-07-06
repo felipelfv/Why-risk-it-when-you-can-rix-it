@@ -135,7 +135,7 @@ have pushed work toward it [@kidwell_etall_2016; @levenstein_lyle_2018;
 @wiebels_moreau_2021; @ziemann_etall_2023; @brodeur_etall_2026]. Even error-free
 code depends on a hierarchy of software components, including the programming
 language version, the packages used in the analysis, and the system-level
-libraries those packages rely on. We define these and related terms in
+dependencies those packages rely on. We define these and related terms in
 @tbl-glossary. When they differ from the originals, code may fail, behave
 inconsistently across machines, or yield conflicting numerical results
 [@baker_etall_2024; @hodges_etall_2023; @glatard_etall_2015; @nosek_etall_2022].
@@ -145,8 +145,8 @@ generate their data and results [@luijken_etall_2024; @siepe_etall_2024].
 
 To make this concrete, we use the *computational environment* to refer to the
 complete software context required for a study to run successfully. This entails
-the programming language version, package versions, system-level libraries, and
-operating system (@fig-environment) [@rodrigues_2023;
+the programming language version, package versions, system-level dependencies,
+and operating system (@fig-environment) [@rodrigues_2023;
 @rodrigues_baumann_2026_polyglot]. We define *computational environment
 reproducibility* as the ability to reconstruct these dependencies on top of
 whatever operating system a machine runs, at any future time, such that
@@ -164,14 +164,15 @@ confidence in them [@luijken_etall_2024; @white_etall_2024].
 
 ```{r}
 #| label: fig-environment
-#| fig-cap: "The computational environment as a set of nested layers, 
-#| based on Peikert & Brandmaier (2021)."
+#| fig-cap: "The computational environment as a set of nested layers,
+#| each running on top of the layer below, based on Peikert & Brandmaier
+#| (2021)."
 #| echo: false
 #| message: false
 #| fig-width: 7
 #| fig-height: 4
 
-# outer nested layers: operating system and system-level libraries
+# outer nested layers: operating system and system-level dependencies
 env_outer <- data.frame(
   xmin = c(0.0, 0.5),
   xmax = c(20.0, 19.5),
@@ -179,14 +180,14 @@ env_outer <- data.frame(
   ymax = c(10.0, 8.6),
   label = c(
     "Operating system",
-    "System-level libraries (e.g., LAPACK)"
+    "System-level dependencies (e.g., LAPACK)"
   ),
   fill = c("grey93", "grey86"),
   stringsAsFactors = FALSE
 )
 env_outer$labx <- (env_outer$xmin + env_outer$xmax) / 2
 
-# two parallel components inside the system-level libraries
+# two parallel components inside the system-level dependencies
 env_inner <- data.frame(
   xmin = c(1.2, 10.4),
   xmax = c(9.6, 18.8),
@@ -261,7 +262,7 @@ These challenges may persist for several reasons. Arguably, one is that even
 researchers aware of these demands face a fragmented landscape of solutions,
 each addressing only part of the problem. Package-level managers such as {renv}
 [@ushey_2024] and {groundhog} [@simonsohn_2020] stabilize R package versions but
-do not manage the R interpreter itself or the system-level libraries those
+do not manage the R interpreter itself or the system-level dependencies those
 packages depend on. Analytical pipeline tools such as {targets} [@landau_2021]
 and Make [@feldman_1979] support reproducibility in a different sense: they
 specify and automate the structure of an analysis by formalizing the order in
@@ -320,12 +321,12 @@ simulation studies and close with a discussion.
 
 | Term | Definition |
 |:-----------------------------|:-------------------------------------------------|
-| **System-level libraries** | Software libraries provided by the operating system (not R) that certain R packages rely on to function. |
-| **Operating system** | The core software (e.g., Windows, macOS, Linux) that manages a computer's hardware and provides a platform on which all other programs run. R, its packages, and system-level libraries operate on top of it. |
+| **System-level dependencies** | Software provided outside of R (by the operating system or a system package manager) that an analysis relies on, including shared libraries (e.g., LAPACK) and tools (e.g., Pandoc, LaTeX). |
+| **Operating system** | The core software (e.g., Windows, macOS, Linux) that manages a computer's hardware and provides a platform on which all other programs run. R, its packages, and system-level dependencies operate on top of it. |
 | **R interpreter** | The R program that reads and executes your R code [@adler_2012]. Two machines may report the same R version but use interpreters compiled differently or linked against different system-level libraries [see @rcoreteam_installation, Section A.3]. |
 | **Compiled** | Converted from human-readable source code into machine code by a compiler so the computer can run it directly. |
 | **Analytical pipeline** | Automating the order in which analysis steps run and the dependencies among them, re-running only those affected by a change. |
-| **Software stack** | The full set of software layers an analysis depends on: the operating system, system-level libraries, the R interpreter, and the R packages built on top. Note that this stack itself depends on the underlying hardware. |
+| **Software stack** | The full set of software layers an analysis depends on: the operating system, system-level dependencies, the R interpreter, and the R packages built on top. Note that this stack itself depends on the underlying hardware. |
 | **Hardware** | The physical components of a computer (e.g., CPU, memory, and storage) that execute instructions and support the operation of software. |
 | **Containerization** | An isolated, lightweight, shareable bundle of software and its dependencies (e.g., Docker) [@wiebels_moreau_2021]. |
 | **Mutable upstream repositories** | The external sources a build pulls from (e.g., base images or package repositories) can change, or even disappear, over time without the build instructions changing, so the same instructions may later produce a different result or fail to build [@malka2026docker]. |
@@ -351,9 +352,9 @@ studies are typically organized into multiple component files. To mimic this
 practice, our simulation is organized into five sequential scripts: data
 generation (`01_data_generation.R`), model specification (`02_models.R`),
 simulation execution (`03_run_simulation.R`), performance metric calculation
-(`04_performance_metrics.R`), and results visualization (`05_plots.R`) [^3].
-The scripts are available in the repository:
-<https://doi.org/10.5281/zenodo.21098114> (inside the Simulation folder).
+(`04_performance_metrics.R`), and results visualization (`05_plots.R`).
+The scripts are available in the repository (<https://doi.org/10.5281/zenodo.21098114>; 
+inside the Simulation subfolder)[^3].
 
 [^3]: For simplicity, we included all code as executable chunks in a single
     `.qmd` file. This entails that the simulation runs from start to finish
@@ -373,8 +374,10 @@ or, although usually discouraged, internal functions, such as
 `lavaan:::lav_graph_get_ancestors`), or to subtle differences in the results due
 to changes in default settings (e.g., `stringsAsFactors` defaulting to FALSE as
 of R 4.0). Beyond package versioning, many packages rely on system-level
-software that R does not provide. Our simulation illustrates this directly: the
-{rvinecopulib} package is built on a compiled C++ backend [@rvinecopulib].
+dependencies that R does not provide. Our project illustrates this directly:
+{rvinecopulib} [@rvinecopulib] requires a C++ compiler to install from source,
+and {svglite} links against system libraries (libpng, fontconfig, freetype)
+that R cannot install itself.
 
 The R language version introduces another layer of dependency. Code written for
 a recent version of R may rely on syntax or functionality that is unavailable in
@@ -433,7 +436,7 @@ install or update software. Nix instead builds each environment from an explicit
 description and never alters it afterward, so the same description produces the
 same self-contained environment on other machines. Researchers state which
 version of R and which packages they need, and Nix works out the underlying
-system-level libraries automatically.
+system-level dependencies automatically.
 
 ## Core Principles
 
@@ -451,7 +454,7 @@ The Nix ecosystem is built around `nixpkgs`, a version-controlled repository
 comprising more than 120,000 packages, including nearly all of CRAN and
 Bioconductor. By pinning a specific commit or date, researchers freeze the
 entire software stack (i.e., R itself, R packages, and all system-level
-libraries). This eliminates the system-dependency problems that tools like
+dependencies). This eliminates the system-dependency problems that tools like
 {renv} cannot address [@rodrigues_baumann_2025]. Empirical studies of historical
 nixpkgs snapshots report that old environments can still be rebuilt years later
 [@Malka_2024; @rodrigues_baumann_2026_polyglot]. Moreover, because prebuilt
@@ -466,7 +469,7 @@ writing expressions in its language. Since this language is unfamiliar to most
 researchers, we recommend and focus on using {rix} to lower this barrier. The
 {rix} package provides an R-native interface: a single call to `rix()` generates
 complete Nix configurations from standard R syntax, specifying R versions, CRAN
-packages, system-level software, and even Python or Julia components when
+packages, system-level dependencies, and even Python or Julia components when
 required. Users never need to read or write Nix code directly, as {rix}
 translates automatically. For more on {rix}, including its integration with
 rstats-on-nix (a curated fork of the Nix package collection whose dated
@@ -997,12 +1000,13 @@ rix(
 
 \normalsize
 
-#### Including System-level Software
+#### Including System-level Dependencies
 
 Nix handles non-R software in two ways. The system-level libraries your R
 packages depend on, such as BLAS/LAPACK, are resolved automatically and need not
-be listed. The {rvinecopulib} package, for example, links against the C++
-libraries Boost and Eigen, which we never list. Anything else the project needs
+be listed. The {svglite} package, for example, depends on the system libraries
+libpng, fontconfig, and freetype, which we never list. Anything else the
+project needs
 is requested explicitly through `system_pkgs`: most often command-line tools
 such as Git, Pandoc, and Quarto, though in principle any package available
 through Nix (searchable at <https://search.nixos.org/packages>), including
@@ -1378,13 +1382,14 @@ performance_summary <- do.call(rbind, summary_list)
 #| lst-label: lst-fig-performance
 #| lst-cap: "Code for generating the performance metrics visualization"
 #| label: fig-performance
-#| fig-cap: "Performance of ACE estimator across sample sizes and confounding 
-#| severity. Panel A shows relative bias, Panel B shows relative RMSE, 
-#| Panel C shows coverage probability of 95% confidence intervals 
-#| (dashed line at nominal 0.95 level), and Panel D shows average confidence 
-#| interval width. Results demonstrate that model misspecification induces 
-#| systematic bias that persists across sample sizes, while increasing sample 
-#| size improves precision but not accuracy under misspecification."
+#| fig-cap: "Performance of the average causal effect (ACE) estimator across
+#| sample sizes and confounding severity. Panel A shows relative bias, Panel B
+#| shows relative root mean squared error (RMSE), Panel C shows coverage
+#| probability of 95% confidence intervals (CI; dashed line at nominal 0.95
+#| level), and Panel D shows average CI width. Results demonstrate that model
+#| misspecification induces systematic bias that persists across sample sizes,
+#| while increasing sample size improves precision but not accuracy under
+#| misspecification."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: false
@@ -1515,8 +1520,9 @@ plot_grid(
 #| lst-label: lst-tbl-results
 #| lst-cap: "Code for generating the performance metrics table"
 #| label: tbl-results
-#| tbl-cap: "Performance metrics for ACE estimator across simulation conditions. 
-#| Values in parentheses are Monte Carlo standard errors (MCSE)."
+#| tbl-cap: "Performance metrics for the average causal effect (ACE) estimator
+#| across simulation conditions. Values in parentheses are Monte Carlo standard
+#| errors (MCSE). RMSE = root mean squared error; CI = confidence interval."
 #| echo: false
 
 # prepare data for display table
@@ -1735,7 +1741,7 @@ function, which reads an `renv.lock` file and generates an equivalent Nix
 expression. This is particularly valuable for projects where {renv} encountered
 system dependency issues or where stricter reproducibility guarantees are
 desired. Unlike {renv}, which captures R package versions but not the R
-interpreter or system-level libraries, Nix manages all layers of the software
+interpreter or system-level dependencies, Nix manages all layers of the software
 stack (see {rix} documentation:
 <https://docs.ropensci.org/rix/articles/renv2nix.html>).
 
@@ -1758,7 +1764,7 @@ transparency: making data and code available. This tutorial has argued that
 transparency alone is insufficient without the ability to reliably reconstruct
 the computational environments in which analyses are executed. For simulation
 studies in particular, where results depend critically on software versions,
-system-level libraries, and random number generation, environment-level
+system-level dependencies, and random number generation, environment-level
 reproducibility is not optional but essential.
 
 By introducing Nix and the {rix} package, we demonstrated a practical and
