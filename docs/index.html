@@ -3013,7 +3013,7 @@ Listing 23: Including Python packages
 <h2 data-anchor-id="limitations">Limitations</h2>
 <p>The approach we describe has limitations worth noting, the most relevant of which is specific to macOS. There, some parts of an environment still depend on Apple’s own system software, which lies outside the Nix store and is therefore not pinned. As a consequence, an environment pinned to an older date can occasionally stop building or loading after a macOS update. Because reproducing an environment faithfully means keeping its pin unchanged, the reliable solution is not to update the pin but to build and run the original environment through Docker or on Linux (including WSL on Windows), where it no longer depends on the host’s macOS <span class="citation" data-cites="rodrigues_baumann_2026_polyglot">(<a href="#ref-rodrigues_baumann_2026_polyglot" role="doc-biblioref">Rodrigues &amp; Baumann, 2026</a>)</span>. This preserves exact reproducibility while working around the platform’s constraints (for macOS-specific setup, see <a href="https://docs.ropensci.org/rix/articles/setting-up-macos.html" class="uri">https://docs.ropensci.org/rix/articles/setting-up-macos.html</a>).</p>
 <p>Moreover, a reproducible environment does not, on its own, make the workflow itself transparent. This is particularly relevant for simulation studies, which are often split across several files whose dependencies, and the order in which they should run, are not always clear. Dedicated analytical pipeline tools can formalize these dependencies (see above), but at a minimum, clearly documenting how the files relate and in what order they run already helps others reproduce the study. Thus, we strongly advise that at least such a description is provided.</p>
-<p>Last, as highlighted, there may be components on simulation studies that might be hard to reproduce by others researchers such as very computationally intensive studies that demand a huge amount of computer power. The data generation also might not yield identical numerical results due to the interplay of multiple factors. However, making available the obtained results, together with the pinned environment, would at least allow the reproducibility of the analyses and manuscript, as illustrated in this article. This distinction in itself is relevant because it avoids coarse statements about the reproducibility of simulation studies <span class="citation" data-cites="montoya_anderson_2026">(<a href="#ref-montoya_anderson_2026" role="doc-biblioref">Montoya &amp; Anderson, 2026</a>)</span>.</p>
+<p>Last, as highlighted, there may be components of simulation studies that might be hard to reproduce by other researchers such as very computationally intensive studies that demand a huge amount of computer power. The data generation also might not yield identical numerical results due to the interplay of multiple factors. However, making available the obtained results, together with the pinned environment, would at least allow the reproducibility of the analyses and manuscript, as illustrated in this article. This distinction in itself is relevant because it avoids coarse statements about the reproducibility of simulation studies <span class="citation" data-cites="montoya_anderson_2026">(<a href="#ref-montoya_anderson_2026" role="doc-biblioref">Montoya &amp; Anderson, 2026</a>)</span>.</p>
 <div style="page-break-after: always;"></div>
 </section>
 </section>
@@ -3195,7 +3195,7 @@ Wilke, C. O. (2025). <em>Cowplot: Streamlined plot theme and plot annotations fo
 Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computational reproducibility: Bioinformatics and beyond. <em>Briefings in Bioinformatics</em>, <em>24</em>(6), bbad375. <a href="https://doi.org/10.1093/bib/bbad375">https://doi.org/10.1093/bib/bbad375</a>
 </div>
 </div>
-<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" prefix data-tblnum="1" data-custom-style="FigureWithoutNote">
+<div id="tbl-glossary" class="quarto-float quarto-figure quarto-figure-center FigureWithoutNote" data-tblnum="1" prefix data-custom-style="FigureWithoutNote">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-glossary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3288,7 +3288,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </figure>
 </div>
 <div class="cell FigureWithoutNote" prefix data-tblnum="2" data-custom-style="FigureWithoutNote">
-<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" prefix data-tblnum="2">
+<div id="tbl-results" class="cell quarto-float quarto-figure quarto-figure-center" data-tblnum="2" prefix>
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3401,7 +3401,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="1">
+<div id="fig-environment" class="quarto-float quarto-figure quarto-figure-center" data-fignum="1" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -3420,7 +3420,7 @@ Ziemann, M., Poulain, P., &amp; Bora, A. (2023). The five pillars of computation
 </div>
 <div class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" prefix data-fignum="2">
+<div id="fig-performance" class="quarto-float quarto-figure quarto-figure-center" data-fignum="2" prefix>
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
