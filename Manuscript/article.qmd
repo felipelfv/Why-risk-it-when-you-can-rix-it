@@ -967,7 +967,7 @@ rebuild. @lst-rix-env-manuscript shows only what is added:
 
 rix(
   # ...all simulation arguments from @lst-rix-env-sim, plus:
-  r_pkgs = c(..., "quarto", "knitr", "svglite"), # add to the existing vector
+  r_pkgs = c(..., "quarto", "knitr", "svglite"), # add to existing vector
   system_pkgs = c("quarto"), # command-line Quarto
   tex_pkgs = c(
     "amsmath",
@@ -1005,16 +1005,16 @@ rix(
 
 Nix handles non-R software in two ways. The system-level libraries your R
 packages depend on, such as BLAS/LAPACK, are resolved automatically and need not
-be listed. The {svglite} package, for example, depends on the system libraries
-libpng, fontconfig, and freetype, which we never list. Anything else the
-project needs
-is requested explicitly through `system_pkgs`: most often command-line tools
-such as Git, Pandoc, and Quarto, though in principle any package available
-through Nix (searchable at <https://search.nixos.org/packages>), including
-additional system libraries. Note the `apaquarto` extension we
-use for APA formatting is a separate case: it is a Quarto extension stored in 
-the project's `_extensions/` directory rather than a Nix package 
-[@rodrigues_baumann_2025].
+be listed. The {svglite} package, for example, depends on system libraries
+(libpng and more), which we never list. The second way is the `system_pkgs`
+parameter, which lists software that is not an R package, typically command-line
+tools you run yourself inside the environment, such as Git or Quarto. In our
+project this is only Quarto. Any software available through Nix can be requested
+this way (searchable at <https://search.nixos.org/packages>), and, as with R
+packages, a missing tool can simply be added to `system_pkgs` and the
+environment rebuilt. Note the `apaquarto` extension we use for APA formatting is
+a separate case: it is a Quarto extension stored in the project's `_extensions/`
+directory rather than a Nix package [@rodrigues_baumann_2025].
 
 #### Specifying LaTeX Packages
 
@@ -1091,8 +1091,9 @@ within the environment. The rationale is straightforward: any new packages
 should be added to `default.nix` and the environment rebuilt, preserving full
 reproducibility [@rodrigues_baumann_2025]. In addition, for stricter
 isolation[^10] that also prevents access to other system programs not specified
-in `default.nix`, we activated the environment with the `--pure` flag from the
-start (@lst-nix-shell).
+in `default.nix`, in this tutorial, we activated the environment with the 
+`--pure` flag from the start (@lst-nix-shell). A related caveat specific to 
+macOS is discussed in the Discussion section below.
 
 [^10]: For example, when preparing this manuscript without the `--pure` flag,
     `quarto render` worked successfully. However, when using the `--pure` flag,
@@ -1100,10 +1101,6 @@ start (@lst-nix-shell).
     `nix-shell --run "quarto check"`) revealed that Quarto was still accessing
     the system's LaTeX installation (`/Library/TeX/texbin`) rather than being
     restricted to only what was specified in `default.nix`.
-
-A related caveat specific to macOS is discussed in the Limitations section
-below; see also the {rix} documentation
-(<https://docs.ropensci.org/rix/articles/setting-up-macos.html>).
 
 ## Reproducing the Simulation Study and Manuscript
 
@@ -1115,16 +1112,13 @@ A reader can download the entire project from its repository
 `default.nix`, thus they do not need the authoring steps (Steps 1 to 3). With
 Nix installed, they need only build and enter the environment as in Step 4
 (`nix-build`, then `nix-shell --pure`), which guarantees that all dependencies
-(the R
-version, packages, and system tools) match exactly those specified in
-`default.nix`.
-
-From within that environment, reproduction proceeds on two levels. The
-simulation can be reproduced by running its scripts in order, regenerating the
-results and figures. The complete manuscript (its text together with the
-embedded results, tables, and figures) can be reproduced in the same environment
-as in @lst-quarto-render, which re-executes every code chunk and regenerates the
-formatted manuscript end to end.
+(i.e., the R version, packages, and system dependencies) match those specified 
+in `default.nix`. From within that environment, reproduction proceeds on two 
+levels. The simulation can be reproduced by running its scripts in order, 
+regenerating the results and figures. The complete manuscript 
+(its text together with the embedded results, tables, and figures) can be 
+reproduced in the same environment as in @lst-quarto-render, which re-executes 
+every code chunk and regenerates the formatted manuscript end to end.
 
 ```{r}
 #| lst-label: lst-data-generation
@@ -1568,26 +1562,28 @@ kable(results_display, align = "lccccc", row.names = FALSE)
 # Additional Considerations for Simulation Studies
 
 In this section, we turn to considerations that matter especially for simulation
-studies but fall outside this tutorial's scope, since they depend on the details
-of each study. The first concerns random draws and reproducibility. The second
-concerns the analytical pipeline, environment for multiple programming languages
-environment, and integration with tools researchers may already use. We do not
-cover these topics in depth. Our goal is to clarify how they relate to {rix} and
-to point readers toward resources for more advanced use cases.
+studies but fall outside the scope of this tutorial, since they depend on the 
+details of each study. The first concerns random draws and reproducibility. 
+The second concerns the analytical pipeline, environment for multiple 
+programming languages environment, and integration with tools researchers may 
+already use. We do not cover these topics in depth. Our goal is to clarify how 
+they relate to {rix} and to point readers toward resources for more advanced 
+use cases.
 
 ### Reproducible Randomness and Parallel Execution for Data Generation
 
-A simulation regenerates its data from a pseudo-random number generator, so its
-reproducibility depends on controlling that generator. The standard advice is to
-set the seed once and store it, so the same code reproduces the same sequence of
-draws [@morris_etall_2019]. Simulation studies are typically organized as a set
-of conditions, each run for many repetitions. Hence, the unit one wants to 
-reproduce is a single repetition within a given condition. Storing the 
-generator's state at the start of each condition-repetition cell, rather 
-than only the initial seed, additionally allows any single cell to be reproduced 
-in isolation, which is convenient for debugging [@morris_etall_2019]. In R, the 
-state lives in the variable `.Random.seed`, and such a procedure would look
-as follows (@lst-rng-state):
+A simulation regenerates its data from a pseudo-random number generator. Its
+reproducibility therefore depends on controlling that generator. The standard
+advice is to set the seed once and store it, which ensures that the same code
+reproduces the same sequence of draws [@morris_etall_2019]. Simulation studies
+are typically organized as a set of conditions, each run for many repetitions,
+and researchers often need to reproduce a single repetition within a given
+condition. For this purpose, the state of the generator can additionally be
+stored at the start of each repetition of each condition, rather than only the
+initial seed. Any repetition can then be reproduced in isolation, which is
+convenient for debugging [@morris_etall_2019]. In R, this state is stored in the
+variable `.Random.seed`, and the procedure would look as follows
+(@lst-rng-state):
 
 ```{r}
 #| lst-label: lst-rng-state
@@ -1635,8 +1631,8 @@ itself *guarantee* that the random sequences of different conditions never
 overlap. The recommended solution is to assign separate, non-overlapping random
 number streams [@morris_etall_2019; @siepe_etall_2024]. R offers several
 packages for this [@rcoreteam_parallel; @rstream; @doRNG], and we illustrate the
-approach with {doRNG}, which implements streams for {foreach} through the
-`%dorng%` operator (@lst-run-simulation-code). From a single master seed set
+approach with {doRNG}, which implements streams for {foreach} [@foreach] through
+the `%dorng%` operator (@lst-run-simulation-code). From a single master seed set
 before the loop, {doRNG} derives one independent stream per iteration, bound to
 the iteration index rather than to a worker. The number of cores (`ncore` in our
 script) therefore changes only how iterations are scheduled, never which stream
@@ -1683,10 +1679,10 @@ rep10 <- run_one_rep(designs$n[3], designs$gamma2[3])
 
 ### Analytical Pipelines: {targets} and {rixpress}
 
-Complex simulation studies often benefit from an analytical pipeline that tracks
-dependencies between computational steps, caches intermediate results, and
-enables selective re-execution when inputs change. Two complementary approaches
-exist within the Nix ecosystem.
+As mentioned, complex simulation studies often benefit from an analytical 
+pipeline that tracks dependencies between computational steps, caches 
+intermediate results, and enables selective re-execution when inputs change. 
+Two complementary approaches exist within the Nix ecosystem.
 
 #### Using {targets} Within Nix
 
