@@ -40,13 +40,13 @@ author:
       
 abstract: |
   Computational reproducibility remains limited in psychological research,
-  despite widespread norms for sharing data and analysis code. One reason is
-  that reproducibility exists on a continuum, ranging from partial
-  transparency—such as providing scripts or software version numbers—to fully
-  executable research compendia that regenerate all results from raw code. In
-  this article, we introduce Nix and the {rix} R package as a practical
-  framework for achieving full computational reproducibility in simulation-based
-  research. We provide a step-by-step tutorial demonstrating how {rix} can be
+  despite widespread norms for sharing data and analysis code. These materials
+  alone rarely suffice: re-executing an analysis requires reconstructing the
+  computational environment it depends on, from the programming language version
+  and packages to system-level dependencies. In this article, we introduce Nix 
+  and the {rix} R package as a practical framework for achieving computational 
+  reproducibility in simulation-based research. We provide a 
+  step-by-step tutorial demonstrating how {rix} can be
   used to define, build, and share isolated, project-specific software
   environments that precisely capture R versions, package dependencies, system
   libraries, and integrated development environments. We further illustrate
