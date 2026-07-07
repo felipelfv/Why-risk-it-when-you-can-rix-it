@@ -1793,7 +1793,7 @@ not pinned. As a consequence, an environment pinned to an older date can
 occasionally stop building or loading after a macOS update. Because reproducing
 an environment faithfully means keeping its pin unchanged, the reliable solution
 is not to update the pin but to build and run the original environment through
-Docker or on Linux (including WSL on Windows), where it no longer depends on the
+Docker or on Linux, where it no longer depends on the
 host's macOS [@rodrigues_baumann_2026_polyglot]. This preserves exact
 reproducibility while working around the platform's constraints (for
 macOS-specific setup, see
