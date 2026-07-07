@@ -262,11 +262,11 @@ These challenges may persist for several reasons. Arguably, one is that even
 researchers aware of these demands face a fragmented landscape of solutions,
 each addressing only part of the problem. Package-level managers such as {renv}
 [@ushey_2024] and {groundhog} [@simonsohn_2020] stabilize R package versions but
-do not manage the R interpreter itself or the system-level dependencies those
+do not manage the R interpreter or the system-level dependencies those
 packages depend on. Analytical pipeline tools such as {targets} [@landau_2021]
 and Make [@feldman_1979] support reproducibility in a different sense: they
 specify and automate the structure of an analysis by formalizing the order in
-which steps should run and by tracking dependencies among intermediate results.
+which steps run and by tracking dependencies among intermediate results.
 These tools clarify *how* an analysis proceeds, but they assume that the
 software stack required to run each step is already stable. Containerization
 tools such as Docker, including R-focused implementations like Rocker
