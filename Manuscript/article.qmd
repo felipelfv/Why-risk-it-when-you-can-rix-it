@@ -71,7 +71,7 @@ author-note:
      of the {rix} package presented in this tutorial. The authors have no other 
     conflicts of interest to declare."
     data-sharing: "Data and materials from this study can be accessed at 
-    <https://doi.org/10.5281/zenodo.21098114>."
+    <https://doi.org/10.5281/zenodo.21098113>."
 format:
   apaquarto-pdf:
     document-mode: man
@@ -352,7 +352,7 @@ generation (`01_data_generation.R`), model specification (`02_models.R`),
 simulation execution (`03_run_simulation.R`), performance metric calculation
 (`04_performance_metrics.R`), and results visualization (`05_plots.R`).
 The `.R` scripts are available in the repository 
-(<https://doi.org/10.5281/zenodo.21098114>; Simulation subfolder)[^3].
+(<https://doi.org/10.5281/zenodo.21098113>; Simulation subfolder)[^3].
 
 [^3]: For simplicity, we included all code as executable chunks in a single
     `.qmd` file. This entails that the simulation runs from start to finish
@@ -562,7 +562,7 @@ an IDE, and the R packages the scripts will use. You can always add more later,
 but doing so means editing `gen-env.R` and following the steps we are about to
 illustrate. The simulation specification is shown in @lst-rix-env-sim (the
 complete version, which also covers the manuscript, is in the project
-repository, <https://doi.org/10.5281/zenodo.21098114>, as `gen-env.R`):
+repository, <https://doi.org/10.5281/zenodo.21098113>, as `gen-env.R`):
 
 \small
 
@@ -1106,7 +1106,7 @@ Having built the project as its authors, we now switch to the perspective of a
 reader who wants to reproduce it. Because the environment is bundled with the
 project, reproduction requires almost nothing beyond the project folder itself.
 A reader can download the entire project from its repository
-(<https://doi.org/10.5281/zenodo.21098114>). The folder already contains
+(<https://doi.org/10.5281/zenodo.21098113>). The folder already contains
 `default.nix`, thus they do not need the authoring steps (Steps 1 to 3). With
 Nix installed, they need only build and enter the environment as in Step 4
 (`nix-build`, then `nix-shell --pure`), which guarantees that all dependencies
