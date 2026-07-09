@@ -227,17 +227,17 @@ Luxembourg}}
 
 \abstract{Computational reproducibility remains limited in psychological
 research, despite widespread norms for sharing data and analysis code.
-One reason is that reproducibility exists on a continuum, ranging from
-partial transparency---such as providing scripts or software version
-numbers---to fully executable research compendia that regenerate all
-results from raw code. In this article, we introduce Nix and the \{rix\}
-R package as a practical framework for achieving full computational
-reproducibility in simulation-based research. We provide a step-by-step
-tutorial demonstrating how \{rix\} can be used to define, build, and
-share isolated, project-specific software environments that precisely
-capture R versions, package dependencies, system libraries, and
-integrated development environments. We further illustrate this workflow
-by reproducing a complete manuscript using Quarto and the \{apaquarto\}
+These materials alone rarely suffice: re-executing an analysis requires
+reconstructing the computational environment it depends on, from the
+programming language version and packages to system-level dependencies.
+In this article, we introduce Nix and the \{rix\} R package as a
+practical framework for achieving computational reproducibility in
+simulation-based research. We provide a step-by-step tutorial
+demonstrating how \{rix\} can be used to define, build, and share
+isolated, project-specific software environments that precisely capture
+R versions, package dependencies, system libraries, and integrated
+development environments. We further illustrate this workflow by
+reproducing a complete manuscript using Quarto and the \{apaquarto\}
 extension, showing how analyses, figures, and text can be regenerated in
 a single, executable pipeline. Together, these tools lower the technical
 barrier to robust, end-to-end reproducibility and offer a scalable
@@ -253,16 +253,17 @@ Geller}{0000-0002-7459-4505}}\par{\addORCIDlink{Bruno
 Rodrigues}{0000-0002-3211-3689}} 
 
 \par{ Data and materials from this study can be accessed at
-\url{https://doi.org/10.5281/zenodo.21098114}.  Bruno Rodrigues is one
+\url{https://doi.org/10.5281/zenodo.21098113}.  Bruno Rodrigues is one
 of the authors and maintainers of the \{rix\} package presented in this
 tutorial. The authors have no other conflicts of interest to
-declare.  We would like to thank Julia Rohrer and Ole Schacht for their
-helpful feedback on earlier versions of this manuscript, and Matteo
-Quartagno for feedback on seeds and reproducibility. During the first
-round of revision, Claude Sonnet 4.6 (Anthropic) was used to improve the
-grammar and coherence solely of the Introduction and Discussion.  Author
-roles were classified using the Contributor Role Taxonomy (CRediT;
-https://credit.niso.org/) as follows:  Felipe Fontana
+declare.  We would like to thank Julia Rohrer, Ole Schacht and Dries
+Debeer for their helpful feedback on earlier versions of this
+manuscript, and Matteo Quartagno for feedback on seeds and
+reproducibility. During the first round of revision, Claude Sonnet 4.6
+(Anthropic) was used to improve the grammar and coherence solely of the
+Introduction and Discussion.  Author roles were classified using the
+Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as
+follows:  Felipe Fontana
 Vieira:   Conceptualization, Methodology, Software, Data
 curation, Formal analysis, Visualization, Writing - original
 draft, Writing - review \& editing; Jason
@@ -379,24 +380,24 @@ Vieira, Email: \href{mailto:felipe.fontanavieira@ugent.be}{felipe.fontanavieira@
 
 
 Psychological science is in the midst of a credibility revolution
-(\citeproc{ref-vazire2018}{Vazire, 2018}), yet much of that scrutiny has
-focused on empirical studies. Monte Carlo simulation studies (hereafter
-referred to as simulation studies) have received far less
-(\citeproc{ref-siepe_etall_2024}{Siepe et al., 2024}), even though they
-are a primary tool for evaluating the statistical methods
+(\citeproc{ref-vazire2018}{Vazire, 2018}). However, to date, much of the
+attention has focused on empirical studies. Monte Carlo simulation
+studies (hereafter referred to as simulation studies) have received far
+less (\citeproc{ref-siepe_etall_2024}{Siepe et al., 2024}), even though
+they are a primary tool for evaluating the statistical methods
 (\citeproc{ref-morris_etall_2019}{Morris et al., 2019}) and may suffer
 from selective reporting (\citeproc{ref-bouma_etall_2026}{Bouma et al.,
 2026}; \citeproc{ref-pawel_etall_2024}{Pawel et al., 2024},
-\citeproc{ref-pawel_etall_2025}{2025}). One especially underexamined
-aspect for simulations is reproducibility (i.e., exactly reproducing a
-study's results from the provided data, code, materials, and software)
+\citeproc{ref-pawel_etall_2025}{2025}). One underexamined aspect for
+simulations is reproducibility (i.e., exactly reproducing a study's
+results from the provided data, code, materials, and software)
 (\citeproc{ref-hardwicke2020}{Hardwicke et al., 2020}). In a simulation
 study, this involves more than reanalyzing a fixed dataset, because the
 code also generates the data. Reproducing such a study therefore
 involves the data generation process, the analysis, and the summary of
 results. Montoya and Anderson
 (\citeproc{ref-montoya_anderson_2026}{2026}) conceptually address each
-of these stages separately.
+of these stages.
 
 Reproducibility in this sense is not all-or-nothing but occupies a
 continuum (\citeproc{ref-peng_2011}{Peng, 2011}), on which a study is
@@ -416,8 +417,8 @@ al., 2026}; \citeproc{ref-epskamp_2019}{Epskamp, 2019};
 \citeproc{ref-ziemann_etall_2023}{Ziemann et al., 2023}). Even
 error-free code depends on a hierarchy of software components, including
 the programming language version, the packages used in the analysis, and
-the system-level libraries those packages rely on. We define these and
-related terms in Table~\ref{tbl-glossary}. When they differ from the
+the system-level dependencies those packages rely on. We define these
+and related terms in Table~\ref{tbl-glossary}. When they differ from the
 originals, code may fail, behave inconsistently across machines, or
 yield conflicting numerical results
 (\citeproc{ref-baker_etall_2024}{Baker et al., 2024};
@@ -432,7 +433,7 @@ al., 2024}; \citeproc{ref-siepe_etall_2024}{Siepe et al., 2024}).
 To make this concrete, we use the \emph{computational environment} to
 refer to the complete software context required for a study to run
 successfully. This entails the programming language version, package
-versions, system-level libraries, and operating system
+versions, system-level dependencies, and operating system
 (Figure~\ref{fig-environment}) (\citeproc{ref-rodrigues_2023}{Rodrigues,
 2023}; \citeproc{ref-rodrigues_baumann_2026_polyglot}{Rodrigues \&
 Baumann, 2026}). We define \emph{computational environment
@@ -440,7 +441,7 @@ reproducibility} as the ability to reconstruct these dependencies on top
 of whatever operating system a machine runs, at any future time, such
 that executing the same code yields the same numerical
 results\footnote{We note our characterization of computational
-  environment reproducibility is not the most rigorous one. For stricter
+  environment reproducibility is not the most rigorous. For stricter
   definitions, we refer the interested reader to Malka et al.
   (\citeproc{ref-malka2026docker}{2026}) (p.~3) and Lamb and Zacchiroli
   (\citeproc{ref-lamb_zacchiroli_2022}{2022}).}. Current practice falls
@@ -456,7 +457,8 @@ in them (\citeproc{ref-luijken_etall_2024}{Luijken et al., 2024};
 \begin{figure}
 
 \caption{\label{fig-environment}The computational environment as a set
-of nested layers, based on Peikert \& Brandmaier (2021).}
+of nested layers, each running on top of the layer below, based on
+Peikert \& Brandmaier (2021).}
 
 \centering{
 
@@ -469,23 +471,25 @@ of nested layers, based on Peikert \& Brandmaier (2021).}
 These challenges may persist for several reasons. Arguably, one is that
 even researchers aware of these demands face a fragmented landscape of
 solutions, each addressing only part of the problem. Package-level
-managers such as \{renv\} (\citeproc{ref-ushey_2024}{Ushey, 2024}) and
-\{groundhog\} (\citeproc{ref-simonsohn_2020}{Simonsohn, 2020}) stabilize
-R package versions but do not manage the R interpreter itself or the
-system-level libraries those packages depend on. Analytical pipeline
-tools such as \{targets\} (\citeproc{ref-landau_2021}{Landau, 2021}) and
-Make (\citeproc{ref-feldman_1979}{Feldman, 1979}) support
-reproducibility in a different sense: they specify and automate the
-structure of an analysis by formalizing the order in which steps should
-run and by tracking dependencies among intermediate results. These tools
-clarify \emph{how} an analysis proceeds, but they assume that the
-software stack required to run each step is already stable.
-Containerization tools such as Docker, including R-focused
-implementations like Rocker (\citeproc{ref-boettiger_2015}{Boettiger,
-2015}; \citeproc{ref-boettiger_eddelbuettel_2017}{Boettiger \&
-Eddelbuettel, 2017}) offer a more comprehensive approach by bundling
-nearly the entire environment into a single executable image. Yet their
-use requires familiarity with Linux system administration, and even
+managers such as \{renv\} (\citeproc{ref-ushey_2024}{Ushey \& Wickham,
+2024}) and \{groundhog\} (\citeproc{ref-simonsohn_2020}{Simonsohn \&
+Gruson, 2026}) stabilize R package versions but do not manage the R
+interpreter or the system-level dependencies those packages depend on.
+Analytical pipeline tools such as \{targets\}
+(\citeproc{ref-landau_2021}{Landau, 2021}) and Make
+(\citeproc{ref-feldman_1979}{Feldman, 1979}) support reproducibility in
+a different sense: they specify and automate the structure of an
+analysis by formalizing the order in which steps run and by tracking
+dependencies among intermediate results. These tools clarify \emph{how}
+an analysis proceeds, but they assume that the software stack required
+to run each step is already stable. Containerization tools such as
+Docker, including R-focused implementations like Rocker
+(\citeproc{ref-boettiger_2015}{Boettiger, 2015};
+\citeproc{ref-boettiger_eddelbuettel_2017}{Boettiger \& Eddelbuettel,
+2017}) that provide preconfigured Docker images tailored to common R
+workflows, offer a more comprehensive approach by bundling nearly the
+entire environment into a single executable image. Yet their use
+requires familiarity with Linux system administration, and even
 containerization may suffer from temporal drift when Dockerfiles rely on
 mutable upstream repositories (\citeproc{ref-malka2026docker}{Malka et
 al., 2026}). For a detailed comparison of these tools and their
@@ -519,25 +523,25 @@ structure\footnote{The analytical pipeline is one part of the broader
   Rodrigues (\citeproc{ref-rodrigues_2023}{2023}).}. Instead, we aim to
 show what Nix and \{rix\} are and how they can establish a stable
 environment within which simulation studies---whether organized in
-simple \texttt{.R} files that \texttt{source()} others, through formal
-pipeline tools (e.g., \{targets\}) or embedded as code chunks in
-\texttt{.Rmd} or \texttt{.qmd} files---can be executed reliably. We
-illustrate these ideas through a reproducible simulation study conducted
-in R, culminating in this automated APA-formatted manuscript generated
-with \texttt{apaquarto} (\citeproc{ref-schneider_2024}{Schneider,
-2024}). Although the example centers on R, the principles underlying
-environment reproducibility with \{rix\} apply equally to other
-languages, including Python and Julia, and to multiple development
-environments such as RStudio, VS Code, or Positron.
+\texttt{.R} files that \texttt{source()} others, through formal pipeline
+tools (e.g., \{targets\}) or embedded as code chunks in \texttt{.Rmd} or
+\texttt{.qmd} files---can be executed reliably. We illustrate these
+ideas through a reproducible simulation study conducted in R,
+culminating in this automated APA-formatted manuscript generated with
+\texttt{apaquarto} (\citeproc{ref-schneider_2024}{Schneider, 2024}).
+Although the example centers on R, the principles underlying environment
+reproducibility with \{rix\} apply equally to other languages, including
+Python and Julia, and to multiple development environments such as
+RStudio, VS Code, or Positron.
 
 The remainder of this article is structured as follows. We first
 illustrate a simulation study and the reproducibility risks associated
-with it. We then introduce Nix and \{rix\}, along with the core
-principles behind them. This is followed by a step-by-step tutorial that
-rebuilds the simulation study as a reproducible project with \{rix\},
-from installing Nix to regenerating this manuscript. Last, we turn to
-additional considerations for ensuring reproducibility of simulation
-studies and close with a discussion.
+with it. We then introduce Nix and \{rix\}, along with their core
+principles. This is followed by a step-by-step tutorial that (re)builds
+the simulation study as a reproducible project with \{rix\}, from
+installing Nix to (re)generating this manuscript. Last, we turn to
+additional considerations for reproducibility of simulation studies and
+close with a discussion.
 
 \begin{table}
 
@@ -546,8 +550,8 @@ text.}{\label{tbl-glossary}}}
 \vspace{-20pt}}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3704}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6296}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3750}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6250}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Term
@@ -558,44 +562,55 @@ Definition
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{System-level libraries} & Shared operating-system software that
-R packages depend on (e.g., BLAS/LAPACK, C++ backends). These are not
-installed by \texttt{install.packages()}. \\
-\textbf{Operating system} & The base software (e.g., Windows, macOS,
-Linux) that manages a computer's hardware and on which every other
-program runs. R, its packages, and system-level libraries all sit on top
-of it. \\
-\textbf{R interpreter} & The \texttt{R} program that reads and runs your
-R code (\citeproc{ref-adler_2012}{Adler, 2012}). Two machines can report
-the same R version yet have interpreters compiled differently or linked
+\textbf{System-level dependencies} & Software provided outside of R (by
+the operating system or a system package manager) that an analysis
+relies on, including shared libraries (e.g., LAPACK) and tools (e.g.,
+Pandoc, LaTeX). \\
+\textbf{Operating system} & The core software (e.g., Windows, macOS,
+Linux) that manages a computer's hardware and provides the platform on
+which all other programs, including R, run. \\
+\textbf{R interpreter} & The R program that reads and executes your R
+code (\citeproc{ref-adler_2012}{Adler, 2012}). Two machines may report
+the same R version but use interpreters compiled differently or linked
 against different system-level libraries (see
 \citeproc{ref-rcoreteam_installation}{R Core Team, 2025, Section
 A.3}). \\
-\textbf{Analytical pipeline} & Automating the order in which analysis
-steps run and the dependencies among them, re-running only those
-affected by a change. \\
-\textbf{Software stack} & The complete set of software layers an
-analysis depends on: the operating system, system-level libraries, the R
-interpreter, and the R packages built on top of them. \\
-\textbf{Containerization} & An isolated, lightweight, shareable bundle
-of software and its dependencies (e.g., Docker)
-(\citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau, 2021}). \\
-\textbf{Mutable upstream repositories} & The external sources a build
-pulls from (e.g., base images or package repositories) can change, or
-even disappear, over time without the build instructions changing, so
-the same instructions may later produce a different result or fail to
-build (\citeproc{ref-malka2026docker}{Malka et al., 2026}). \\
-\textbf{Reproducible workflow} & The overall research process that makes
-a study reproducible end to end, including version control, the
-analytical pipeline, and a frozen computational environment. \\
+\textbf{Compiled} & Converted from human-readable source code into
+machine code by a compiler so the computer can run it directly. \\
+\textbf{Analytical pipeline} & The sequence of analysis steps and the
+dependencies among them. Pipeline tools formalize this sequence,
+automate its execution, and re-run only the steps affected by a
+change. \\
+\textbf{Software stack} & The full set of software layers an analysis
+depends on: the operating system, system-level dependencies, the R
+interpreter, and the R packages built on top. Note that this stack
+itself depends on the underlying hardware. \\
+\textbf{Hardware} & The physical components of a computer (e.g., CPU,
+memory, and storage) that execute instructions and support the operation
+of software. \\
+\textbf{Containerization} & Packaging software and its dependencies into
+an isolated, lightweight, shareable unit (a container), using tools such
+as Docker (\citeproc{ref-wiebels_moreau_2021}{Wiebels \& Moreau,
+2021}). \\
+\textbf{Mutable upstream repositories} & External sources a build pulls
+from (e.g., base images or package repositories) that can change or
+disappear over time, meaning the same build instructions may later
+produce a different result or fail (\citeproc{ref-malka2026docker}{Malka
+et al., 2026}). \\
+\textbf{Reproducible workflow} & Overall research process that makes a
+study reproducible end to end, including version control, analytical
+pipeline, and a frozen computational environment. \\
 \textbf{Literate programming} & Writing an analysis as a single document
 that combines narrative text and executable code (e.g., R Markdown or
-Quarto), so the report and the code that produces it stay together. \\
-\textbf{Functional programming language} & A language built around pure
-functions, immutability, and explicit inputs, so the same inputs always
-produce the same output. \\
+Quarto), keeping the report and its code together. \\
+\textbf{Functional programming language} & A language designed so that
+the same inputs always produce the same output. \\
 \textbf{Binary cache} & A server that stores prebuilt packages, so Nix
 can download a finished copy instead of compiling it from source. \\
+\textbf{Cryptographic hash} & A fixed-length string of letters and
+digits computed from digital content, acting as its fingerprint. The
+same content always yields the same string, whereas any change to the
+content, however small, yields a different one. \\
 \end{longtable}
 
 \end{table}
@@ -604,29 +619,29 @@ can download a finished copy instead of compiling it from source. \\
 Risks}\label{setting-the-stage-a-simulation-study-and-its-reproducibility-risks}
 
 Imagine you have just been awarded a grant to conduct a large-scale
-simulation study, where you want to evaluate the performance of a
-statistical estimator under varying data-generating conditions (see
-Appendix A for full technical details). This tutorial is organized
-around this example to ground our discussion in a typical methods
-section, but readers can follow the tutorial without engaging deeply
-with the simulation itself. In practice, simulation studies are
-typically organized into multiple component files. To mimic this
-practice, our simulation is organized into five sequential scripts: data
-generation (\texttt{01\_data\_generation.R}), model specification
-(\texttt{02\_models.R}), simulation execution
+simulation study, where you evaluate the performance of a statistical
+estimator under varying data-generating conditions (see Appendix A for
+full technical details). This tutorial is organized around this example
+to ground our discussion in a typical methods section, but readers can
+follow the tutorial without engaging deeply with the simulation itself.
+In practice, simulation studies are typically organized into multiple
+component files. To mimic that, our simulation is organized into five
+sequential scripts: data generation (\texttt{01\_data\_generation.R}),
+model specification (\texttt{02\_models.R}), simulation execution
 (\texttt{03\_run\_simulation.R}), performance metric calculation
 (\texttt{04\_performance\_metrics.R}), and results visualization
-(\texttt{05\_plots.R}) \footnote{We note that for simplicity we included
-  all code directly within this document as executable chunks in a
-  single \texttt{.qmd} file. This entails that the simulation runs from
-  start to finish (i.e., generating data, producing results and figures
-  automatically). This approach would be impractical for many real-world
-  simulation studies, which are often too computationally intensive. The
-  solution, however, is quite simple: simply run the simulation outside
-  the \texttt{.qmd} file and load the results for the analyses in the
-  same file.}.
+(\texttt{05\_plots.R}). The \texttt{.R} scripts are available in the
+repository (\url{https://doi.org/10.5281/zenodo.21098113}; Simulation
+subfolder)\footnote{For simplicity, we included all code as executable
+  chunks in a single \texttt{.qmd} file. This entails that the
+  simulation runs from start to finish (i.e., generating data, producing
+  results and figures). This is impractical for many real-world
+  simulation studies, which are often too computationally intensive. One
+  possible solution, which we illustrate, is to run the simulation
+  outside the \texttt{.qmd} file and load the results for the analyses
+  in the same file.}.
 
-Now suppose a researcher attempts to reproduce the simulation run and
+Suppose a researcher attempts to reproduce the simulation run and
 results reported in this article. What might prevent them from obtaining
 identical outcomes, assuming error-free code? The natural first concern
 is the version of packages. Installing R packages at a later time may
@@ -637,10 +652,12 @@ usually discouraged, internal functions, such as
 \texttt{lavaan:::lav\_graph\_get\_ancestors}), or to subtle differences
 in the results due to changes in default settings (e.g.,
 \texttt{stringsAsFactors} defaulting to FALSE as of R 4.0). Beyond
-package versioning, many packages rely on system-level software that R
-does not provide. Our simulation illustrates this directly: the
-\{rvinecopulib\} package is built on a compiled C++ backend
-(\citeproc{ref-rvinecopulib}{Nagler \& Vatter, 2025}).
+package versioning, many packages rely on system-level dependencies that
+R does not provide. Our project illustrates this: \{rvinecopulib\}
+(\citeproc{ref-rvinecopulib}{Nagler \& Vatter, 2025}) requires a C++
+compiler to install from source, and \{svglite\}
+(\citeproc{ref-svglite}{Wickham et al., 2025}) links against system
+libraries (e.g., libpng) that R cannot install itself.
 
 The R language version introduces another layer of dependency. Code
 written for a recent version of R may rely on syntax or functionality
@@ -652,40 +669,41 @@ different random sequences (\citeproc{ref-ottoboni_stark_2018}{Ottoboni
 \& Stark, 2018}). This is especially consequential for simulation
 studies, because the random draws are not incidental to the analysis but
 constitute the data itself. Therefore, the random number generator is
-part of the computational environment: reproducing the data requires not
-only the same seed but also the same R version. Moreover, generating
-data and reproducing every statistical estimate \emph{exactly} (down to
-the certain digits) can depend on lower-level components still, such as
-the system-level libraries R uses for matrix computations (e.g.,
+part of the computational environment. Moreover, generating data and
+reproducing every statistical estimate \emph{exactly} (down to the
+certain digits) can depend on lower-level components still, such as the
+system-level libraries R uses for matrix computations (e.g.,
 BLAS/LAPACK). The potential solution we propose pins these libraries,
 and increases the chances of reaching such a level of reproducibility,
 consistent with empirical findings in other contexts
 (\citeproc{ref-malka2026docker}{Malka et al., 2026}). However, it must
 be noted that reproducing precisely every number is hard to guarantee in
-every case, especially across different operating systems and
-processors. Although such differences are usually negligible, appearing
-only in the last digits, the finite precision of floating-point
-arithmetic (\citeproc{ref-ahrens2020}{Ahrens et al., 2020};
+every case, especially across different operating systems and processors
+(e.g., \citeproc{ref-stan_reproducibility}{Stan Development Team,
+2025}). Although such differences are usually negligible, appearing only
+in the last digits, the finite precision of floating-point arithmetic
+(\citeproc{ref-ahrens2020}{Ahrens et al., 2020};
 \citeproc{ref-goldberg1991}{Goldberg, 1991}) and the algorithm a
 specific R package uses to generate data can occasionally amplify them
 into larger discrepancies. With respect to all of this, we do not claim
 that this exact level of identity must be met. How much reproducibility
 is required is ultimately for the scientific community to decide (e.g.,
-through journals and disciplinary norms), and reproducing the broader
-pattern of results is arguably enough (see also Montoya and Anderson
+through journals and norms), and reproducing the broader pattern of data
+generation and results is arguably enough (see also Montoya and Anderson
 (\citeproc{ref-montoya_anderson_2026}{2026}), for a stage-by-stage
 approach to assessing reproducibility in simulation studies)\footnote{The
-  following illustration originated from Danielle Navarro. With the same
-  seed and covariance matrix, \texttt{MASS::mvrnorm()} can return
-  different values on macOS than on Linux or Windows, whereas
-  \texttt{mvtnorm::rmvnorm()} stays consistent. The difference traces to
-  a sign flip in an eigenvector computed through the system's
-  BLAS/LAPACK libraries, to which \texttt{mvtnorm} is invariant but
-  \texttt{MASS} is not. The draws still come from the same distribution,
-  so conclusions would generally be unchanged in simulation with
-  multiple repetitions, but from a reproducibility standpoint this is
-  concerning. Pinning the numerical library with Nix (here, OpenBLAS)
-  removes the discrepancy for \texttt{MASS::mvrnorm()}. For the full
+  following illustration originated and it is credited to Danielle
+  Navarro. With the same seed and covariance matrix,
+  \texttt{MASS::mvrnorm()} can return different values on macOS than on
+  Linux or Windows, whereas \texttt{mvtnorm::rmvnorm()} stays
+  consistent. The difference traces to a sign flip in an eigenvector
+  computed through the system's BLAS/LAPACK libraries, to which
+  \texttt{mvtnorm} is invariant but \texttt{MASS} is not. The draws
+  still come from the same distribution, so conclusions would generally
+  be unchanged in simulation with multiple repetitions, but from a
+  \emph{pure} reproducibility standpoint this may be concerning. Pinning
+  the numerical library with Nix (here, OpenBLAS) removes, for this
+  example, the discrepancy for \texttt{MASS::mvrnorm()}. For the full
   demonstration, see the repository.}.
 
 Finally, analyses embedded in a literate programming workflow add
@@ -704,10 +722,10 @@ language, a build tool, and a package manager wrapped in one. This
 article focuses on the latter. Most package managers (think of Apple's
 or Android's app stores) are imperative: they modify a system's state as
 they install or update software. Nix instead builds each environment
-from an explicit description and never alters it afterward, so the same
-description produces the same self-contained environment on other
+from an explicit description and never alters it afterward. Hence, the
+same description produces the same self-contained environment on other
 machines. Researchers state which version of R and which packages they
-need, and Nix works out the underlying system-level libraries
+need, and Nix works out the underlying system-level dependencies
 automatically.
 
 \subsection{Core Principles}\label{core-principles}
@@ -724,11 +742,11 @@ example, keep R 4.1.0 and R 4.3.3 on the same machine, or use different
 package versions across analyses
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 
-The Nix ecosystem is built around nixpkgs, a version-controlled
+The Nix ecosystem is built around \texttt{nixpkgs}, a version-controlled
 repository comprising more than 120,000 packages, including nearly all
 of CRAN and Bioconductor. By pinning a specific commit or date,
 researchers freeze the entire software stack (i.e., R itself, R
-packages, and all system-level libraries). This eliminates the
+packages, and all system-level dependencies). This eliminates the
 system-dependency problems that tools like \{renv\} cannot address
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 Empirical studies of historical nixpkgs snapshots report that old
@@ -750,7 +768,7 @@ unfamiliar to most researchers, we recommend and focus on using \{rix\}
 to lower this barrier. The \{rix\} package provides an R-native
 interface: a single call to \texttt{rix()} generates complete Nix
 configurations from standard R syntax, specifying R versions, CRAN
-packages, system-level libraries, and even Python or Julia components
+packages, system-level dependencies, and even Python or Julia components
 when required. Users never need to read or write Nix code directly, as
 \{rix\} translates automatically. For more on \{rix\}, including its
 integration with rstats-on-nix (a curated fork of the Nix package
@@ -786,12 +804,12 @@ documentation above). On all systems, install Nix by running the
 Determinate Systems installer in a terminal\footnote{A terminal is a
   text-based way to give your computer instructions. Readers new to the
   command line may find the following link a useful primer:
-  \url{https://swcarpentry.github.io/shell-novice/}. This was also
-  suggested in Wiebels and Moreau
-  (\citeproc{ref-wiebels_moreau_2021}{2021})}. To open it, on macOS, go
-to Applications → Utilities → Terminal. For Windows, launch your WSL2
-(Ubuntu) shell from the Start menu. For Linux, open your distribution's
-terminal application. Then run (Listing~\ref{lst-install-nix}):
+  \url{https://swcarpentry.github.io/shell-novice/}, as suggested in
+  Wiebels and Moreau (\citeproc{ref-wiebels_moreau_2021}{2021})}. To
+open it, on macOS, go to Applications → Utilities → Terminal. For
+Windows, launch your WSL2 (Ubuntu) shell from the Start menu. For Linux,
+open your distribution's terminal application. Then run
+(Listing~\ref{lst-install-nix}):
 
 \begin{codelisting}
 
@@ -830,15 +848,15 @@ already installed\footnote{We, however, recommend uninstalling your
 
 \begin{codelisting}
 
-\caption{\label{lst-install-rix-cran}Installing \{rix\} from CRAN or
-developmental version}
+\caption{\label{lst-install-rix-cran}Installing \{rix\} From CRAN or
+Development Version}
 
 \centering{
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# CRAN version}
-\FunctionTok{install.packages}\NormalTok{(}\StringTok{"rix"}\NormalTok{) }
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"rix"}\NormalTok{)}
 \CommentTok{\# Development version}
 \FunctionTok{install.packages}\NormalTok{(}
   \StringTok{"rix"}\NormalTok{,}
@@ -853,16 +871,17 @@ developmental version}
 
 \end{codelisting}%
 
-\subsection{Step 2: Specifying the Computational
-Environment}\label{sec-specifying-environment}
+\subsection{\texorpdfstring{Step 2: Specifying the Computational
+Environment With
+\texttt{rix()}}{Step 2: Specifying the Computational Environment With rix()}}\label{sec-specifying-environment}
 
-We then begin with a folder for this project (here named
+We first begin by creating a folder for this project (here named
 \texttt{Why-risk-it-when-you-can-rix-it}) that contains only two empty
 subfolders, \texttt{Simulation} and \texttt{Manuscript}. We have not
 written any simulation scripts or the manuscript yet. The only file we
 write by hand for now is \texttt{gen-env.R}, which uses the
 \texttt{rix()} function from the \{rix\} package to produce a
-\texttt{default.nix} file: a declarative specification of all software
+\texttt{default.nix} file, a declarative specification of all software
 dependencies the project needs.
 
 We establish the full environment the simulation needs up front: the R
@@ -871,14 +890,14 @@ add more later, but doing so means editing \texttt{gen-env.R} and
 following the steps we are about to illustrate. The simulation
 specification is shown in Listing~\ref{lst-rix-env-sim} (the complete
 version, which also covers the manuscript, is in the project repository,
-\url{https://doi.org/10.5281/zenodo.21098114}, as \texttt{gen-env.R}):
+\url{https://doi.org/10.5281/zenodo.21098113}, as \texttt{gen-env.R}):
 
 \small
 
 \begin{codelisting}
 
-\caption{\label{lst-rix-env-sim}Simulation environment: R, RStudio, and
-the packages the scripts need}
+\caption{\label{lst-rix-env-sim}Simulation Environment: R, RStudio, and
+the R Packages}
 
 \centering{
 
@@ -892,9 +911,17 @@ the packages the scripts need}
 
 \FunctionTok{rix}\NormalTok{(}
   \AttributeTok{date =} \StringTok{"2026{-}01{-}14"}\NormalTok{, }\CommentTok{\# recommendation: pin a date}
-  \AttributeTok{r\_pkgs =} \FunctionTok{c}\NormalTok{( }\CommentTok{\# all R packages the simulation scripts need}
-    \StringTok{"rix"}\NormalTok{, }\StringTok{"marginaleffects"}\NormalTok{, }\StringTok{"simhelpers"}\NormalTok{, }\StringTok{"rvinecopulib"}\NormalTok{,}
-    \StringTok{"doParallel"}\NormalTok{, }\StringTok{"doRNG"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"cowplot"}\NormalTok{, }\StringTok{"dplyr"}\NormalTok{, }\StringTok{"svglite"}
+  \AttributeTok{r\_pkgs =} \FunctionTok{c}\NormalTok{(}
+    \CommentTok{\# all R packages the simulation scripts need}
+    \StringTok{"rix"}\NormalTok{,}
+    \StringTok{"marginaleffects"}\NormalTok{,}
+    \StringTok{"simhelpers"}\NormalTok{,}
+    \StringTok{"rvinecopulib"}\NormalTok{,}
+    \StringTok{"doParallel"}\NormalTok{,}
+    \StringTok{"doRNG"}\NormalTok{,}
+    \StringTok{"ggplot2"}\NormalTok{,}
+    \StringTok{"cowplot"}\NormalTok{,}
+    \StringTok{"dplyr"}
 \NormalTok{  ),}
   \AttributeTok{ide =} \StringTok{"rstudio"}\NormalTok{, }\CommentTok{\# editor to include}
   \AttributeTok{project\_path =}\NormalTok{ project\_directory,}
@@ -912,16 +939,14 @@ the packages the scripts need}
 \subsubsection{Environment
 Specification}\label{environment-specification}
 
-The \texttt{rix()} function\footnote{For an overarching information on
-  the function \texttt{rix()} and more details, we suggest the following
-  \{rix\} documentation:
-  \url{https://docs.ropensci.org/rix/articles/project-environments.html}}
-constructs the specification through a series of parameters that
-collectively describe the computational environment. Each parameter
-serves a distinct purpose in defining the environment's characteristics,
-and we will clarify those throughout this tutorial section.
+The \texttt{rix()} function constructs the specification through a
+series of parameters that collectively describe the computational
+environment. Each parameter serves a distinct purpose in defining the
+environment's characteristics, and we will clarify those throughout this
+tutorial section. For a broader overview of the function, see the
+\{rix\} documentation.
 
-\paragraph{Specifying the R version.}\label{specifying-the-r-version}
+\paragraph{Specifying the R Version.}\label{specifying-the-r-version}
 
 Researchers must first determine which version of R to use. This can be
 accomplished in two ways: The \texttt{r\_ver} argument accepts an exact
@@ -936,27 +961,71 @@ on top, we use the \texttt{date} parameter to ensure temporal
 consistency across all software components
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 
-\paragraph{Declaring R package
-dependencies.}\label{declaring-r-package-dependencies}
+\small
+
+\begin{codelisting}
+
+\caption{\label{lst-date-example}Example for the Date Argument}
+
+\centering{
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{date }\OtherTok{=} \StringTok{"2026{-}01{-}14"}
+\end{Highlighting}
+\end{Shaded}
+
+}
+
+\end{codelisting}%
+
+\normalsize
+
+\paragraph{Declaring R Package
+Dependencies.}\label{declaring-r-package-dependencies}
 
 The \texttt{r\_pkgs} argument accepts a character vector listing all
 required R packages by their CRAN names. These packages will be
 installed from the version repository corresponding to the specified
 date or R version. It is important to list all packages that the
 analysis will load directly; dependencies of these packages are
-automatically resolved by Nix. For packages requiring specific versions
-not corresponding to the chosen date, researchers can specify exact
-versions using the syntax \texttt{"packagename@version"} (e.g.,
-\texttt{"ggplot2@2.2.1"}). For packages available only on GitHub or
-other Git repositories, the \texttt{git\_pkgs} argument accepts a list
-structure containing repository URLs and specific commit hashes. For
-example:
+automatically resolved by Nix.
 
 \small
 
 \begin{codelisting}
 
-\caption{\label{lst-git-pkgs-example}Example for the git\_pkgs argument}
+\caption{\label{lst-r-pkgs-example}Example for the r\_pkgs Argument}
+
+\centering{
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{r\_pkgs }\OtherTok{=} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"rix"}\NormalTok{, }\StringTok{"marginaleffects"}\NormalTok{, }\StringTok{"simhelpers"}\NormalTok{, }\StringTok{"rvinecopulib"}\NormalTok{,}
+  \StringTok{"doParallel"}\NormalTok{, }\StringTok{"doRNG"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"cowplot"}\NormalTok{, }\StringTok{"dplyr"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+}
+
+\end{codelisting}%
+
+\normalsize
+
+For packages requiring specific versions not corresponding to the chosen
+date, researchers can specify exact versions using the syntax
+\texttt{"packagename@version"} (e.g., \texttt{"ggplot2@2.2.1"}). For
+packages available only on GitHub or other Git repositories, the
+\texttt{git\_pkgs} argument accepts a list structure containing
+repository URLs and specific commit hashes. For example:
+
+\small
+
+\begin{codelisting}
+
+\caption{\label{lst-git-pkgs-example}Example for the git\_pkgs Argument}
 
 \centering{
 
@@ -982,8 +1051,8 @@ our simulation study, all packages were used with their CRAN versions.
 Appendix B gives the reasons for adding each package in
 \texttt{r\_pkgs}.
 
-\paragraph{Configuring the development
-environment.}\label{configuring-the-development-environment}
+\paragraph{Configuring the Development
+Environment.}\label{configuring-the-development-environment}
 
 The \texttt{ide} parameter controls whether an integrated development
 environment (IDE) is included in the Nix environment, allowing users to
@@ -1002,22 +1071,40 @@ environments dated 2025-02-28 or later). For earlier R versions,
 alternative editors must be used. Other supported IDEs include Positron
 (\texttt{ide\ =\ "positron"}), Visual Studio Code
 (\texttt{ide\ =\ "code"}), and command-line interfaces such as Radian
-(\texttt{ide\ =\ "radian"}). These tools may either be installed
-directly within the Nix environment using the \texttt{ide} parameter, or
-users may rely on an existing system installation by setting
-\texttt{ide\ =\ "none"} (or \texttt{ide\ =\ "other"}) and configuring
-\texttt{direnv} to automatically load the Nix environment when the
-project directory is opened\footnote{\textbf{\texttt{direnv}} is a
-  lightweight utility that integrates with the user's shell and
-  automatically loads project-specific environment settings when
-  navigating into a directory (via a \texttt{.envrc} file), and unloads
-  them when leaving. This makes environment activation implicit and
-  reduces the risk of running analyses in the wrong software context.}.
-All IDEs installed via Nix are project-specific and do not interfere
-with system-wide installations.
+(\texttt{ide\ =\ "radian"}). These tools are installed directly within
+the Nix environment using the \texttt{ide} parameter in this
+tutorial\footnote{Alternatively, users may rely on an editor already
+  installed on their system by setting \texttt{ide\ =\ "none"} and using
+  \texttt{direnv}, a lightweight utility that automatically activates
+  the project's Nix environment, and thus its R version and packages,
+  when navigating into the project directory (via a \texttt{.envrc}
+  file), so an existing editor runs against it. As explained previously,
+  in the specific case of RStudio, it must be installed using Nix.}. All
+IDEs installed via Nix are project-specific and do not interfere with
+system-wide installations.
 
-\paragraph{Setting file output
-parameters.}\label{setting-file-output-parameters}
+\small
+
+\begin{codelisting}
+
+\caption{\label{lst-ide-example}Example for the ide Argument}
+
+\centering{
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ide }\OtherTok{=} \StringTok{"rstudio"}
+\end{Highlighting}
+\end{Shaded}
+
+}
+
+\end{codelisting}%
+
+\normalsize
+
+\paragraph{Setting File Output
+Parameters.}\label{setting-file-output-parameters}
 
 The \texttt{project\_path} parameter indicates where the
 \texttt{default.nix} file should be written (``.'' denotes the current
@@ -1026,6 +1113,28 @@ should be replaced. Adding to this, setting \texttt{print\ =\ TRUE},
 which is another argument, displays the generated specification in the
 console for immediate verification
 (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
+
+\small
+
+\begin{codelisting}
+
+\caption{\label{lst-file-output-example}Example for the project\_path
+and Overwrite Arguments}
+
+\centering{
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{project\_path }\OtherTok{=} \StringTok{"."}\NormalTok{,}
+\NormalTok{overwrite }\OtherTok{=} \ConstantTok{TRUE}
+\end{Highlighting}
+\end{Shaded}
+
+}
+
+\end{codelisting}%
+
+\normalsize
 
 \subsection{Step 3: Generating the Environment
 Specification}\label{step-3-generating-the-environment-specification}
@@ -1122,7 +1231,7 @@ To activate the environment, run (Listing~\ref{lst-nix-shell}):
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# in the terminal, from the project directory:}
-\ExtensionTok{nix{-}shell}
+\ExtensionTok{nix{-}shell} \AttributeTok{{-}{-}pure}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1154,7 +1263,9 @@ otherwise the same warnings will appear) should look similar to
 \end{codelisting}%
 
 This command drops the user into a shell where all specified packages
-and tools are available. The shell prompt changes to indicate that a Nix
+and tools are available. The \texttt{-\/-pure} flag restricts the shell
+to what is declared in \texttt{default.nix}; we return to this flag
+later in the tutorial. The shell prompt changes to indicate that a Nix
 environment is active (here,
 \texttt{{[}nix-shell:\textasciitilde{}/Why-risk-it-when-you-can-rix-it{]}\$}).
 To verify that R is being provided by Nix rather than a system
@@ -1162,12 +1273,7 @@ installation, run \texttt{which\ R}. This should return a path within
 \texttt{/nix/store/}. Moreover, from within the Nix shell, users can
 launch their IDE by typing its name (e.g., \texttt{rstudio} or
 \texttt{positron}), which opens the IDE with the Nix environment active
-(Listing~\ref{lst-shell-rs})\footnote{Please note that activating an
-  RStudio instance via Nix does \textbf{not} automatically open the
-  specific project directory you are working in. We therefore recommend
-  creating an RStudio project file (\texttt{.Rproj}) and opening that
-  file when using Nix to ensure that RStudio is correctly associated
-  with the intended project and environment.}:
+(Listing~\ref{lst-shell-rs}):
 
 \begin{codelisting}
 
@@ -1187,36 +1293,42 @@ launch their IDE by typing its name (e.g., \texttt{rstudio} or
 
 \end{codelisting}%
 
+Note that launching RStudio this way does not automatically open the
+specific project you are working in. We therefore recommend creating an
+RStudio project file (\texttt{.Rproj}) and opening that file when using
+Nix, so that RStudio is correctly associated with the intended project
+and environment.
+
 \subsection{Step 5: Developing and Making the Simulation
 Reproducible}\label{step-5-developing-and-making-the-simulation-reproducible}
 
-With RStudio open from the Nix environment, we write the five simulation
-\texttt{.R} scripts inside the \texttt{Simulation} subfolder. Note that
-one does not need to use RStudio, but we illustrate it as most readers
-probably make use of an IDE. Because we declared the simulation packages
-up front (Listing~\ref{lst-rix-env-sim}), they are already available in
-the shell, and the scripts run against exactly those versions.
+With RStudio open from the Nix environment, we next write the five
+simulation \texttt{.R} scripts inside the Simulation subfolder. Note
+that one does not need to use RStudio, but we illustrate it as most
+readers probably make use of an IDE. Because we declared the simulation
+packages up front (Listing~\ref{lst-rix-env-sim}), they are already
+available, and the scripts run against exactly those versions.
 Researchers are rarely aware of every package a project will need in
 advance, but, as highlighted before, packages can be added
 ``on-the-go'': as the code takes shape and calls for another package, we
 add it to \texttt{r\_pkgs} in \texttt{gen-env.R} and rerun
 \texttt{rix()}. It is crucial that, after editing \texttt{gen-env.R}, we
-rebuild with \texttt{nix-build} and re-enter with \texttt{nix-shell} so
-the new packages become available.
+rebuild with \texttt{nix-build} and re-enter with
+\texttt{nix-shell\ -\/-pure} so the new packages become available.
 
 \subsubsection{Running the Simulation and
 Results}\label{running-the-simulation-and-results}
 
 With the environment built, we run the simulation from inside the Nix
 shell so that it uses exactly the R version and packages declared in
-\texttt{default.nix}. This is how the results and plots reported in this
-manuscript were produced. For example, \texttt{03\_run\_simulation.R}
-begins by loading the required packages and sourcing the other scripts
-it needs:
+\texttt{default.nix}. This is how the data generation, results, and
+plots reported in this manuscript were produced. For example,
+\texttt{03\_run\_simulation.R} begins by loading the required packages
+and sourcing the other scripts it needs:
 
 \begin{codelisting}
 
-\caption{\label{lst-run-simulation-code}Code for running the simulation}
+\caption{\label{lst-run-simulation-code}Code for Running the Simulation}
 
 \centering{
 
@@ -1326,8 +1438,8 @@ Listing~\ref{lst-rix-env-manuscript} shows only what is added:
 
 \begin{codelisting}
 
-\caption{\label{lst-rix-env-manuscript}Manuscript tools added to the
-simulation environment}
+\caption{\label{lst-rix-env-manuscript}Manuscript Tools Added to the
+Simulation Environment}
 
 \centering{
 
@@ -1335,13 +1447,33 @@ simulation environment}
 \begin{Highlighting}[]
 \FunctionTok{rix}\NormalTok{(}
   \CommentTok{\# ...all simulation arguments from @lst{-}rix{-}env{-}sim, plus:}
-  \AttributeTok{r\_pkgs =} \FunctionTok{c}\NormalTok{(..., }\StringTok{"quarto"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{), }\CommentTok{\# add to the existing vector}
+  \AttributeTok{r\_pkgs =} \FunctionTok{c}\NormalTok{(..., }\StringTok{"quarto"}\NormalTok{, }\StringTok{"knitr"}\NormalTok{, }\StringTok{"svglite"}\NormalTok{), }\CommentTok{\# add to existing vector}
   \AttributeTok{system\_pkgs =} \FunctionTok{c}\NormalTok{(}\StringTok{"quarto"}\NormalTok{), }\CommentTok{\# command{-}line Quarto}
-  \AttributeTok{tex\_pkgs =} \FunctionTok{c}\NormalTok{(}\StringTok{"amsmath"}\NormalTok{, }\StringTok{"ninecolors"}\NormalTok{, }\StringTok{"apa7"}\NormalTok{, }\StringTok{"scalerel"}\NormalTok{,}
-    \StringTok{"threeparttable"}\NormalTok{, }\StringTok{"threeparttablex"}\NormalTok{, }\StringTok{"endfloat"}\NormalTok{, }\StringTok{"environ"}\NormalTok{,}
-    \StringTok{"multirow"}\NormalTok{, }\StringTok{"tcolorbox"}\NormalTok{, }\StringTok{"pdfcol"}\NormalTok{, }\StringTok{"tikzfill"}\NormalTok{, }\StringTok{"fontawesome5"}\NormalTok{,}
-    \StringTok{"framed"}\NormalTok{, }\StringTok{"newtx"}\NormalTok{, }\StringTok{"fontaxes"}\NormalTok{, }\StringTok{"xstring"}\NormalTok{, }\StringTok{"wrapfig"}\NormalTok{, }\StringTok{"tabularray"}\NormalTok{,}
-    \StringTok{"siunitx"}\NormalTok{, }\StringTok{"fvextra"}\NormalTok{, }\StringTok{"geometry"}\NormalTok{, }\StringTok{"setspace"}\NormalTok{, }\StringTok{"fancyvrb"}\NormalTok{,}
+  \AttributeTok{tex\_pkgs =} \FunctionTok{c}\NormalTok{(}
+    \StringTok{"amsmath"}\NormalTok{,}
+    \StringTok{"ninecolors"}\NormalTok{,}
+    \StringTok{"apa7"}\NormalTok{,}
+    \StringTok{"scalerel"}\NormalTok{,}
+    \StringTok{"threeparttable"}\NormalTok{,}
+    \StringTok{"threeparttablex"}\NormalTok{,}
+    \StringTok{"endfloat"}\NormalTok{,}
+    \StringTok{"environ"}\NormalTok{,}
+    \StringTok{"multirow"}\NormalTok{,}
+    \StringTok{"tcolorbox"}\NormalTok{,}
+    \StringTok{"pdfcol"}\NormalTok{,}
+    \StringTok{"tikzfill"}\NormalTok{,}
+    \StringTok{"fontawesome5"}\NormalTok{,}
+    \StringTok{"framed"}\NormalTok{,}
+    \StringTok{"newtx"}\NormalTok{,}
+    \StringTok{"fontaxes"}\NormalTok{,}
+    \StringTok{"xstring"}\NormalTok{,}
+    \StringTok{"wrapfig"}\NormalTok{,}
+    \StringTok{"tabularray"}\NormalTok{,}
+    \StringTok{"siunitx"}\NormalTok{,}
+    \StringTok{"fvextra"}\NormalTok{,}
+    \StringTok{"geometry"}\NormalTok{,}
+    \StringTok{"setspace"}\NormalTok{,}
+    \StringTok{"fancyvrb"}\NormalTok{,}
     \StringTok{"anyfontsize"}
 \NormalTok{  )}
 \NormalTok{)}
@@ -1354,38 +1486,38 @@ simulation environment}
 
 \normalsize
 
-\paragraph{Including system-level
-dependencies.}\label{including-system-level-dependencies}
+\paragraph{Including System-level
+Dependencies.}\label{including-system-level-dependencies}
 
-The \texttt{system\_pkgs} parameter is for software the project needs
-that is not an R package. It accepts any of the programs available
-through Nix (the same large collection mentioned earlier), so beyond
-Git, Pandoc, and, here, Quarto, it can be essentially any command-line
-tool a project depends on. Not every system-level dependency needs
-listing, though: when an R package itself relies on compiled libraries,
-Nix installs them automatically. The \{rvinecopulib\} package, for
-example, links against the C++ libraries Boost and Eigen, which we never
-list. The \texttt{apaquarto} extension we use for APA formatting is a
-separate case: it is a Quarto extension stored in the project's
-\texttt{\_extensions/} directory rather than a Nix package
-(\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}) (see
-the \{rix\} documentation for more:
-\url{https://docs.ropensci.org/rix/articles/installing-system-tools.html}).
+Nix handles non-R software in two ways. The system-level libraries your
+R packages depend on, such as BLAS/LAPACK, are resolved automatically
+and need not be listed. The \{svglite\} package, for example, depends on
+system libraries (libpng and more), which we never list. The second way
+is the \texttt{system\_pkgs} parameter, which lists software that is not
+an R package, typically command-line tools you run yourself inside the
+environment, such as Git or Quarto. In our project this is only Quarto.
+Any software available through Nix can be requested this way (searchable
+at \url{https://search.nixos.org/packages}), and, as with R packages, a
+missing tool can simply be added to \texttt{system\_pkgs} and the
+environment rebuilt. Note the \texttt{apaquarto} extension we use for
+APA formatting is a separate case: it is a Quarto extension stored in
+the project's \texttt{\_extensions/} directory rather than a Nix package
+(\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \& Baumann, 2025}).
 
-\paragraph{Specifying LaTeX packages.}\label{specifying-latex-packages}
+\paragraph{Specifying LaTeX Packages.}\label{specifying-latex-packages}
 
 The \texttt{tex\_pkgs} parameter lists the LaTeX packages needed for PDF
 compilation. When any are listed, Nix includes a minimal TeXLive
 distribution (\texttt{scheme-small}) and adds the requested packages on
-top. Finding the exact set often takes some trial and error, since
-Quarto's error messages during rendering indicate which packages are
+top. Finding the exact set may take some trial and error, but Quarto's
+error messages during rendering help by indicating which packages are
 missing. Appendix B gives also the reasons for adding each package in
 \texttt{tex\_pkgs}.
 
 After rebuilding with \texttt{nix-build} and re-entering with
-\texttt{nix-shell}, Quarto is available. We write the manuscript
-(\texttt{article.qmd}) in a \texttt{Manuscript} subfolder, and render it
-from the terminal (Listing~\ref{lst-quarto-render}):
+\texttt{nix-shell\ -\/-pure}, Quarto is available. We write the
+manuscript (\texttt{article.qmd}) in a \texttt{Manuscript} subfolder,
+and render it from the terminal (Listing~\ref{lst-quarto-render}):
 
 \begin{codelisting}
 
@@ -1410,8 +1542,8 @@ from the terminal (Listing~\ref{lst-quarto-render}):
 This command executes all code chunks in the manuscript (i.e., loads the
 R packages, runs the data generation and estimation), calculates and
 incorporates results (e.g., Table~\ref{tbl-results}) and figures (e.g.,
-Figure 1), and generates a formatted PDF following APA style guidelines
-via the \texttt{apaquarto} extension
+Figure 1), and generates a formatted manuscript following APA style
+guidelines via the \texttt{apaquarto} extension
 (\citeproc{ref-schneider_2024}{Schneider, 2024}). This extension is
 saved in the project directory already. To add it to a project of your
 own, run the following inside the Nix shell, where Quarto is provided by
@@ -1443,11 +1575,11 @@ saved directly in the project subfolder\footnote{Although we use
   \texttt{apaquarto} in this example, many alternative manuscript
   templates are available, and Nix is agnostic to the specific template
   employed, provided the necessary extensions are installed.}. Because
-Quarto is installed as a system-level package in our Nix specification,
-the rendering occurs entirely within a fully reproducible environment,
-ensuring consistent output across machines regardless of local software
-configurations. If desired, the manuscript can also be reproduced
-interactively by opening the project folder in the user's preferred IDE.
+Quarto is installed as a command-line tool in our Nix specification, the
+rendering occurs entirely within a fully reproducible environment,
+ensuring consistent output across machines. If desired, the manuscript
+can also be reproduced interactively by opening the project folder in
+the user's preferred IDE.
 
 As highlighted before, we included the simulation code as code chunks
 for this manuscript. This was done simply for illustration purposes. In
@@ -1468,40 +1600,19 @@ configures R to ignore external package libraries and also disables
 straightforward: any new packages should be added to
 \texttt{default.nix} and the environment rebuilt, preserving full
 reproducibility (\citeproc{ref-rodrigues_baumann_2025}{Rodrigues \&
-Baumann, 2025}). However, for stricter isolation\footnote{For example,
-  when preparing this manuscript without the \texttt{-\/-pure} flag,
-  \texttt{quarto\ render} worked successfully. However, when using the
-  \texttt{-\/-pure} flag, the build failed. Running
+Baumann, 2025}). In addition, for stricter isolation\footnote{For
+  example, when preparing this manuscript without the \texttt{-\/-pure}
+  flag, \texttt{quarto\ render} worked successfully. However, when using
+  the \texttt{-\/-pure} flag, the build failed. Running
   \texttt{quarto\ check} from within the Nix shell (i.e.,
   \texttt{nix-shell\ -\/-run\ "quarto\ check"}) revealed that Quarto was
   still accessing the system's LaTeX installation
   (\texttt{/Library/TeX/texbin}) rather than being restricted to only
   what was specified in \texttt{default.nix}.} that also prevents access
-to other system programs not specified in \texttt{default.nix}, use the
-\texttt{-\/-pure} flag (Listing~\ref{lst-nix-shell-pure}):
-
-\begin{codelisting}
-
-\caption{\label{lst-nix-shell-pure}Activating the Nix environment with
-strict isolation \normalsize}
-
-\centering{
-
-\small
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{nix{-}shell} \AttributeTok{{-}{-}pure}
-\end{Highlighting}
-\end{Shaded}
-
-}
-
-\end{codelisting}%
-
-A related caveat specific to macOS is discussed in the Limitations
-section below; see also the \{rix\} documentation
-(\url{https://docs.ropensci.org/rix/articles/setting-up-macos.html}).
+to other system programs not specified in \texttt{default.nix}, in this
+tutorial, we activated the environment with the \texttt{-\/-pure} flag
+from the start (Listing~\ref{lst-nix-shell}). A related caveat specific
+to macOS is discussed in the Discussion section below.
 
 \subsection{Reproducing the Simulation Study and
 Manuscript}\label{reproducing-the-simulation-study-and-manuscript}
@@ -1511,31 +1622,30 @@ perspective of a reader who wants to reproduce it. Because the
 environment is bundled with the project, reproduction requires almost
 nothing beyond the project folder itself. A reader can download the
 entire project from its repository
-(\url{https://doi.org/10.5281/zenodo.21098114}). The folder already
+(\url{https://doi.org/10.5281/zenodo.21098113}). The folder already
 contains \texttt{default.nix}, thus they do not need the authoring steps
 (Steps 1 to 3). With Nix installed, they need only build and enter the
-environment as in Step 4 (\texttt{nix-build}, then \texttt{nix-shell}),
-which guarantees that all dependencies (the R version, packages, and
-system tools) match exactly those specified in \texttt{default.nix}.
-
-From within that environment, reproduction proceeds on two levels. The
-simulation can be reproduced by running its scripts in order,
-regenerating the results and figures. The complete manuscript (its text
-together with the embedded results, tables, and figures) can be
-reproduced in the same environment as in
+environment as in Step 4 (\texttt{nix-build}, then
+\texttt{nix-shell\ -\/-pure}), which guarantees that all dependencies
+(i.e., the R version, packages, and system dependencies) match those
+specified in \texttt{default.nix}. From within that environment,
+reproduction proceeds on two levels. The simulation can be reproduced by
+running its scripts in order, regenerating the results and figures. The
+complete manuscript (its text together with the embedded results,
+tables, and figures) can be reproduced in the same environment as in
 Listing~\ref{lst-quarto-render}, which re-executes every code chunk and
-regenerates the formatted PDF end to end.
+regenerates the formatted manuscript end to end.
 
 \begin{figure}
 
-\caption{\label{fig-performance}Performance of ACE estimator across
-sample sizes and confounding severity. Panel A shows relative bias,
-Panel B shows relative RMSE, Panel C shows coverage probability of 95\%
-confidence intervals (dashed line at nominal 0.95 level), and Panel D
-shows average confidence interval width. Results demonstrate that model
-misspecification induces systematic bias that persists across sample
-sizes, while increasing sample size improves precision but not accuracy
-under misspecification.}
+\caption{\label{fig-performance}Performance of the average causal effect
+(ACE) estimator across sample sizes and confounding severity. Panel A
+shows relative bias, Panel B shows relative root mean squared error
+(RMSE), Panel C shows coverage probability of 95\% confidence intervals
+(CI; dashed line at nominal 0.95 level), and Panel D shows average CI
+width. Results demonstrate that model misspecification induces
+systematic bias that persists across sample sizes, while increasing
+sample size improves precision but not accuracy under misspecification.}
 
 \centering{
 
@@ -1547,9 +1657,10 @@ under misspecification.}
 
 \begin{table}
 
-{\caption{{Performance metrics for ACE estimator across simulation
-conditions. Values in parentheses are Monte Carlo standard errors
-(MCSE).}{\label{tbl-results}}}
+{\caption{{Performance metrics for the average causal effect (ACE)
+estimator across simulation conditions. Values in parentheses are Monte
+Carlo standard errors (MCSE). RMSE = root mean squared error; CI =
+confidence interval.}{\label{tbl-results}}}
 \vspace{-20pt}}
 
 \begin{longtable}[]{@{}
@@ -1603,9 +1714,9 @@ CI Width
 Studies}\label{additional-considerations-for-simulation-studies}
 
 In this section, we turn to considerations that matter especially for
-simulation studies but fall outside this tutorial's scope, since they
-depend on the details of each study. The first concerns random draws and
-reproducibility. The second concerns the analytical pipeline,
+simulation studies but fall outside the scope of this tutorial, since
+they depend on the details of each study. The first concerns random
+draws and reproducibility. The second concerns the analytical pipeline,
 environment for multiple programming languages environment, and
 integration with tools researchers may already use. We do not cover
 these topics in depth. Our goal is to clarify how they relate to \{rix\}
@@ -1614,25 +1725,24 @@ and to point readers toward resources for more advanced use cases.
 \subsubsection{Reproducible Randomness and Parallel Execution for Data
 Generation}\label{reproducible-randomness-and-parallel-execution-for-data-generation}
 
-A simulation regenerates its data from a pseudo-random number generator,
-so its reproducibility depends on controlling that generator. The
-standard advice is to set the seed once and store it, so the same code
-reproduces the same sequence of draws
+A simulation regenerates its data from a pseudo-random number generator.
+Its reproducibility therefore depends on controlling that generator. The
+standard advice is to set the seed once and store it, which ensures that
+the same code reproduces the same sequence of draws
 (\citeproc{ref-morris_etall_2019}{Morris et al., 2019}). Simulation
 studies are typically organized as a set of conditions, each run for
-many repetitions, so the unit one wants to reproduce is a single
-repetition within a given condition. Storing the generator's state at
-the start of each condition-repetition cell, rather than only the
-initial seed, additionally allows any single cell to be reproduced in
-isolation, which is convenient for debugging
-(\citeproc{ref-morris_etall_2019}{Morris et al., 2019}). In R, the state
-lives in the variable \texttt{.Random.seed}, and such a procedure would
-look as follows (Listing~\ref{lst-rng-state}):
+many repetitions, and researchers often need to reproduce a single
+repetition within a given condition. For this purpose, the state of the
+generator can additionally be stored at the start of each repetition of
+each condition, rather than only the initial seed. Any repetition can
+then be reproduced in isolation, which is convenient for debugging
+(\citeproc{ref-morris_etall_2019}{Morris et al., 2019}). In R, this
+state is stored in the variable \texttt{.Random.seed}, and the procedure
+would look as follows (Listing~\ref{lst-rng-state}):
 
 \begin{codelisting}
 
-\caption{\label{lst-rng-state}Storing and restoring the generator state
-to reproduce one condition-repetition cell}
+\caption{\label{lst-rng-state}Storing and Restoring the Generator State}
 
 \centering{
 
@@ -1646,7 +1756,7 @@ to reproduce one condition-repetition cell}
 \NormalTok{nsim }\OtherTok{\textless{}{-}} \DecValTok{1000}
 
 \CommentTok{\# one slot per condition{-}repetition cell}
-\NormalTok{states  }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{list}\NormalTok{(), }\FunctionTok{nrow}\NormalTok{(conditions), nsim)}
+\NormalTok{states }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{list}\NormalTok{(), }\FunctionTok{nrow}\NormalTok{(conditions), nsim)}
 \NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\ConstantTok{NA\_real\_}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(conditions), nsim)}
 
 \CommentTok{\# nested loops shown for illustration}
@@ -1662,7 +1772,7 @@ to reproduce one condition-repetition cell}
 
 \CommentTok{\# later, reproduce repetition 3 of condition 2 on its own}
 \NormalTok{.Random.seed }\OtherTok{\textless{}{-}}\NormalTok{ states[[}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{]]}
-\FunctionTok{identical}\NormalTok{(}\FunctionTok{mean}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(conditions}\SpecialCharTok{$}\NormalTok{n[}\DecValTok{2}\NormalTok{])), results[}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{])  }\CommentTok{\# TRUE}
+\FunctionTok{identical}\NormalTok{(}\FunctionTok{mean}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(conditions}\SpecialCharTok{$}\NormalTok{n[}\DecValTok{2}\NormalTok{])), results[}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{]) }\CommentTok{\# TRUE}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1690,23 +1800,23 @@ several packages for this (\citeproc{ref-doRNG}{Gaujoux, 2025};
 \citeproc{ref-rstream}{Leydold, 2022};
 \citeproc{ref-rcoreteam_parallel}{R Core Team, 2023}), and we illustrate
 the approach with \{doRNG\}, which implements streams for \{foreach\}
-through the \texttt{\%dorng\%} operator
-(Listing~\ref{lst-run-simulation-code}). From a single master seed set
-before the loop, \{doRNG\} derives one independent stream per iteration,
-bound to the iteration index rather than to a worker. The number of
-cores (\texttt{ncore} in our script) therefore changes only how
-iterations are scheduled, never which stream each receives, so a
-collaborator who reruns the study on four cores reproduces data
-generated on twenty cores exactly. Because \{doRNG\} also records each
-stream in the result's \texttt{rng} attribute, these states can be
-stored and later restored to reproduce any single repetition in
+(\citeproc{ref-foreach}{Microsoft \& Weston, 2022}) through the
+\texttt{\%dorng\%} operator (Listing~\ref{lst-run-simulation-code}).
+From a single master seed set before the loop, \{doRNG\} derives one
+independent stream per iteration, bound to the iteration index rather
+than to a worker. The number of cores (\texttt{ncore} in our script)
+therefore changes only how iterations are scheduled, never which stream
+each receives. Thus, a researcher who reruns the study on four cores
+reproduces data generated on twenty cores. Because \{doRNG\} also
+records each stream in the result's \texttt{rng} attribute, these states
+can be stored and later restored to reproduce any single repetition in
 isolation, which the per-condition seed alone cannot do
 (Listing~\ref{lst-rng-streams}). Researchers should store these states
 and, preferably, make them available alongside the reported estimates.
 
 \begin{codelisting}
 
-\caption{\label{lst-rng-streams}Reproducible parallel streams with
+\caption{\label{lst-rng-streams}Reproducible Parallel Streams with
 \{doRNG\}}
 
 \centering{
@@ -1726,9 +1836,10 @@ and, preferably, make them available alongside the reported estimates.
 \NormalTok{  res }\OtherTok{\textless{}{-}} \FunctionTok{foreach}\NormalTok{(}
     \AttributeTok{i =} \FunctionTok{seq\_len}\NormalTok{(nsim),}
     \AttributeTok{.packages =} \FunctionTok{c}\NormalTok{(}\StringTok{"marginaleffects"}\NormalTok{, }\StringTok{"rvinecopulib"}\NormalTok{)}
-\NormalTok{  ) }\SpecialCharTok{\%dorng\%}\NormalTok{ \{}
-    \FunctionTok{run\_one\_rep}\NormalTok{(designs}\SpecialCharTok{$}\NormalTok{n[k], designs}\SpecialCharTok{$}\NormalTok{gamma2[k])}
-\NormalTok{  \}}
+\NormalTok{  ) }\SpecialCharTok{\%dorng\%}
+\NormalTok{    \{}
+      \FunctionTok{run\_one\_rep}\NormalTok{(designs}\SpecialCharTok{$}\NormalTok{n[k], designs}\SpecialCharTok{$}\NormalTok{gamma2[k])}
+\NormalTok{    \}}
   \CommentTok{\# per{-}repetition stream states for this condition}
 \NormalTok{  rng\_states[[k]] }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(res, }\StringTok{"rng"}\NormalTok{)}
 \NormalTok{  all\_results[[k]] }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, res)}
@@ -1748,10 +1859,11 @@ and, preferably, make them available alongside the reported estimates.
 \subsubsection{Analytical Pipelines: \{targets\} and
 \{rixpress\}}\label{analytical-pipelines-targets-and-rixpress}
 
-Complex simulation studies often benefit from an analytical pipeline
-that tracks dependencies between computational steps, caches
-intermediate results, and enables selective re-execution when inputs
-change. Two complementary approaches exist within the Nix ecosystem.
+As mentioned, complex simulation studies often benefit from an
+analytical pipeline that tracks dependencies between computational
+steps, caches intermediate results, and enables selective re-execution
+when inputs change. Two complementary approaches exist within the Nix
+ecosystem.
 
 \paragraph{Using \{targets\} Within
 Nix.}\label{using-targets-within-nix}
@@ -1826,7 +1938,7 @@ generates an equivalent Nix expression. This is particularly valuable
 for projects where \{renv\} encountered system dependency issues or
 where stricter reproducibility guarantees are desired. Unlike \{renv\},
 which captures R package versions but not the R interpreter or
-system-level libraries, Nix manages all layers of the software stack
+system-level dependencies, Nix manages all layers of the software stack
 (see \{rix\} documentation:
 \url{https://docs.ropensci.org/rix/articles/renv2nix.html}).
 
@@ -1842,8 +1954,7 @@ containers to handle environment setup
 This is particularly useful for deployment to cloud platforms or
 high-performance computing clusters where Nix may not be installed. In
 that case, the environment is built with Nix but shipped inside a Docker
-image, so it can be run with Docker alone on machines where Nix is not
-installed (see \{rix\} documentation:
+image, so it can be run with Docker alone (see \{rix\} documentation:
 \url{https://docs.ropensci.org/rix/articles/nix-inside-docker.html}).
 
 \section{Discussion}\label{discussion}
@@ -1853,7 +1964,7 @@ of transparency: making data and code available. This tutorial has
 argued that transparency alone is insufficient without the ability to
 reliably reconstruct the computational environments in which analyses
 are executed. For simulation studies in particular, where results depend
-critically on software versions, system-level libraries, and random
+critically on software versions, system-level dependencies, and random
 number generation, environment-level reproducibility is not optional but
 essential.
 
@@ -1873,6 +1984,14 @@ enabling infrastructure, supporting rather than replacing other best
 practices such as version control, analytical pipelines, and transparent
 reporting.
 
+Therefore, if reproducibility is to function as a cornerstone of
+cumulative science, then the ability to reconstruct computational
+environments must become a routine part of methodological practice. Nix
+leveraged by tools like \{rix\} lowers the barrier to achieving this
+goal. We hope this tutorial will help to normalize environment-level
+reproducibility as a standard component of rigorous computational
+research in psychological science and beyond.
+
 \subsection{Limitations}\label{limitations}
 
 The approach we describe has limitations worth noting, the most relevant
@@ -1882,39 +2001,34 @@ and is therefore not pinned. As a consequence, an environment pinned to
 an older date can occasionally stop building or loading after a macOS
 update. Because reproducing an environment faithfully means keeping its
 pin unchanged, the reliable solution is not to update the pin but to
-build and run the original environment through Docker or on Linux
-(including WSL on Windows), where it no longer depends on the host's
-macOS (\citeproc{ref-rodrigues_baumann_2026_polyglot}{Rodrigues \&
-Baumann, 2026}). This preserves exact reproducibility while working
-around the platform's constraints (for macOS-specific setup, see
+build and run the original environment through Docker or on Linux, where
+it no longer depends on the host's macOS
+(\citeproc{ref-rodrigues_baumann_2026_polyglot}{Rodrigues \& Baumann,
+2026}). This preserves exact reproducibility while working around the
+platform's constraints (for macOS-specific setup, see
 \url{https://docs.ropensci.org/rix/articles/setting-up-macos.html}).
 
-Finally, a reproducible environment does not, on its own, make the
+Moreover, a reproducible environment does not, on its own, make the
 workflow itself transparent. This is particularly relevant for
 simulation studies, which are often split across several files whose
 dependencies, and the order in which they should run, are not always
-clear (for example, which script must run first). Dedicated analytical
-pipeline tools can formalize these dependencies (see above), but at a
-minimum, clearly documenting how the files relate and in what order they
-run already helps others reproduce the study.
+clear. Dedicated analytical pipeline tools can formalize these
+dependencies (see above), but at a minimum, clearly documenting how the
+files relate and in what order they run already helps others reproduce
+the study. Thus, we strongly advise that at least such a description is
+provided.
 
-Moreover, as highlighted, there may be components on simulation studies
-that might be hard to reproduce by others researchers such as very
+Last, as highlighted, there may be components of simulation studies that
+might be hard to reproduce by other researchers such as very
 computationally intensive studies that demand a huge amount of computer
-power. The data generation also might not yield identifical numerical
-results due to the interplay of multiple things. However, making
-availble the obtained estimates, together with the pinned enrivonment,
-would at least allow the reproducibility of the analyses etc.
-
-\subsection{Conclusion}\label{conclusion}
-
-If reproducibility is to function as a cornerstone of cumulative
-science, then the ability to reconstruct computational environments must
-become a routine part of methodological practice. Tools such as Nix and
-\{rix\} lower the barrier to achieving this goal, making fully
-reproducible simulation research feasible. We hope this tutorial helps
-normalize environment-level reproducibility as a standard component of
-rigorous computational research in psychology and beyond.
+power. The data generation also might not yield identical numerical
+results due to the interplay of multiple factors. However, making
+available the obtained results, together with the pinned environment,
+would at least allow the reproducibility of the analyses and manuscript,
+as illustrated in this article. This distinction in itself is relevant
+because it avoids coarse statements about the reproducibility of
+simulation studies (\citeproc{ref-montoya_anderson_2026}{Montoya \&
+Anderson, 2026}).
 
 \newpage{}
 
@@ -1967,11 +2081,6 @@ Fages, D., Mierisch, F., Sun, P., \ldots{} Strobel, S. (2026).
 Reproducibility and robustness of economics and political science
 research. \emph{Nature}, \emph{652}(8108), 151--156.
 \url{https://doi.org/10.1038/s41586-026-10251-x}
-
-\bibitem[\citeproctext]{ref-doParallel}
-Corporation, M., \& Weston, S. (2022). \emph{doParallel: Foreach
-parallel adaptor for the 'parallel' package}.
-\url{https://CRAN.R-project.org/package=doParallel}
 
 \bibitem[\citeproctext]{ref-dolstra_etall_2004}
 Dolstra, E., De Jonge, M., \& Visser, E. (2004). Nix: A safe and
@@ -2041,13 +2150,15 @@ integrity of software supply chains. \emph{IEEE Software}, \emph{39}(2),
 62--70. \url{https://doi.org/10.1109/ms.2021.3073045}
 
 \bibitem[\citeproctext]{ref-landau_2021}
-Landau, W. M. (2021). \emph{Targets: Dynamic function-oriented make-like
-declarative workflows}.
+Landau, W. M. (2021). The targets r package: A dynamic make-like
+function-oriented pipeline toolkit for reproducibility and
+high-performance computing. \emph{Journal of Open Source Software},
+\emph{6}(57), 2959. \url{https://doi.org/10.21105/joss.02959}
 
 \bibitem[\citeproctext]{ref-levenstein_lyle_2018}
 Levenstein, M. C., \& Lyle, J. A. (2018). Data: Sharing is caring.
 \emph{Advances in Methods and Practices in Psychological Science},
-\emph{1}(1), 95--103.
+\emph{1}(1), 95--103. \url{https://doi.org/10.1177/2515245918758319}
 
 \bibitem[\citeproctext]{ref-rstream}
 Leydold, J. (2022). \emph{Rstream: Streams of random numbers}.
@@ -2073,6 +2184,15 @@ Ideas and Emerging Results}, 97--101.
 Malka, J., Zacchiroli, S., \& Zimmermann, T. (2026). {Docker} does not
 guarantee reproducibility. \emph{arXiv Preprint arXiv:2601.12811}.
 \url{https://arxiv.org/abs/2601.12811}
+
+\bibitem[\citeproctext]{ref-doParallel}
+Microsoft Corporation, \& Weston, S. (2022). \emph{doParallel: Foreach
+parallel adaptor for the 'parallel' package}.
+\url{https://CRAN.R-project.org/package=doParallel}
+
+\bibitem[\citeproctext]{ref-foreach}
+Microsoft, \& Weston, S. (2022). \emph{Foreach: Provides foreach looping
+construct}. \url{https://CRAN.R-project.org/package=foreach}
 
 \bibitem[\citeproctext]{ref-montoya_anderson_2026}
 Montoya, A. K., \& Anderson, S. F. (2026). Repeatability in monte carlo
@@ -2138,6 +2258,7 @@ research in {R}: A tutorial on how to do the same thing more than once.
 \bibitem[\citeproctext]{ref-peng_2011}
 Peng, R. D. (2011). Reproducible research in computational science.
 \emph{Science}, \emph{334}(6060), 1226--1227.
+\url{https://doi.org/10.1126/science.1213847}
 
 \bibitem[\citeproctext]{ref-rcoreteam_parallel}
 R Core Team. (2023). \emph{R: A language and environment for statistical
@@ -2179,11 +2300,17 @@ reporting. \emph{Psychological Methods}.
 \url{https://doi.org/10.1037/met0000695}
 
 \bibitem[\citeproctext]{ref-simonsohn_2020}
-Simonsohn, U. (2020). \emph{Groundhog: Version-control for CRAN, github,
-and gitlab packages}.
+Simonsohn, U., \& Gruson, H. (2026). \emph{Groundhog: Version-control
+for CRAN, GitHub, and GitLab packages}.
+\url{https://CRAN.R-project.org/package=groundhog}
+
+\bibitem[\citeproctext]{ref-stan_reproducibility}
+Stan Development Team. (2025). \emph{Reproducibility}.
+\url{https://mc-stan.org/docs/reference-manual/reproducibility.html}
 
 \bibitem[\citeproctext]{ref-ushey_2024}
-Ushey, K. (2024). \emph{Renv: Project environments}.
+Ushey, K., \& Wickham, H. (2024). \emph{Renv: Project environments}.
+\url{https://CRAN.R-project.org/package=renv}
 
 \bibitem[\citeproctext]{ref-vanlissa_etall_2021}
 van Lissa, C. J., Brandmaier, A. M., Brinkman, L., Lamprecht, A.-L.,
@@ -2211,6 +2338,11 @@ Springer-Verlag New York. \url{https://ggplot2.tidyverse.org}
 Wickham, H., François, R., Henry, L., Müller, K., \& Vaughan, D. (2023).
 \emph{Dplyr: A grammar of data manipulation}.
 \url{https://CRAN.R-project.org/package=dplyr}
+
+\bibitem[\citeproctext]{ref-svglite}
+Wickham, H., Henry, L., Pedersen, T. L., Luciani, T. J., Decorde, M., \&
+Vaudor, L. (2025). \emph{Svglite: An 'SVG' graphics device}.
+\url{https://CRAN.R-project.org/package=svglite}
 
 \bibitem[\citeproctext]{ref-wiebels_moreau_2021}
 Wiebels, K., \& Moreau, D. (2021). Leveraging containers for
@@ -2258,7 +2390,7 @@ term are generated using the \{rvinecopulib\} package: pairs
 \texttt{rbicop()}, then transformed to standard normals via
 \(X_2 = \Phi^{-1}(U_1)\) and \(\epsilon = \Phi^{-1}(U_2)\). The
 independence copula is simply \(C(u,v) = uv\), meaning the resulting
-uniforms are independent---mathematically equivalent to calling
+uniforms are independent, mathematically equivalent to calling
 \texttt{rnorm()} directly. We use \{rvinecopulib\} intentionally because
 it depends on C++ libraries.
 
@@ -2314,7 +2446,7 @@ regression.
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
 \caption{Performance criteria for evaluating the ACE estimator.
 \(\hat{\theta}_k\) denotes the ACE estimate from replication \(k\) (for
-\(k = 1, \ldots, K\)), where \(K = 1000\) is the number of replications,
+\(k = 1, \ldots, K\)), where \(K = 100\) is the number of replications,
 and \(\theta\) denotes the true ACE for a given condition. For coverage
 and width criteria, \(A_k\) and \(B_k\) denote the lower and upper
 endpoints of the 95\% confidence interval from replication \(k\),
@@ -2322,7 +2454,8 @@ endpoints of the 95\% confidence interval from replication \(k\),
 estimated coverage probability, and \(I(\cdot)\) is an indicator
 function equaling 1 if the condition is true and 0 otherwise. The Monte
 Carlo standard error (MCSE) quantifies the simulation uncertainty in
-each performance measure estimate}\tabularnewline
+each performance measure estimate. RMSE = root mean squared
+error.}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Criterion
@@ -2372,14 +2505,15 @@ conditions.
 MacBook Pro (Apple M4 Pro Chip), running macOS Sequoia 15.7.3. All
 analyses were performed in R (version 4.5.2). Parallel processing was
 implemented through the \{doParallel\} package {[}version 1.0.17;
-Corporation and Weston (\citeproc{ref-doParallel}{2022}){]}, with
-\{doRNG\} {[}version 1.8.6.2; Gaujoux (\citeproc{ref-doRNG}{2025}){]} to
-ensure independent and reproducible random number streams. For data
-generation we used the \{rvinecopulib\} package {[}version 0.7.3.1.0;
-Nagler and Vatter (\citeproc{ref-rvinecopulib}{2025}){]}. The estimator
-was implemented using the \{marginaleffects\} package {[}version 0.31.0;
-Arel-Bundock et al. (\citeproc{ref-marginaleffects}{2024}){]}. Data
-wrangling was performed with \{dplyr\} {[}version 1.1.4; Wickham et al.
+Microsoft Corporation and Weston (\citeproc{ref-doParallel}{2022}){]},
+with \{doRNG\} {[}version 1.8.6.2; Gaujoux
+(\citeproc{ref-doRNG}{2025}){]} to ensure independent and reproducible
+random number streams. For data generation we used the \{rvinecopulib\}
+package {[}version 0.7.3.1.0; Nagler and Vatter
+(\citeproc{ref-rvinecopulib}{2025}){]}. The estimator was implemented
+using the \{marginaleffects\} package {[}version 0.31.0; Arel-Bundock et
+al. (\citeproc{ref-marginaleffects}{2024}){]}. Data wrangling was
+performed with \{dplyr\} {[}version 1.1.4; Wickham et al.
 (\citeproc{ref-dplyr}{2023}){]}. Method performance was assessed through
 multiple metrics following the formulas from the \{simhelpers\} package
 {[}version 0.3.1; Joshi and Pustejovsky
@@ -2388,8 +2522,7 @@ multiple metrics following the formulas from the \{simhelpers\} package
 and \{cowplot\} {[}version 1.2.0; Wilke
 (\citeproc{ref-cowplot}{2025}){]}.
 
-\section{Clarifying the packages
-used}\label{apx-clarifying-the-packages-used}
+\section{Packages Clarification}\label{apx-packages-clarification}
 
 \subsection{R Packages}\label{r-packages}
 
@@ -2414,10 +2547,10 @@ average causal effects via the \texttt{avg\_slopes()} function.
 parallel \texttt{foreach} loops across CPU cores.
 
 \textbf{doRNG} (used in \texttt{03\_run\_simulation.R}): Makes parallel
-RNG reproducible.
+random number generation reproducible.
 
 \textbf{simhelpers} (used in \texttt{04\_performance\_metrics.R}):
-Calculates bias, RMSE, and coverage metrics.
+Calculates bias, root mean squared error (RMSE), and coverage metrics.
 
 \textbf{ggplot2} (used in \texttt{05\_plots.R}): Creates simulation
 result visualizations.
@@ -2460,8 +2593,6 @@ etc.).
 \textbf{newtx}: Times-like fonts (default when no custom
 \texttt{mainfont}).
 
-\textbf{geometry}: Page margins.
-
 \subsubsection{Dependencies of apaquarto
 Packages}\label{dependencies-of-apaquarto-packages}
 
@@ -2473,7 +2604,7 @@ Packages}\label{dependencies-of-apaquarto-packages}
 
 \textbf{fontaxes}: Dependency of newtx.
 
-\textbf{xstring}: Template conditionals.
+\textbf{xstring}: Dependency of newtx.
 
 \textbf{scalerel}: Dependency of apa7 class.
 
@@ -2486,6 +2617,8 @@ Class}\label{required-by-apa7-document-class}
 \textbf{endfloat}: Moves floats to end of document in manuscript mode.
 
 \textbf{threeparttable}: Dependency for threeparttablex.
+
+\textbf{geometry}: Page margins.
 
 \subsubsection{Required by Quarto PDF
 Rendering}\label{required-by-quarto-pdf-rendering}
